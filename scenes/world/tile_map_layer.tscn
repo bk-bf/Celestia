@@ -1,0 +1,83 @@
+[gd_scene load_steps=12 format=3 uid="uid://c2sck2d774v6r"]
+
+[ext_resource type="Texture2D" uid="uid://cyf48eie8y682" path="res://assets/tiles/dirt_placeholder.png" id="1_wcgg5"]
+[ext_resource type="Texture2D" uid="uid://5u5hp2ncsyrs" path="res://assets/tiles/sand_placeholder.png" id="2_af5fv"]
+[ext_resource type="Texture2D" uid="uid://bmxegb8opwfl1" path="res://assets/tiles/stone_placeholder.png" id="3_k52vh"]
+[ext_resource type="Texture2D" uid="uid://mq7q58gs24ul" path="res://assets/tiles/dummy_64x64_00FF00_00FF00.png" id="4_4gu1p"]
+[ext_resource type="Texture2D" uid="uid://bsghmaogrnajm" path="res://assets/tiles/water_placeholder.png" id="5_58vs4"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_d0re2"]
+resource_name = "dirt"
+texture = ExtResource("1_wcgg5")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/terrain_set = 0
+0:0/0/terrain = 0
+0:0/0/terrains_peering_bit/right_side = 0
+0:0/0/terrains_peering_bit/bottom_right_corner = 0
+0:0/0/terrains_peering_bit/bottom_side = 0
+0:0/0/terrains_peering_bit/bottom_left_corner = 0
+0:0/0/terrains_peering_bit/left_side = 0
+0:0/0/terrains_peering_bit/top_left_corner = 0
+0:0/0/terrains_peering_bit/top_side = 0
+0:0/0/terrains_peering_bit/top_right_corner = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_iwvcx"]
+resource_name = "sand"
+texture = ExtResource("2_af5fv")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/terrain_set = 0
+0:0/0/terrain = 1
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1o5u7"]
+resource_name = "stone"
+texture = ExtResource("3_k52vh")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/terrain_set = 0
+0:0/0/terrain = 2
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_38sg4"]
+resource_name = "grass"
+texture = ExtResource("4_4gu1p")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/terrain_set = 0
+0:0/0/terrain = 3
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hul7a"]
+resource_name = "water"
+texture = ExtResource("5_58vs4")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/terrain_set = 0
+0:0/0/terrain = 4
+0:0/0/terrains_peering_bit/top_side = 2
+
+[sub_resource type="TileSet" id="TileSet_iakng"]
+tile_size = Vector2i(64, 64)
+uv_clipping = true
+terrain_set_0/mode = 0
+terrain_set_0/terrain_0/name = "dirt"
+terrain_set_0/terrain_0/color = Color(0.418013, 0.282844, 0.20159, 1)
+terrain_set_0/terrain_1/name = "sand"
+terrain_set_0/terrain_1/color = Color(0.5, 0.4375, 0.25, 1)
+terrain_set_0/terrain_2/name = "stone"
+terrain_set_0/terrain_2/color = Color(0.506916, 0.478147, 0.519201, 1)
+terrain_set_0/terrain_3/name = "grass"
+terrain_set_0/terrain_3/color = Color(0.375, 0.5, 0.25, 1)
+terrain_set_0/terrain_4/name = "water"
+terrain_set_0/terrain_4/color = Color(0.325432, 0.377578, 0.833577, 1)
+sources/0 = SubResource("TileSetAtlasSource_d0re2")
+sources/1 = SubResource("TileSetAtlasSource_iwvcx")
+sources/2 = SubResource("TileSetAtlasSource_1o5u7")
+sources/3 = SubResource("TileSetAtlasSource_38sg4")
+sources/4 = SubResource("TileSetAtlasSource_hul7a")
+
+[node name="TileMapLayer" type="TileMapLayer"]
+tile_set = SubResource("TileSet_iakng")
+
+[node name="Button" type="Button" parent="."]
+offset_right = 8.0
+offset_bottom = 8.0

@@ -1,0 +1,50 @@
+[gd_resource type="FastNoiseLite" load_steps=3 format=3 uid="uid://dx0ytjdix42hq"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vjru6"]
+
+[sub_resource type="GDScript" id="GDScript_vjru6"]
+script/source = "extends TileMap
+
+# Terrain type enum matching your TileSet
+enum TERRAIN {
+	DIRT = 0,
+	SAND = 1,
+	STONE = 2,
+	GRASS = 3,
+	WATER = 4
+}
+
+@export var map_size := Vector2i(50, 50)
+@export var noise: FastNoiseLite
+
+func _ready():
+	generate_map()
+
+func generate_map():
+	clear()  # Clear existing tiles
+	
+	for x in map_size.x:
+		for y in map_size.y:
+			# Get noise value between -1 and 1
+			var noise_value = noise.get_noise_2d(x, y)
+			
+			# Determine terrain type
+			var terrain = get_terrain_from_noise(noise_value)
+			
+			# Place tile (layer 0, position, terrain ID)
+			set_cell(0, Vector2i(x, y), 0, Vector2i(terrain, 0))
+
+func get_terrain_from_noise(value: float) -> int:
+	if value < -0.6:   return TERRAIN.WATER
+	elif value < -0.3: return TERRAIN.SAND
+	elif value < 0.2:  return TERRAIN.GRASS
+	elif value < 0.6:  return TERRAIN.DIRT
+	else:              return TERRAIN.STONE
+"
+
+[resource]
+seed = 1463436545
+fractal_octaves = 4
+script = SubResource("GDScript_vjru6")
+map_size = Vector2i(50, 50)
+noise = SubResource("FastNoiseLite_vjru6")
