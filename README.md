@@ -118,7 +118,7 @@ While the core gameplay loop is similar to its inspirations, the game introduces
 ## **Technical Details**
 
 ### Engine:
-Godot Engine (version 4.x)
+Godot Engine (version 4.4)
 
 ### Programming Language:
 GDScript
