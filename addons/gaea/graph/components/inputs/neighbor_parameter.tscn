@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://d11yc7l6sneof"]
+
+[ext_resource type="PackedScene" uid="uid://i2nwlab8rau" path="res://addons/gaea/graph/components/inputs/base_parameter.tscn" id="1_7clkg"]
+[ext_resource type="Script" uid="uid://ugmago2v1kp4" path="res://addons/gaea/graph/components/inputs/neighbor_parameter.gd" id="2_7clkg"]
+
+[node name="BaseParameter" instance=ExtResource("1_7clkg")]
+script = ExtResource("2_7clkg")
+
+[node name="GridContainer" type="GridContainer" parent="." index="1"]
+layout_mode = 2
+theme_override_constants/h_separation = 2
+theme_override_constants/v_separation = 2
+columns = 3
+
+[node name="CheckBox" type="CheckBox" parent="GridContainer" index="0"]
+layout_mode = 2
+
+[node name="CheckBox2" type="CheckBox" parent="GridContainer" index="1"]
+layout_mode = 2
+
+[node name="CheckBox3" type="CheckBox" parent="GridContainer" index="2"]
+layout_mode = 2
+
+[node name="CheckBox4" type="CheckBox" parent="GridContainer" index="3"]
+layout_mode = 2
+
+[node name="CheckBox5" type="CheckBox" parent="GridContainer" index="4"]
+layout_mode = 2
+disabled = true
+
+[node name="CheckBox6" type="CheckBox" parent="GridContainer" index="5"]
+layout_mode = 2
+
+[node name="CheckBox7" type="CheckBox" parent="GridContainer" index="6"]
+layout_mode = 2
+
+[node name="CheckBox8" type="CheckBox" parent="GridContainer" index="7"]
+layout_mode = 2
+
+[node name="CheckBox9" type="CheckBox" parent="GridContainer" index="8"]
+layout_mode = 2
