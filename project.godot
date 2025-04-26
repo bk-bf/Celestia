@@ -11,12 +11,17 @@ config_version=5
 [application]
 
 config/name="fantasy_colony_sim"
+run/main_scene="uid://gwfgmxjdlnks"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
+[editor]
+
+version_control/autoload_on_startup=true
+
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gaea/plugin.cfg")
+enabled=PackedStringArray()
 
 [input]
 
