@@ -2,10 +2,11 @@ class_name Tile
 extends Resource
 
 # Basic terrain properties
-@export var altitude: float = 0.0
+@export var density: float = 0.5 # 0-1 range, 0.5 is default ground level
 @export var biome_type: String = "plains"
 @export var moisture: float = 0.5
 @export var temperature: float = 0.5
+@export var movement_speed: float = 1.0 # Default normal movement speed
 
 # Resource properties
 @export var resources: Dictionary = {}
@@ -17,13 +18,13 @@ extends Resource
 
 # Additional properties for game mechanics
 @export var walkable: bool = true
-@export var territory_owner: String = ""  # For monster territory system
-@export var magic_influence: Dictionary = {}  # For elemental magic system
+@export var territory_owner: String = "" # For monster territory system
+@export var magic_influence: Dictionary = {} # For elemental magic system
 
-func _init(coords: Vector2i = Vector2i(0, 0), alt: float = 0.0, biome: String = "plains"):
+func _init(coords: Vector2i = Vector2i(0, 0), den: float = 0.5, biome: String = "plains"):
 	x = coords.x
 	y = coords.y
-	altitude = alt
+	density = den
 	biome_type = biome
 
 # Helper methods
@@ -31,7 +32,7 @@ func get_coordinates() -> Vector2i:
 	return Vector2i(x, y)
 
 func is_water() -> bool:
-	return altitude < 0.0 or biome_type == "ocean" or biome_type == "lake" or biome_type == "river"
+	return density < 0.3 or biome_type == "ocean" or biome_type == "lake" or biome_type == "river"
 
 func get_resource_value(resource_name: String) -> float:
 	if resource_name in resources:

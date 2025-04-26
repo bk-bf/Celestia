@@ -1,0 +1,104 @@
+
+## MVP Task List
+
+### Phase 1: Complete Foundation \& Basic Visualization (1-2 weeks)
+
+- **Finish Core Structure** 
+	- [x] WorldData, Tile, and Grid classes 
+	- [ ] Complete coordinate system setup
+	- [ ] Implement basic FastNoiseLite integration with your existing classes
+- **Simple Visualization Layer**
+	- [ ] Create a basic converter from your WorldData to TileMapLayers
+	- [ ] Implement 5 basic terrain types as in the RimWorld approach
+
+
+### Phase 2: Essential Generation Systems (2 weeks)
+
+- **Streamlined Terrain Generation**
+	- [ ] Basic density generation using FastNoiseLite (simplify from 4 algorithms to 1)
+	- [ ] Simple water system (lakes and rivers without complex flow simulation)
+	- [ ] Basic biome assignment (forest, plains, mountains, swamp)
+- **Core Gameplay Elements**
+	- [ ] Implement pathfinding using your Tile.walkable property
+	- [ ] Add resource generation focusing on 2-3 main resources
+
+
+### Phase 3: Game Mechanics Integration (2 weeks)
+
+- **Key Systems**
+	- [ ] Basic monster territory system using your existing territory_owner property
+	- [ ] Simple resource harvesting mechanics
+	- [ ] Implement pawn movement with terrain movement multipliers
+
+# Post-MVP Task List
+
+**Phase 1: Foundation Setup (2-3 weeks)**
+
+1. **Create Core Data Structures**
+	* [x] Create `WorldData` class to store all terrain information
+	* [x] Define `Tile` class with properties (density, biome, resources)
+	* [x] Implement a `Grid` class to manage tile collections
+	* [ ] Set up coordinate system and grid dimensions
+2. **Design Generator Framework**
+	* [ ] Create a `StepGenerator` base class/interface
+	* [ ] Implement `ChainMapGenerator` to run generators sequentially
+	* [ ] Create a system to track and validate generation dependencies
+	* [ ] Design a state tracking system (similar to `MapAspects` in the thesis)
+3. **Implement Basic Visualization**
+	* [ ] Create debug visualization for terrain data
+	* [ ] Set up conversion from generator data to `TileMapLayers`
+	* [ ] Implement system to display generation progress
+
+**Phase 2: Primary Generators (3-4 weeks)**
+
+4. **Density Generation**
+	* [ ] Implement Perlin noise generator for base terrain
+	* [ ] Create Diamond-Square generator for terrain features
+	* [ ] Add PDS (Perlin + Diamond-Square) hybrid generator
+	* [ ] Implement density smoothing algorithms
+5. **Water System Generation**
+	* [ ] Create ocean and lake definition system
+	* [ ] Implement river generation algorithm with flow paths
+	* [ ] Set up water level tracking for different water bodies
+	* [ ] Implement erosion simulation for river paths
+6. **Environment Factor Generation**
+	* [ ] Create temperature generation system based on density and position
+	* [ ] Implement humidity system spreading from water sources
+	* [ ] Add wind generation affecting temperature and humidity
+	* [ ] Create seasonal variation system (optional)
+
+**Phase 3: Biome and Resource System (2-3 weeks)**
+
+7. **Biome System Implementation**
+	* [ ] Create biome classification system based on environmental factors
+	* [ ] Implement biome smoothing with cellular automata
+	* [ ] Add transition zones between biomes
+	* [ ] Set up biome metadata storage
+8. **Resource Generation**
+	* [ ] Create resource distribution system based on biomes
+	* [ ] Implement resource density variation
+	* [ ] Add resource clustering algorithms
+	* [ ] Create special resource generation for unique terrain features
+9. **Object Placement System**
+	* [ ] Implement tree placement on valid terrain
+	* [ ] Create rock and boulder placement algorithms
+	* [ ] Add object variation based on biome types
+	* [ ] Implement object density controls
+
+**Phase 4: Integration and Optimization (2-3 weeks)**
+
+10. **TileMap Integration**
+	* [ ] Convert generator output to multiple `TileMapLayers`
+	* [ ] Set up proper layer ordering (ground, objects, etc.)
+	* [ ] Add collision shapes to appropriate layers
+	* [ ] Implement custom data attributes for interactive tiles
+11. **User Interface and Controls**
+	* [ ] Create generator parameter controls
+	* [ ] Implement seed management for reproducible worlds
+	* [ ] Add preview generation options
+	* [ ] Create save/load system for generator configurations
+12. **Optimization**
+	* [ ] Implement spatial partitioning for large maps
+	* [ ] Set up chunk-based processing for memory efficiency
+	* [ ] Add multithreading for generation steps
+	* [ ] Implement caching for frequently accessed data

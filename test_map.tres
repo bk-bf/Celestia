@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="MapData" load_steps=4 format=3 uid="uid://d02jxnbfdx8mt"]
+
+[ext_resource type="Script" uid="uid://cb6wveq0sjsaq" path="res://src/world/terrain/map_data.gd" id="1_ioop6"]
+[ext_resource type="Script" uid="uid://ckjfidr7gsmde" path="res://src/world/terrain/grid.gd" id="2_t58h8"]
+
+[sub_resource type="Resource" id="Resource_cnwnv"]
+script = ExtResource("2_t58h8")
+width = 50
+height = 50
+cell_size = Vector2(16, 16)
+chunk_size = 16
+
+[resource]
+script = ExtResource("1_ioop6")
+terrain_grid = SubResource("Resource_cnwnv")
+map_seed = 3300251122
+map_name = "Celestia Map"
+map_size = Vector2i(50, 50)

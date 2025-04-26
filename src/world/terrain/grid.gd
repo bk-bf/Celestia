@@ -5,16 +5,30 @@ extends Resource
 @export var width: int = 100
 @export var height: int = 100
 
+# Define your cell size (in pixels)
+@export var cell_size: Vector2 = Vector2(16, 16)
+
 # Storage for tiles
 var _tiles: Array = []  # Will store Tile objects in a 1D array
+var _half_cell_size: Vector2
 @export var chunk_size: int = 16  # For potential future optimization
 
 # Initialization
-func _init(w: int = 100, h: int = 100):
+func _init(w: int = 100, h: int = 100, cell_sz: Vector2 = Vector2(16, 16)):
 	width = w
 	height = h
+	cell_size = cell_sz
+	_half_cell_size = cell_size / 2
 	_initialize_grid()
 
+# Convert grid coordinates to world position (center of tile)
+func grid_to_world(grid_coords: Vector2i) -> Vector2:
+	return Vector2(grid_coords) * cell_size + _half_cell_size
+
+# Convert world position to grid coordinates
+func world_to_grid(world_pos: Vector2) -> Vector2i:
+	return Vector2i((world_pos / cell_size).floor())
+	
 # Create empty tiles for the entire grid
 func _initialize_grid() -> void:
 	_tiles.clear()
@@ -82,3 +96,4 @@ func get_neighbors_8(coords: Vector2i) -> Array:
 				neighbors.append(get_tile(neighbor_coords))
 				
 	return neighbors
+	
