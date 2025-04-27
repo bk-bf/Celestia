@@ -1,6 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://gwfgmxjdlnks"]
+[gd_scene load_steps=3 format=3 uid="uid://gwfgmxjdlnks"]
 
 [ext_resource type="Script" uid="uid://dohw47cb0kwhj" path="res://src/world/map_test.gd" id="1_i8n85"]
+[ext_resource type="Script" uid="uid://b12ae3y4x0xik" path="res://scenes/world/camera_2d.gd" id="2_r2gvn"]
 
 [node name="TestMap" type="Node2D"]
 script = ExtResource("1_i8n85")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("2_r2gvn")
+max_zoom = 8.0
+zoom_speed = 0.2

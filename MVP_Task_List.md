@@ -5,7 +5,7 @@
 
 - **Finish Core Structure** 
 	- [x] WorldData, Tile, and Grid classes 
-	- [ ] Complete coordinate system setup
+	- [x] Complete coordinate system setup
 	- [ ] Implement basic FastNoiseLite integration with your existing classes
 - **Simple Visualization Layer**
 	- [ ] Create a basic converter from your WorldData to TileMapLayers
