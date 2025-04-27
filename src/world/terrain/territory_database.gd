@@ -4,32 +4,28 @@ extends Resource
 
 var territory_definitions = {
 	"wolf_pack": {
-		"territory_frequency": 0.001,
-		"territory_threshold": 0.4,
+		"territory_frequency": 0.08,
+		"territory_threshold": 0.25,
 		"preferred_terrain": "forest",
 		"color": Color.DARK_RED,
-		"description": "A pack of wolves that roam the forest."
 	},
 	"bear_den": {
-		"territory_frequency": 0.002,
-		"territory_threshold": 0.3,
+		"territory_frequency": 0.01,
+		"territory_threshold": 0.2,
 		"preferred_terrain": "mountain",
 		"color": Color.SADDLE_BROWN,
-		"description": "A dangerous bear den in the mountains."
 	},
 	"goblin_tribe": {
-		"territory_frequency": 0.003,
-		"territory_threshold": 0.4,
+		"territory_frequency": 0.02,
+		"territory_threshold": 0.3,
 		"preferred_terrain": "swamp",
 		"color": Color.WEB_PURPLE,
-		"description": "A tribe of goblins inhabiting the swamps."
 	},
 	"drake_nest": {
-		"territory_frequency": 0.01,
-		"territory_threshold": 0.5,
+		"territory_frequency": 0.05,
+		"territory_threshold": 0.35,
 		"preferred_terrain": "mountain",
 		"color": Color.BLUE_VIOLET,
-		"description": "A nest of drakes guarding valuable treasures."
 	}
 }
 

@@ -8,6 +8,9 @@ var territory_database = TerritoryDatabase.new() # Add monsters database
 @export var show_coordinate_numbers: bool = true
 @export var show_terrain_letters: bool = true
 @export var show_density_values: bool = true
+@export var show_territory_frequency: bool = true
+#@export var show_territory_noise: bool = true
+
 @export var cell_size: Vector2 = Vector2(16, 16)
 @export var seed: int = 0 # If left as 0, a random seed will be used
 var detail_seed: int = 0
@@ -79,21 +82,23 @@ func generate_terrain(seed = null, detail_seed = null):
 			if tile.terrain_type in terrain_database.terrain_definitions and "is_water" in terrain_database.terrain_definitions[tile.terrain_type]:
 				tile.set_water(terrain_database.terrain_definitions[tile.terrain_type].is_water)
 			
-			# Set resource for forest tiles
-			if tile.terrain_type == "forest":
-				tile.resources["wood"] = 0.5 + (detail_val + 1.0) / 4.0
+			# Set resources based on terrain type
+			# Instead of hardcoding "forest", check if the terrain type has associated resources
+			if tile.terrain_type in terrain_database.terrain_definitions:
+				var terrain_def = terrain_database.terrain_definitions[tile.terrain_type]
+				# Check if terrain has resource property or use our knowledge about forest->wood
+				if "resource" in terrain_def:
+					tile.resources[terrain_def.resource] = 0.5 + (detail_val + 1.0) / 4.0
+				elif tile.terrain_type == "forest":  # Fallback for backward compatibility
+					tile.resources["wood"] = 0.5 + (detail_val + 1.0) / 4.0
 			
 			# Set terrain_subtype based on detail noise using TerrainDatabase
 			tile.terrain_subtype = terrain_database.get_subterrain(tile.terrain_type, detail_val)
 			
 			# Set walkable property based on terrain and subterrain
 			tile.walkable = terrain_database.is_walkable(tile.terrain_type, tile.terrain_subtype)
-	
-	# Add some monster territories with deterministic seed
-	# Convert terrain seed to a different value for territories
-	add_monster_territories(territory_seed)
 
-# Updated monster territories function using MonstersDatabase
+# Updated monster territories function using TerritoryDatabase
 func add_monster_territories(territory_seed = null):
 	# Set the seed for reproducible results
 	if territory_seed != null:
@@ -118,7 +123,7 @@ func add_monster_territories(territory_seed = null):
 			monster_data.territory_threshold
 		)
 	
-	print("Generated " + str(available_monster_types.size()) + " monster territories") # doesnt seem to work
+	print("Generated " + str(available_monster_types.size()) + " monster territories") 
 
 # Main drawing function - ALL drawing must happen here
 func _draw():
@@ -234,6 +239,30 @@ func _draw():
 				
 				if camera.zoom.x <= zoom_threshold * 1.5:
 					draw_string(custom_font, density_pos, density_str, HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size, density_color)
+			# In your existing _draw() function, after or near density display
+			
+			if show_territory_frequency:
+						# Position this slightly above density values for clarity
+						# Calculate monster frequency for this tile (if not already stored)
+						var territory_freq = 0.0
+						if tile.territory_owner != "":
+							# If you have the actual frequency stored in monsters_database
+							if territory_database and tile.territory_owner in territory_database.territory_definitions:
+								territory_freq = territory_database.get_territory_frequency(tile.territory_owner)
+						
+						var freq_str = "%.2f" % territory_freq
+						
+						# Position the frequency in the lower-right corner above the density value
+						var freq_pos = Vector2(
+							(x + 1) * cell_size.x - 2 - custom_font.get_string_size(freq_str, HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size).x,
+							(y + 1) * cell_size.y - 12  # Position above density value
+						)
+						
+						# Use a distinct color for monster frequency
+						var freq_color = Color.ORANGE
+						
+						if camera.zoom.x <= zoom_threshold * 1.5:
+							draw_string(custom_font, freq_pos, freq_str, HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size, freq_color)
 			
 			# Terrain/subterrain type display
 			if show_terrain_letters:
@@ -263,3 +292,4 @@ func _draw():
 				
 				if camera.zoom.x <= zoom_threshold * 1.5:
 					draw_string(custom_font, label_pos, type_label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, label_color)
+				

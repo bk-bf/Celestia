@@ -9,8 +9,11 @@ func _init(seed: int = 12345, detail_seed: int = 67890):
 	# First-tier noise for terrain clusters
 	terrain_noise = FastNoiseLite.new()
 	terrain_noise.seed = seed
-	terrain_noise.noise_type = FastNoiseLite.TYPE_PERLIN
-	terrain_noise.frequency = 0.01 # Lower frequency for larger features
+	terrain_noise.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	terrain_noise.frequency = 0.005
+	terrain_noise.fractal_octaves = 5  # More detail layers 
+	terrain_noise.fractal_lacunarity = 2.0
+	terrain_noise.fractal_gain = 0.6  # Stronger features
 	
 	# Second-tier noise for terrain subtypes within terrain
 	detail_noise = FastNoiseLite.new()

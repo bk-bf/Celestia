@@ -116,3 +116,49 @@ MONSTER TERRITORIES:
 - Total claimed territory: 0.6% of map
 ===============================
 map saved with result: 0
+
+Godot Engine v4.4.1.stable.official.49a5bc7b6 - https://godotengine.org
+Metal 3.2 - Forward+ - Using Device #0: Apple - Apple M1 (Apple7)
+
+
+=== CELESTIA MAP STATISTICS ===
+Map dimensions: 200x200 tiles
+Seed: 1000806953 # very good seed
+Detail Seed: 6976625269363
+Territory Seed: 7925390260807
+------------------------------
+TERRAIN DISTRIBUTION:
+- Forest: 26.8%
+- Swamp: 2.6%
+- Plains: 33.7%
+- Mountain: 19.3%
+- River: 17.6%
+------------------------------
+SUBTERRAIN DISTRIBUTION:
+- Tree: 10.9%
+- Bush: 19.8%
+- Deep grass: 21.2%
+- Grass: 8.1%
+- Dirt: 0.6%
+- Shallow water: 0.1%
+- Water: 13.8%
+- Mud: 0.7%
+- Bog: 1.2%
+- Clay: 0.7%
+- Moss: 0.0%
+- Peak: 15.3%
+- Rocky: 4.0%
+------------------------------
+TERRAIN PROPERTIES:
+- Average density: 0.50
+- Walkable tiles: 60.0%
+------------------------------
+RESOURCES:
+- Wood-rich tiles: 10736 (26.8%)
+------------------------------
+MONSTER TERRITORIES:
+- Monster territories: 0
+- Total claimed territory: 0.0% of map
+===============================
+map saved with result: 0
+--- Debugging process stopped ---

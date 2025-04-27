@@ -5,21 +5,21 @@ extends Resource
 var terrain_definitions = {
 	"forest": {
 		"base_color": Color.DARK_GREEN,
-		"density_range": [0.2, 0.6],
+		"density_range": [0.5, 0.6],
 		"walkable": true,
 		"subterrain": ["dirt", "grass", "bush", "deep_grass", "tree"],
 		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6]  # Thresholds that determine subterrain
 	},
 	"swamp": {
 		"base_color": Color.DARK_OLIVE_GREEN,
-		"density_range": [-0.2, 0.2],
+		"density_range": [0.2, 0.3],
 		"walkable": true,
 		"subterrain": ["shallow_water", "mud", "bog", "clay", "moss"],
 		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6]
 	},
 	"plains": {
 		"base_color": Color.FOREST_GREEN,
-		"density_range": [-0.2, 0.2],
+		"density_range": [0.3, 0.45],
 		"walkable": true,
 		"subterrain": ["grass", "bush", "deep_grass", "tree"],
 		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6]
@@ -33,7 +33,7 @@ var terrain_definitions = {
 	},
 	"river": {
 		"base_color": Color.DODGER_BLUE,
-		"density_range": [-0.2, -1.0],
+		"density_range": [0.0, 0.5],
 		"walkable": true,
 		"is_water": true,
 		"subterrain": ["shallow water", "water"],
@@ -47,7 +47,8 @@ var subterrain_definitions = {
 		"color_modifier": "darkened",
 		"color_amount": 0.2,
 		"walkable": false,
-		"resource": "wood"
+		"resource": "wood",
+		"resource_factor": 0.5
 	},
 	"bush": {
 		"color_modifier": "darkened",

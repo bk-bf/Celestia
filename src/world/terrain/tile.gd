@@ -8,6 +8,7 @@ extends Resource
 @export var moisture: float = 0.5
 @export var temperature: float = 0.5
 @export var movement_speed: float = 1.0 # Default normal movement speed
+var _is_water: bool = false
 
 # Resource properties
 @export var resources: Dictionary = {}
@@ -34,6 +35,10 @@ func get_coordinates() -> Vector2i:
 
 func is_water() -> bool:
 	return density < 0.3 or terrain_type == "ocean" or terrain_type == "lake" or terrain_type == "river"
+
+func set_water(is_water_tile: bool) -> void:
+	# Store the water state in a private variable
+	_is_water = is_water_tile
 
 func get_resource_value(resource_name: String) -> float:
 	if resource_name in resources:
