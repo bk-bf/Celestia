@@ -4,12 +4,12 @@
 ### Phase 1: Complete Foundation \& Basic Visualization (1-2 weeks)
 
 - **Finish Core Structure** 
-	- [x] WorldData, Tile, and Grid classes 
+	- [x] MapData, Tile, and Grid classes 
 	- [x] Complete coordinate system setup
 	- [ ] Implement basic FastNoiseLite integration with your existing classes
 - **Simple Visualization Layer**
-	- [ ] Create a basic converter from your WorldData to TileMapLayers
-	- [ ] Implement 5 basic terrain types as in the RimWorld approach
+	- [ ] Create a basic converter from your MapData to TileMapLayers
+	- [ ] Implement 5 basic terrain types
 
 
 ### Phase 2: Essential Generation Systems (2 weeks)
@@ -35,7 +35,7 @@
 **Phase 1: Foundation Setup (2-3 weeks)**
 
 1. **Create Core Data Structures**
-	* [x] Create `WorldData` class to store all terrain information
+	* [x] Create `MapData` class to store all terrain information
 	* [x] Define `Tile` class with properties (density, biome, resources)
 	* [x] Implement a `Grid` class to manage tile collections
 	* [x] Set up coordinate system and grid dimensions
@@ -94,7 +94,7 @@
 	* [ ] Implement custom data attributes for interactive tiles
 11. **User Interface and Controls**
 	* [ ] Create generator parameter controls
-	* [ ] Implement seed management for reproducible worlds
+	* [ ] Implement seed management for reproducible maps
 	* [ ] Add preview generation options
 	* [ ] Create save/load system for generator configurations
 12. **Optimization**
