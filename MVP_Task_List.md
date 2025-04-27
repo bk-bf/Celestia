@@ -38,7 +38,7 @@
 	* [x] Create `WorldData` class to store all terrain information
 	* [x] Define `Tile` class with properties (density, biome, resources)
 	* [x] Implement a `Grid` class to manage tile collections
-	* [ ] Set up coordinate system and grid dimensions
+	* [x] Set up coordinate system and grid dimensions
 2. **Design Generator Framework**
 	* [ ] Create a `StepGenerator` base class/interface
 	* [ ] Implement `ChainMapGenerator` to run generators sequentially
