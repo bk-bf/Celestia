@@ -5,14 +5,14 @@
 
 [sub_resource type="Resource" id="Resource_cnwnv"]
 script = ExtResource("2_t58h8")
-width = 50
-height = 50
+width = 200
+height = 200
 cell_size = Vector2(16, 16)
 chunk_size = 16
 
 [resource]
 script = ExtResource("1_ioop6")
 terrain_grid = SubResource("Resource_cnwnv")
-map_seed = 4217139558
+map_seed = 396853501
 map_name = "Celestia Map"
-map_size = Vector2i(50, 50)
+map_size = Vector2i(200, 200)

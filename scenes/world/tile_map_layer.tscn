@@ -1,10 +1,12 @@
 [gd_scene load_steps=3 format=3 uid="uid://gwfgmxjdlnks"]
 
-[ext_resource type="Script" uid="uid://dwxcropshgdry" path="res://src/world/map_gen_test.gd" id="1_r2gvn"]
+[ext_resource type="Script" uid="uid://dwxcropshgdry" path="res://src/world/map_gen.gd" id="1_r2gvn"]
 [ext_resource type="Script" uid="uid://b12ae3y4x0xik" path="res://scenes/world/camera_2d.gd" id="2_r2gvn"]
 
 [node name="TestMap" type="Node2D"]
 script = ExtResource("1_r2gvn")
+show_grid_lines = false
+show_coordinate_numbers = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("2_r2gvn")
