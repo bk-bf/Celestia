@@ -1,5 +1,5 @@
 
-## MVP Task List
+# MVP Task List
 
 ### Phase 1: Complete Foundation \& Basic Visualization (1-2 weeks)
 
