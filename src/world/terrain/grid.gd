@@ -21,13 +21,13 @@ func _init(w: int = 100, h: int = 100, cell_sz: Vector2 = Vector2(16, 16)):
 	_half_cell_size = cell_size / 2
 	_initialize_grid()
 
-# Convert grid coordinates to world position (center of tile)
-func grid_to_world(grid_coords: Vector2i) -> Vector2:
+# Convert grid coordinates to map position (center of tile)
+func grid_to_map(grid_coords: Vector2i) -> Vector2:
 	return Vector2(grid_coords) * cell_size + _half_cell_size
 
-# Convert world position to grid coordinates
-func world_to_grid(world_pos: Vector2) -> Vector2i:
-	return Vector2i((world_pos / cell_size).floor())
+# Convert map position to grid coordinates
+func map_to_grid(map_pos: Vector2) -> Vector2i:
+	return Vector2i((map_pos / cell_size).floor())
 	
 # Create empty tiles for the entire grid
 func _initialize_grid() -> void:
@@ -85,7 +85,7 @@ func get_neighbors(coords: Vector2i) -> Array:
 	return neighbors
 
 # Get all 8 surrounding tiles
-func get_neighbors_8(coords: Vector2i) -> Array:
+func get_neighbors_surrounding(coords: Vector2i) -> Array:
 	var neighbors = []
 	for y in range(-1, 2):
 		for x in range(-1, 2):

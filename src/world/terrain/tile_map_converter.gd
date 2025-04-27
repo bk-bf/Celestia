@@ -35,7 +35,7 @@ func update_tilemap_from_world_data():
 			ground_layer.set_cell(0, Vector2i(x, y), 0, atlas_coords)
 			
 			# Place objects if needed
-			if tile.biome_type == "forest" and tile.density > 0.7:
+			if tile.terrain_type == "forest" and tile.density > 0.7:
 				var tree_coords = Vector2i(0, 0)  # Your tree tile coordinates
 				object_layer.set_cell(0, Vector2i(x, y), 1, tree_coords)
 

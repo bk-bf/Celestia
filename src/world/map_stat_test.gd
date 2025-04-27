@@ -17,7 +17,7 @@ func _ready():
 	for y in range(10, 20):
 		for x in range(15, 25):
 			var tile = map_data.get_tile(Vector2i(x, y))
-			tile.biome_type = "forest"
+			tile.terrain_type = "forest"
 			tile.density = 0.5
 			tile.resources["wood"] = 0.8
 	
@@ -25,7 +25,7 @@ func _ready():
 	for y in range(30, 40):
 		for x in range(5, 45):
 			var tile = map_data.get_tile(Vector2i(x, y))
-			tile.biome_type = "river"
+			tile.terrain_type = "river"
 			tile.density = -0.2
 	
 	# Register a monster territory
@@ -34,8 +34,8 @@ func _ready():
 	# Print some statistics
 	print("World created with size: ", map_data.get_width(), "x", map_data.get_height())
 	print("Average density: ", "%.2f" % map_data.get_average_density())
-	print("Forest percentage: ", map_data.get_biome_percentage("forest") * 100, "%")
-	print("Water percentage: ", map_data.get_biome_percentage("river") * 100, "%")
+	print("Forest percentage: ", map_data.get_terrain_percentage("forest") * 100, "%")
+	print("Water percentage: ", map_data.get_terrain_percentage("river") * 100, "%")
 	
 	var wood_tiles = map_data.find_tiles_with_resource("wood", 0.5)
 	print("Found ", wood_tiles.size(), " tiles with significant wood resources")
@@ -45,12 +45,12 @@ func _ready():
 	var err = map_data.save_to_file(save_path)
 	print("World saved with result: ", err)
 
-# Add this visualization function
+# visualisation function
 func _draw():
 	if !map_data:
 		return
 		
-	# 1. FIRST draw tile colors (background layer)
+	# 1. draw tile colors (background layer)
 	for y in range(map_data.get_height()):
 		for x in range(map_data.get_width()):
 			var grid_coords = Vector2i(x, y)
@@ -62,19 +62,32 @@ func _draw():
 				cell_size.y
 			)
 			
-			# Choose color based on tile properties
-			var color = Color.GREEN
+			# Base color from terrain type
+			var color = Color.GRAY
 			if tile.is_water():
 				color = Color(0.3, 0.5, 0.9, 0.6)  # Blue for water
-			elif tile.density > 0.8:
-				color = Color(0.6, 0.6, 0.6, 0.6)  # Gray for mountains/rocks
-			elif tile.biome_type == "forest":
-				color = Color.DARK_GREEN  # Green for forest
-			
-			# Fill tile with color
+			elif tile.terrain_type == "mountain":
+				var mountain_color = Color(0.6, 0.6, 0.6, 0.6)
+				# Darker for higher density
+				mountain_color = mountain_color.darkened(tile.density * 0.5)
+				color = mountain_color
+			elif tile.terrain_type == "forest":
+				color = Color.DARK_GREEN
+			elif tile.terrain_type == "swamp":
+				color = Color(0.4, 0.5, 0.3, 0.8)  # Murky green
+				
+			# Modify color based on tile variation
+			match tile.variation:
+				"tree":
+					color = color.darkened(0.2)
+				"deep_grass":
+					color = color.lightened(0.1)
+				"moss":
+					color = Color(0.3, 0.6, 0.3, 0.7)
+					
 			draw_rect(rect, color)
-	
-	# 2. SECOND draw grid lines
+
+	# 2. draw grid lines
 	if show_grid_lines:
 		var width = map_data.get_width() * cell_size.x
 		var height = map_data.get_height() * cell_size.y
@@ -91,7 +104,7 @@ func _draw():
 			var end = Vector2(width, y * cell_size.y)
 			draw_line(start, end, Color.DARK_GRAY, 1.0)
 	
-	# 3. THIRD draw text and territory markers
+	# 3. draw text and territory markers
 	for y in range(map_data.get_height()):
 		for x in range(map_data.get_width()):
 			var grid_coords = Vector2i(x, y)
@@ -101,10 +114,10 @@ func _draw():
 			# Territory indicator
 			if tile.territory_owner != "":
 				var center = Vector2(
-					x * cell_size.x + cell_size.x/2, 
-					y * cell_size.y + cell_size.y/2
+					x * cell_size.x + cell_size.x / 2,
+					y * cell_size.y + cell_size.y / 2
 				)
-				draw_circle(center, cell_size.x/6, Color(0.9, 0.2, 0.2, 0.7))
+				draw_circle(center, cell_size.x / 6, Color(0.9, 0.2, 0.2, 0.7))
 			
 			# Coordinate numbers
 			if show_coordinate_numbers:
