@@ -10,7 +10,7 @@ Celestia is a hobby project designed to create a personal gaming experience. It 
 
 ### 1. Detailed Crafting Chains
 - Crafting involves multiple intermediate steps, reflecting technological progression
-- Example: Walls progress from mud → clay → wood → stone → brick → magical stone
+- Example: Walls progress from mud → wood → clay → wood → stone → brick → magical stone
 - Leather production includes hunting animals, tanning hides, drying leather, and archiving fur
 - Magical materials can be crafted by processing resources obtained from dangerous magical creatures
 
