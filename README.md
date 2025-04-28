@@ -20,7 +20,7 @@ Celestia is a hobby project designed to create a personal gaming experience. It 
 - Scout Specialization: Pawns with favorable traits can be trained as scouts to explore the map effectively
 
 ### 3. Monster Territory System
-- Monsters control specific areas of the map in a circular territory structure
+- Monsters control specific areas of the map in a procedurally generated and terrain-dependend territory structure
 - Visual cues (like claw marks on trees) indicate territory boundaries
 - Difficulty increases from periphery to center, with weaker monsters on the outside and stronger ones near the core
 - Boss monsters reside at the territory center, guarding valuable resources
