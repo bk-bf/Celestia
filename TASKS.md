@@ -1,6 +1,5 @@
-<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
 
-# Updated TASKS.md
+# TASKS.md
 
 ### Phase 1: Complete Foundation \& Basic Visualization (1-2 weeks)
 
