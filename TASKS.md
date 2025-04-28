@@ -72,82 +72,82 @@
 
 # Post-MVP Task List
 
-## Phase 1: Advanced World Generation (3-4 weeks)
+## Phase 1: Magic & Combat Systems (3-4 weeks)
 
-1. **Enhanced Terrain System**
-   * [ ] Create Diamond-Square generator for terrain features
-   * [ ] Add PDS (Perlin + Diamond-Square) hybrid generator
-   * [ ] Implement erosion simulation for river paths
-   * [ ] Create ocean and lake definition system
+1. **Elemental Magic System**
+   * [ ] Implement environmental affinity mechanics for different magic types
+   * [ ] Create magic skill progression and spell learning
+   * [ ] Add elemental interactions (water + fire = steam)
+   * [ ] Implement visual effects for spells and environmental interactions
 
-2. **Environmental Systems**
-   * [ ] Implement temperature generation based on density and position
-   * [ ] Create humidity system spreading from water sources
-   * [ ] Add wind generation affecting temperature and humidity
-   * [ ] Implement seasonal variation system
+2. **Combat Skills Framework**
+   * [ ] Design skill trees for different weapon specializations
+   * [ ] Implement combat skill progression through practical use
+   * [ ] Add critical strikes and special attacks based on skill level
+   * [ ] Create tactical positioning advantages system
 
-3. **Territory and Exploration**
+3. **Monster Territory Expansion**
    * [ ] Enhance monster territory system with difficulty gradients
-   * [ ] Add visual territory boundary indicators (claw marks, etc.)
-   * [ ] Implement fog of war with pawn vision radius
-   * [ ] Create scouting mechanics for map exploration
+   * [ ] Add visual boundary indicators (claw marks, etc.)
+   * [ ] Implement boss monsters at territory centers
+   * [ ] Create special resource drops from different monster types
 
-## Phase 2: Pawn and Colony Systems (3-4 weeks)
+## Phase 2: Advanced Pawn & Colony Systems (3-4 weeks)
 
-4. **Advanced Pawn Mechanics**
-   * [ ] Implement combat skills system with progression
-   * [ ] Create elemental magic system with environmental affinities
-   * [ ] Add rideable animals with unique stats
-   * [ ] Develop complex social dynamics between pawns
+4. **Rideable Animals**
+   * [ ] Implement mount mechanics for faster movement
+   * [ ] Add unique stats and abilities for different mount types
+   * [ ] Create training system for animal companions
+   * [ ] Design mounted combat advantages
 
-5. **Colony Management**
-   * [ ] Create detailed crafting chains with intermediate steps
-   * [ ] Implement organic research system tied to pawn skills
-   * [ ] Add contextual disease system based on environment
-   * [ ] Develop master-apprentice teaching mechanics
+5. **Detailed Crafting Chains**
+   * [ ] Implement multi-step crafting processes with intermediate products
+   * [ ] Create magical material crafting from monster resources
+   * [ ] Add quality variation in crafted items
+   * [ ] Design specialized workstations for different crafting types
 
-6. **Resource and Item Systems**
-   * [ ] Create resource distribution system based on biomes
-   * [ ] Implement special resource generation in monster territories
-   * [ ] Add procedural artifact and legendary item generation
-   * [ ] Develop inventory management system
+6. **Complex Social Dynamics**
+   * [ ] Implement relationship system between pawns
+   * [ ] Create social interactions and events triggered by relationships
+   * [ ] Add mood effects from relationship statuses
+   * [ ] Design gift-giving mechanics based on preferences
 
-## Phase 3: World Interaction and Events (2-3 weeks)
+## Phase 3: World Exploration & Overmap (2-3 weeks)
 
-7. **Environmental Interaction**
-   * [ ] Create elemental interaction systems (water + fire = steam)
-   * [ ] Implement biome-specific events and hazards
-   * [ ] Add magical material crafting from monster resources
-   * [ ] Create weather effects with gameplay impact
+7. **Overworld Map System**
+   * [ ] Implement procedural world generation (inspired by Dwarf Fortress)
+   * [ ] Create different biome regions with unique characteristics
+   * [ ] Add settlements, ruins, and dungeons to explore
+   * [ ] Design travel mechanics between locations
 
-8. **Event System**
-   * [ ] Implement customizable event probabilities
-   * [ ] Create interconnected events (heat waves → droughts)
-   * [ ] Add relationship crises triggering unique events
-   * [ ] Develop faction-based event chains
+8. **Dungeon Generation System**
+   * [ ] Create procedural dungeon layouts with varying difficulty
+   * [ ] Implement specialized loot for different dungeon types
+   * [ ] Add unique bosses for major dungeons
+   * [ ] Design puzzle elements and traps
 
-9. **World Map and Locations**
-   * [ ] Create overworld map system for exploration
-   * [ ] Implement procedural dungeon generation
-   * [ ] Add NPC faction settlements and diplomacy
-   * [ ] Develop quest system with rewards
+9. **Faction & Quest System**
+   * [ ] Implement NPC factions with relationship values
+   * [ ] Create diplomacy and trade mechanics
+   * [ ] Design procedural quest generation
+   * [ ] Add reputation effects on gameplay
 
 ## Phase 4: Technical Improvements (2-3 weeks)
 
-10. **Performance Optimization**
+10. **Pathfinding Enhancements**
+    * [ ] Implement hierarchical pathfinding for large maps
+    * [ ] Add path caching for frequently traveled routes
+    * [ ] Create advanced terrain cost calculations
+    * [ ] Optimize group movement patterns
+
+11. **Performance Optimization**
     * [ ] Implement spatial partitioning for large maps
     * [ ] Add multithreading for generation steps
-    * [ ] Create chunk-based processing for memory efficiency
-    * [ ] Implement path caching for frequently traveled routes
+    * [ ] Create dynamic level-of-detail systems for distant areas
+    * [ ] Optimize entity update scheduling
 
-11. **User Interface**
-    * [ ] Create save/load system for games
-    * [ ] Implement advanced control schemes
-    * [ ] Add preview generation options
-    * [ ] Create comprehensive tutorial system
-
-12. **Enhanced Visuals**
-    * [ ] Implement animated terrain elements
-    * [ ] Add visual effects for magic and combat
-    * [ ] Create day/night lighting system
-    * [ ] Develop atmospheric weather visualization
+12. **Enhanced User Experience**
+    * [ ] Create comprehensive save/load system
+    * [ ] Implement tutorial elements
+    * [ ] Add atmospheric effects (day/night, weather)
+    * [ ] Design customizable UI elements
