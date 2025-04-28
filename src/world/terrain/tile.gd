@@ -44,3 +44,9 @@ func get_resource_value(resource_name: String) -> float:
 	if resource_name in resources:
 		return resources[resource_name]
 	return 0.0
+	
+# Add any tile-specific calculation methods
+func is_resource_rich(resource_type: String, threshold: float) -> bool:
+	if resource_type in resources:
+		return resources[resource_type] >= threshold
+	return false

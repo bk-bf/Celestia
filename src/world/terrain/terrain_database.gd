@@ -1,4 +1,3 @@
-# tile_data.gd
 class_name TerrainDatabase
 extends Resource
 
@@ -7,7 +6,7 @@ var terrain_definitions = {
 		"base_color": Color.DARK_GREEN,
 		"density_range": [0.5, 0.6],
 		"walkable": true,
-		"subterrain": ["dirt", "grass", "bush", "deep_grass", "tree"],
+		"subterrain": ["dirt", "grass", "deep_grass", "tree"],
 		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6]  # Thresholds that determine subterrain
 	},
 	"swamp": {
@@ -21,7 +20,7 @@ var terrain_definitions = {
 		"base_color": Color.FOREST_GREEN,
 		"density_range": [0.3, 0.45],
 		"walkable": true,
-		"subterrain": ["grass", "bush", "deep_grass", "tree"],
+		"subterrain": ["dirt","grass", "bush", "deep_grass", "tree"],
 		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6]
 	},
 	"mountain": {
@@ -46,7 +45,7 @@ var subterrain_definitions = {
 	"tree": {
 		"color_modifier": "darkened",
 		"color_amount": 0.2,
-		"walkable": false,
+		"walkable": true,
 		"resource": "wood",
 		"resource_factor": 0.5
 	},

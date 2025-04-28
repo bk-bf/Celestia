@@ -1,6 +1,9 @@
 class_name MapData
 extends Resource
 
+var territory_database = TerritoryDatabase.new() # Add monsters database
+var noise_generator = NoiseGenerator.new()
+var terrain_database = TerrainDatabase.new()
 # Core terrain grid
 @export var terrain_grid: Grid
 
@@ -126,31 +129,55 @@ func find_tiles_with_resource(resource_name: String, min_value: float = 0.0) -> 
 	return matching_tiles
 
 # For monster territory system
-func register_monster_territory(seed_value: int, territory_type: String, frequency: float = 0.1, threshold: float = 0.6) -> void:
-	# Create noise generator seeded with territory_seed
-	var noise = FastNoiseLite.new()
-	noise.seed = seed_value
-	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
-	noise.frequency = frequency  # Controls how spread out territories are
+func register_monster_territory(seed_value: int, territory_type: String, territory_thresholds: Array = [0.4, 0.6]) -> void:
 	
-	# Record territory in list (without center/radius now)
+	# Record territory in list with thresholds
 	monster_territories.append({
 		"seed": seed_value,
 		"monster_type": territory_type,
-		"frequency": frequency,
-		"threshold": threshold
+		"thresholds": territory_thresholds
 	})
 	
-	# Assign territory based on noise value
+	# Get preferred terrain for this monster type
+	#var preferred_terrain = territory_database.get_monster_data(territory_type).preferred_terrain
+	
+	 # Get preferred terrain for this monster type
+	var preferred_terrain = territory_database.get_monster_data(territory_type).preferred_terrain
+	
+	# Assign territory based on terrain noise
 	for y in range(get_height()):
 		for x in range(get_width()):
-			var noise_val = noise.get_noise_2d(x, y)
+			# Use existing terrain noise but normalize it
+			var raw_noise_val = noise_generator.get_terrain_noise(x, y)
+			var territory_density = (raw_noise_val + 1.0) 
+			#print(territory_density)
 			
-			# Territory is where noise exceeds threshold
-			if noise_val > threshold:
+			# Territory is where density is within thresholds
+			if territory_density >= territory_thresholds[0] and territory_density < territory_thresholds[1]:
 				var tile = get_tile(Vector2i(x, y))
-				if tile and tile.terrain_type == "forest":  # Optional terrain check
+				
+				# Simple territory assignment with more lenient conditions
+				# Only avoid water/river
+				if tile.terrain_type != "river" and tile.terrain_type != "water":
+					#print("Tile object ID: " + str(tile.get_instance_id()) + " Tile terrain: '" + tile.terrain_type + ", Grid Coords: (" + str(x) + ", " + str(y) + ")")
 					tile.territory_owner = territory_type
+
+func post_process_territories():
+	var cleanup_count = 0
+	# Clean up each territory type
+	for territory_type in territory_database.get_monster_types():
+		var preferred_terrains = territory_database.get_monster_data(territory_type).preferred_terrain
+		
+		# Check all tiles
+		for y in range(get_height()):
+			for x in range(get_width()):
+				var tile = get_tile(Vector2i(x, y))
+				
+				# If this tile has this territory but wrong terrain, remove it
+				if tile.territory_owner == territory_type and not (tile.terrain_type in preferred_terrains):
+					#print("Tile terrain: '" + tile.terrain_type + "', Preferred: " + str(preferred_terrains) + ", Grid Coords: (" + str(x) + ", " + str(y) + ")")
+					tile.territory_owner = ""
+					cleanup_count += 1
 
 func count_territories_by_type(monster_type: String) -> int:
 	var count = 0

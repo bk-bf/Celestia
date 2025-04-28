@@ -162,3 +162,7 @@ MONSTER TERRITORIES:
 ===============================
 map saved with result: 0
 --- Debugging process stopped ---
+
+
+Tile object ID: -9223372004256643718 Tile terrain: 'plains, Grid Coords: (0, 0)
+Tile object ID: -9223372004256643718 Tile terrain: 'forest', Grid Coords: (0, 0)

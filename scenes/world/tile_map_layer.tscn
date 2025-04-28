@@ -5,8 +5,11 @@
 
 [node name="TestMap" type="Node2D"]
 script = ExtResource("1_r2gvn")
+map_lengh = 200
+map_height = 200
 show_grid_lines = false
 show_coordinate_numbers = false
+seed = 1828403536
 
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("2_r2gvn")

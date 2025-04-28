@@ -4,12 +4,12 @@ var map_data: MapData
 var terrain_database: TerrainDatabase
 var territory_database = TerritoryDatabase.new() # Add monsters database
 
+@export var map_lengh: int = 0
+@export var map_height: int = 0
 @export var show_grid_lines: bool = true
 @export var show_coordinate_numbers: bool = true
 @export var show_terrain_letters: bool = true
 @export var show_density_values: bool = true
-@export var show_territory_frequency: bool = true
-#@export var show_territory_noise: bool = true
 
 @export var cell_size: Vector2 = Vector2(16, 16)
 @export var seed: int = 0 # If left as 0, a random seed will be used
@@ -32,12 +32,11 @@ func _ready():
 	detail_seed = seed * 6971 # multiplied with prime
 	territory_seed = seed * 7919 # Using different prime multiplier
  	# Create a map with the same dimensions but procedurally generated
-	map_data = MapData.new(Vector2i(200, 200), randi())
+	map_data = MapData.new(Vector2i(map_lengh, map_height), randi())
 
 	# Generate terrain with stored seeds
 	generate_terrain(seed, detail_seed)
-	queue_redraw()
-	
+
 	MapStatistics.print_map_statistics(map_data, terrain_database, seed, detail_seed, territory_seed)
 	
 	# Save the map data
@@ -61,7 +60,7 @@ func generate_terrain(seed = null, detail_seed = null):
 	detail_seed = detail_seed if detail_seed != null else randi()
 
 	var noise_gen = NoiseGenerator.new(seed, detail_seed)
-	
+
 	# First pass: Generate basic terrain types and terrain_subtypes
 	for y in range(map_data.get_height()):
 		for x in range(map_data.get_width()):
@@ -89,7 +88,7 @@ func generate_terrain(seed = null, detail_seed = null):
 				# Check if terrain has resource property or use our knowledge about forest->wood
 				if "resource" in terrain_def:
 					tile.resources[terrain_def.resource] = 0.5 + (detail_val + 1.0) / 4.0
-				elif tile.terrain_type == "forest":  # Fallback for backward compatibility
+				elif tile.terrain_type == "forest": # Fallback for backward compatibility
 					tile.resources["wood"] = 0.5 + (detail_val + 1.0) / 4.0
 			
 			# Set terrain_subtype based on detail noise using TerrainDatabase
@@ -97,8 +96,13 @@ func generate_terrain(seed = null, detail_seed = null):
 			
 			# Set walkable property based on terrain and subterrain
 			tile.walkable = terrain_database.is_walkable(tile.terrain_type, tile.terrain_subtype)
+	
+	add_monster_territories(territory_seed)
+	map_data.post_process_territories()
+	# queues the draw() question is if this is the best placement for performance?		
+	queue_redraw()
 
-# Updated monster territories function using TerritoryDatabase
+# Updated monster territories function using Territory Database
 func add_monster_territories(territory_seed = null):
 	# Set the seed for reproducible results
 	if territory_seed != null:
@@ -116,15 +120,13 @@ func add_monster_territories(territory_seed = null):
 		var monster_seed = territory_seed + (i * 1000)
 		
 		# Register the territory with values from database
-		map_data.register_monster_territory(
-			monster_seed,
-			monster_type,
-			monster_data.territory_frequency,
-			monster_data.territory_threshold
-		)
-	
-	print("Generated " + str(available_monster_types.size()) + " monster territories") 
+		map_data.register_monster_territory(monster_seed,monster_type,territory_database.get_territory_thresholds(monster_type))
 
+	
+func is_in_territory(noise_value, territory_type):
+	var thresholds = territory_database.get_territory_thresholds(territory_type)
+	return noise_value >= thresholds[0] and noise_value < thresholds[1]
+	
 # Main drawing function - ALL drawing must happen here
 func _draw():
 	if !map_data:
@@ -145,6 +147,7 @@ func _draw():
 			# Get base color from terrain database
 			var base_color = Color.WHITE # Default color if terrain type isn't found
 			if tile.terrain_type in terrain_database.terrain_definitions:
+				#print("Tile object ID: " + str(tile.get_instance_id()) + " Tile terrain: '" + tile.terrain_type + "', Grid Coords: (" + str(x) + ", " + str(y) + ")")
 				base_color = terrain_database.terrain_definitions[tile.terrain_type].base_color
 			
 			# Apply subterrain modification if applicable
@@ -172,17 +175,15 @@ func _draw():
 			draw_line(start, end, Color.DARK_GRAY, 1.0)
 	
 	# Get the first letter of the territory name, uppercase
-	
 	# 3. Draw text and territory markers
 	for y in range(map_data.get_height()):
 		for x in range(map_data.get_width()):
-			
 			var grid_coords = Vector2i(x, y)
 			var tile = map_data.get_tile(grid_coords)
 			var territory_letter = tile.territory_owner.substr(0, 1).to_upper()
 			var custom_font = preload("res://assets/fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf")
-			var font_size = 4
-			var text_size = custom_font.get_string_size(territory_letter, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+			var font_size_territory = 10
+			var text_size = custom_font.get_string_size(territory_letter, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size_territory)
 			var map_pos = map_data.grid_to_map(grid_coords)
 			
 			# Territory indicator
@@ -199,7 +200,7 @@ func _draw():
 				)
 				
 				# Get color from territory_database on territory_owner
-				var letter_color = Color(0.9, 0.2, 0.2, 0.9)  # Default red fallback
+				var letter_color = Color(0.9, 0.2, 0.2, 0.9) # Default red fallback
 				if territory_database and tile.territory_owner in territory_database.territory_definitions:
 					var monster_data = territory_database.territory_definitions[tile.territory_owner]
 					if "color" in monster_data:
@@ -207,26 +208,26 @@ func _draw():
 
 				
 				# Draw the letter
-				draw_string(custom_font, text_pos, territory_letter, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, letter_color)
+				draw_string(custom_font, text_pos, territory_letter, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size_territory, letter_color)
 			
 			# Coordinate numbers
 			if show_coordinate_numbers:
 				var label = "(%d,%d)" % [x, y]
-				
+				var font_size_coordinates = 4
 				var text_pos = Vector2(
 					x * cell_size.x + (cell_size.x - text_size.x) / 2,
 					y * cell_size.y + (cell_size.y + text_size.y) / 2
 				)
 				if camera.zoom.x <= zoom_threshold:
-					draw_string(custom_font, text_pos, label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+					draw_string(custom_font, text_pos, label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size_coordinates)
 			
 			# Density value display
 			if show_density_values:
 				var density_str = "%.1f" % tile.density # Format to 1 decimal place
-				
+				var font_size_density = 4
 				# Position the density in the lower-right corner of the tile
 				var density_pos = Vector2(
-					(x + 1) * cell_size.x - 2 - custom_font.get_string_size(density_str, HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size).x,
+					(x + 1) * cell_size.x - 2 - custom_font.get_string_size(density_str, HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size_density).x,
 					(y + 1) * cell_size.y - 2
 				)
 				
@@ -238,36 +239,13 @@ func _draw():
 					density_color = Color.BLACK
 				
 				if camera.zoom.x <= zoom_threshold * 1.5:
-					draw_string(custom_font, density_pos, density_str, HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size, density_color)
-			# In your existing _draw() function, after or near density display
-			
-			if show_territory_frequency:
-						# Position this slightly above density values for clarity
-						# Calculate monster frequency for this tile (if not already stored)
-						var territory_freq = 0.0
-						if tile.territory_owner != "":
-							# If you have the actual frequency stored in monsters_database
-							if territory_database and tile.territory_owner in territory_database.territory_definitions:
-								territory_freq = territory_database.get_territory_frequency(tile.territory_owner)
-						
-						var freq_str = "%.2f" % territory_freq
-						
-						# Position the frequency in the lower-right corner above the density value
-						var freq_pos = Vector2(
-							(x + 1) * cell_size.x - 2 - custom_font.get_string_size(freq_str, HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size).x,
-							(y + 1) * cell_size.y - 12  # Position above density value
-						)
-						
-						# Use a distinct color for monster frequency
-						var freq_color = Color.ORANGE
-						
-						if camera.zoom.x <= zoom_threshold * 1.5:
-							draw_string(custom_font, freq_pos, freq_str, HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size, freq_color)
-			
+					draw_string(custom_font, density_pos, density_str, HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size_density, density_color)
+
 			# Terrain/subterrain type display
 			if show_terrain_letters:
 				# Get first letter of terrain and subterrain
 				var terrain_letter = tile.terrain_type.substr(0, 1).to_upper()
+				var font_size_terrain = 4
 				var subterrain_letter = ""
 				if tile.terrain_subtype != "":
 					subterrain_letter = tile.terrain_subtype.substr(0, 1).to_upper()
@@ -279,8 +257,8 @@ func _draw():
 				
 				# Position in center-top of tile
 				var label_pos = Vector2(
-					x * cell_size.x + cell_size.x / 2 - custom_font.get_string_size(type_label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size).x / 2,
-					y * cell_size.y + font_size + 2
+					x * cell_size.x + cell_size.x / 2 - custom_font.get_string_size(type_label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size_terrain).x / 2,
+					y * cell_size.y + font_size_terrain + 2
 				)
 				
 				# Choose contrasting colors based on terrain type
@@ -291,5 +269,4 @@ func _draw():
 					label_color = Color.WHITE
 				
 				if camera.zoom.x <= zoom_threshold * 1.5:
-					draw_string(custom_font, label_pos, type_label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, label_color)
-				
+					draw_string(custom_font, label_pos, type_label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size_terrain, label_color)

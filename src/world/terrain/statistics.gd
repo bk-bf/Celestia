@@ -7,7 +7,10 @@ var map_data: MapData
 @export var territory_seed: int = 0
 
 # Function to print statistics about a map
+# Get monster types from database
+
 static func print_map_statistics(map_data, terrain_database, seed = null, detail_seed = null, territory_seed = null):
+	
 	print("\n=== CELESTIA MAP STATISTICS ===")
 	print("Map dimensions: ", map_data.get_width(), "x", map_data.get_height(), " tiles")
 	
@@ -60,8 +63,12 @@ static func print_map_statistics(map_data, terrain_database, seed = null, detail
 	
 	print("------------------------------")
 	print("MONSTER TERRITORIES:")
-	print("- Monster territories: ", map_data.count_territories_by_type("wolf_pack"))
+	var territory_database = TerritoryDatabase.new() # Add monsters database
+	var available_monster_types = territory_database.get_monster_types()
+	print("- Generated " + str(available_monster_types.size()) + " monster territories")
 	print("- Total claimed territory: ", "%.1f" % (map_data.get_territory_coverage() * 100), "% of map")
+	print("Post-processing territories...")
+	print("Removed " + str(map_data.cleanup_count) + " territories from non-preferred terrain")
 	print("===============================")
 
 # function to append statistics to a file with time and datestamps
@@ -106,6 +113,7 @@ Detail Seed: %d
 		map_data.find_tiles_with_resource("wood", 0.5).size() / float(map_data.get_width() * map_data.get_height()) * 100,
 		map_data.count_territories_by_type("wolf_pack"),
 		map_data.get_territory_coverage() * 100
+		
 	]
 	
 	# Open the file in append mode
@@ -130,3 +138,4 @@ Detail Seed: %d
 	file.close()
 	
 	print("Statistics saved to " + file_path)
+	
