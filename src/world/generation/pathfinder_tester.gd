@@ -5,7 +5,7 @@ var pathfinder
 var debug_path = []
 var start_point = null
 @onready var map = get_parent()  # Reference to Map node
-@onready var nav_agent = get_parent().get_node("NavigationAgent2D")
+@onready var nav_agent = get_node("/root/Game/Map/NavigationAgent2D")
 
 func _ready():
 	# Wait until map generation is complete
@@ -33,7 +33,7 @@ func _unhandled_input(event):
 			
 			# Calculate and visualize path
 			debug_path = pathfinder.find_path(start_point, end_point)
-			print("Path calculated with " + str(debug_path.size()) + " points")
+			# print("Path calculated with " + str(debug_path.size()) + " points")
 			
 			# Reset for next test
 			start_point = null

@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://gwfgmxjdlnks"]
+[gd_scene load_steps=4 format=3 uid="uid://t0hv41mhcanb"]
 
 [ext_resource type="Script" uid="uid://dwxcropshgdry" path="res://src/world/map_gen.gd" id="1_r2gvn"]
 [ext_resource type="Script" uid="uid://b12ae3y4x0xik" path="res://scenes/world/camera_2d.gd" id="2_r2gvn"]
@@ -8,14 +8,15 @@
 
 [node name="Map" type="Node2D" parent="."]
 script = ExtResource("1_r2gvn")
-map_lengh = 50
-map_height = 50
+map_lengh = 200
+map_height = 200
 show_grid_lines = false
 show_coordinate_numbers = false
+show_density_values = false
 
 [node name="Camera2D" type="Camera2D" parent="Map"]
 script = ExtResource("2_r2gvn")
-max_zoom = 8.0
+max_zoom = 15.0
 zoom_speed = 0.2
 
 [node name="Pathfinder" type="Node2D" parent="Map"]

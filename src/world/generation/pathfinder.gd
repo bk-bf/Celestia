@@ -5,8 +5,25 @@ var grid: Grid
 var open_set: Array = []
 var closed_set: Array = []
 
+var max_search_limit: int = 1000 # Default fallback value
+
 func _init(grid_reference: Grid):
 	grid = grid_reference
+	# Automatically calculate appropriate search limit based on grid size
+	max_search_limit = calculate_max_search_limit(grid.width, grid.height)
+	print("Pathfinder initialized with max search limit: " + str(max_search_limit))
+
+func calculate_max_search_limit(width: int, height: int) -> int:
+	# Base limit for a 100x100 map (10,000 tiles)
+	var base_limit = 1000
+	# Scale factor: number of tiles divided by 10000
+	var scale_factor = (width * height) / 10000.0
+	# Calculate limit with scaling
+	var limit = int(base_limit * scale_factor)
+	# Clamp limit between minimum and maximum values
+	limit = max(500, min(limit, 10000))
+	
+	return limit
 
 func find_path(start_pos: Vector2, end_pos: Vector2) -> Array:
 	# Reset sets
@@ -16,6 +33,11 @@ func find_path(start_pos: Vector2, end_pos: Vector2) -> Array:
 	# Get start and end tiles
 	var start_tile = grid.get_tile(start_pos)
 	var end_tile = grid.get_tile(end_pos)
+	
+	# Check if tiles exist
+	if start_tile == null or end_tile == null:
+		print("Warning: Invalid coordinates provided to pathfinder")
+		return []
 	
 	# If start or end isn't walkable, return empty path
 	if not start_tile.walkable or not end_tile.walkable:
@@ -30,7 +52,14 @@ func find_path(start_pos: Vector2, end_pos: Vector2) -> Array:
 	# Add start tile to open set
 	open_set.append(start_tile)
 	
+	var tiles_searched = 0
 	while open_set.size() > 0:
+		# Increment counter and check against limit
+		tiles_searched += 1
+		if tiles_searched > max_search_limit:
+			print("Pathfinding aborted: Max search limit reached (" + str(max_search_limit) + " tiles)")
+			return []  # Return empty path when limit is reached
+		
 		var current_tile = get_lowest_f_cost_tile()
 		
 		# If we reached the end
@@ -67,7 +96,14 @@ func find_path(start_pos: Vector2, end_pos: Vector2) -> Array:
 func calculate_distance(tile_a: Tile, tile_b: Tile) -> float:
 	var pos_a = tile_a.get_coordinates()
 	var pos_b = tile_b.get_coordinates()
-	return abs(pos_a.x - pos_b.x) + abs(pos_a.y - pos_b.y)
+	
+	# For diagonal movement, use Chebyshev or Octile distance instead of Manhattan
+	var dx = abs(pos_a.x - pos_b.x)
+	var dy = abs(pos_a.y - pos_b.y)
+	# Octile distance (recommended)
+	#return 1.0 * (dx + dy) + (1.414 - 2.0 * 1.0) * min(dx, dy)
+	# Alternative: Chebyshev distance (diagonals cost same as orthogonal)
+	return max(abs(pos_a.x - pos_b.x), abs(pos_a.y - pos_b.y))
 
 func get_lowest_f_cost_tile() -> Tile:
 	var lowest_cost_tile = open_set[0]

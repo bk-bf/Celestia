@@ -71,22 +71,41 @@ func set_tile(coords: Vector2i, tile: Tile) -> void:
 	tile.x = coords.x
 	tile.y = coords.y
 
-# Get neighboring tiles (4-way: north, east, south, west)
+# Get neighboring tiles (8-way: north, east, south, west and diagonals)
 func get_neighbors(coords: Vector2i) -> Array:
 	var neighbors = []
 	var directions = [
 		Vector2i(0, -1),  # North
 		Vector2i(1, 0),   # East
 		Vector2i(0, 1),   # South
-		Vector2i(-1, 0)   # West
+		Vector2i(-1, 0),  # West
+		Vector2i(1, -1),  # Northeast
+		Vector2i(1, 1),   # Southeast
+		Vector2i(-1, 1),  # Southwest
+		Vector2i(-1, -1)  # Northwest
 	]
 	
 	for dir in directions:
 		var neighbor_coords = coords + dir
 		if is_valid_coordinates(neighbor_coords):
-			neighbors.append(get_tile(neighbor_coords))
+			var neighbor = get_tile(neighbor_coords)
+			
+			# For diagonal movement, check if we're cutting through walls
+			if abs(dir.x) == 1 and abs(dir.y) == 1:
+				# Check the two adjacent orthogonal tiles
+				var ortho1 = get_tile(Vector2i(coords.x + dir.x, coords.y))
+				var ortho2 = get_tile(Vector2i(coords.x, coords.y + dir.y))
+				
+				# Only allow diagonal if at least one orthogonal neighbor is walkable
+				if (ortho1 != null and ortho1.walkable) or (ortho2 != null and ortho2.walkable):
+					neighbors.append(neighbor)
+			else:
+				# Orthogonal movement is always allowed
+				neighbors.append(neighbor)
 			
 	return neighbors
+
+
 
 # Get all 8 surrounding tiles
 func get_neighbors_surrounding(coords: Vector2i) -> Array:

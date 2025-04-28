@@ -10,6 +10,7 @@ var territory_database = TerritoryDatabase.new() # Add monsters database
 @export var show_coordinate_numbers: bool = true
 @export var show_terrain_letters: bool = true
 @export var show_density_values: bool = true
+@export var show_movement_costs: bool = true
 
 @export var cell_size: Vector2 = Vector2(16, 16)
 @export var seed: int = 0 # If left as 0, a random seed will be used
@@ -244,7 +245,53 @@ func _draw():
 				
 				if camera.zoom.x <= zoom_threshold * 1.5:
 					draw_string(custom_font, density_pos, density_str, HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size_density, density_color)
-
+			
+			# Movement cost display or walkability indicator
+			if show_movement_costs:
+						# Calculate tile pixel positions
+						var tile_x = x * cell_size.x
+						var tile_y = y * cell_size.y
+						
+						if tile.walkable:
+							# For walkable tiles, show movement cost
+							var movement_cost = 1.0
+							if tile.terrain_type in terrain_database.terrain_definitions:
+								movement_cost = terrain_database.terrain_definitions[tile.terrain_type].get("movement_cost", 1.0)
+							
+							# Format as percentage
+							var cost_str = str(int(movement_cost * 100)) + "%"
+							var font_size_cost = 4
+							
+							# Position in bottom-left corner with padding
+							var cost_pos = Vector2(
+								tile_x + 2,  # 2 pixels from left edge
+								tile_y + cell_size.y - 2  # 2 pixels from bottom edge
+							)
+							
+							# Use contrasting color for visibility
+							var cost_color = Color.WHITE
+							if tile.is_water():
+								cost_color = Color.WHITE
+							elif tile.terrain_type == "mountain":
+								cost_color = Color.BLACK
+							
+							if camera.zoom.x <= zoom_threshold * 1.5:
+								draw_string(custom_font, cost_pos, cost_str, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size_cost, cost_color)
+						else:
+							# For non-walkable tiles, draw a red X
+							var red_color = Color(1.0, 0.2, 0.2, 0.9)  # Bright red
+							var padding = 4  # Padding from edges
+							
+							# Draw X lines
+							var x1 = tile_x + padding
+							var y1 = tile_y + padding
+							var x2 = tile_x + cell_size.x - padding
+							var y2 = tile_y + cell_size.y - padding
+							
+							# Line 1: top-left to bottom-right
+							draw_line(Vector2(x1, y1), Vector2(x2, y2), red_color, 2.0)
+							# Line 2: bottom-left to top-right
+							draw_line(Vector2(x1, y2), Vector2(x2, y1), red_color, 2.0)
 			# Terrain/subterrain type display
 			if show_terrain_letters:
 				# Get first letter of terrain and subterrain
