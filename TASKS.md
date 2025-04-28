@@ -1,5 +1,6 @@
+<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
 
-# MVP Task List
+# Updated TASKS.md
 
 ### Phase 1: Complete Foundation \& Basic Visualization (1-2 weeks)
 
@@ -19,7 +20,7 @@
     - [x] Simple water system (lakes and rivers without complex flow simulation)
     - [x] Basic biome assignment (forest, plains, mountains, swamp)
 - **Core Gameplay Elements**
-    - [ ] Implement pathfinding using your Tile.walkable property
+    - [x] Implement pathfinding using your Tile.walkable property
     - [ ] Add resource generation focusing on 2-3 main resources
 
 
@@ -100,7 +101,14 @@
     * [ ] Create save/load system for generator configurations
 12. **Optimization**
     * [ ] Implement spatial partitioning for large maps
-    * [ ] Set up chunk-based processing for memory efficiency
+    * [x] Set up chunk-based processing for memory efficiency (added max search limits)
     * [ ] Add multithreading for generation steps
     * [ ] Implement caching for frequently accessed data
 
+<div style="text-align: center">⁂</div>
+
+[^1]: https://pplx-res.cloudinary.com/image/private/user_uploads/uOIaYrVNjJmCZpv/Selection_007.jpg
+
+[^2]: https://pplx-res.cloudinary.com/image/private/user_uploads/KrhYMGbKCevhekB/Selection_008.jpg
+
+[^3]: https://pplx-res.cloudinary.com/image/private/user_uploads/NmwTmXtTlFOgmja/Selection_009.jpg
