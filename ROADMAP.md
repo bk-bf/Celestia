@@ -71,7 +71,7 @@
     - [ ] Implement basic social interactions
     - [ ] Create foundational mood effects from relationships
 
-## Phase 5: Colony Essentials (2 weeks)
+## Phase 6: Colony Essentials (2 weeks)
 
 - **Resource Management**
     - [ ] Implement stockpile zones for storage
