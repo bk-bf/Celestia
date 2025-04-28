@@ -1,7 +1,7 @@
 
 # TASKS.md
 
-### Phase 1: Complete Foundation \& Basic Visualization (1-2 weeks)
+## Phase 1: Complete Foundation & Basic Visualization (1-2 weeks)
 
 - **Finish Core Structure**
     - [x] MapData, Tile, and Grid classes
@@ -11,8 +11,7 @@
     - [x] Create a basic converter from your MapData to TileMapLayers
     - [x] Implement 5 basic terrain types
 
-
-### Phase 2: Essential Generation Systems (2 weeks)
+## Phase 2: Essential Generation Systems (2 weeks)
 
 - **Streamlined Terrain Generation**
     - [x] Basic density generation using FastNoiseLite (simplify from 4 algorithms to 1)
@@ -22,14 +21,54 @@
     - [x] Implement pathfinding using your Tile.walkable property
     - [ ] Add resource generation focusing on 2-3 main resources
 
-
-### Phase 3: Game Mechanics Integration (2 weeks)
+## Phase 3: Game Mechanics Integration (2 weeks)
 
 - **Key Systems**
     - [x] Basic monster territory system using your existing territory_owner property
     - [ ] Simple resource harvesting mechanics
     - [ ] Implement pawn movement with terrain movement multipliers
 
+## Phase 4: Pawn Implementation (2-3 weeks)
+
+- **Pawn Creation & Attributes**
+    - [ ] Implement basic pawn class with core attributes (strength, dexterity, intelligence)
+    - [ ] Create simple trait system for pawn personality
+    - [ ] Add basic pawn appearance generation
+    - [ ] Implement pawn naming system
+
+- **Pawn Needs System**
+    - [ ] Implement hunger and rest needs
+    - [ ] Add mood/happiness tracking
+    - [ ] Create basic temperature effects (comfort zone)
+    - [ ] Implement shelter requirements
+
+- **Work & AI System**
+    - [ ] Create job assignment interface
+    - [ ] Implement work priorities system
+    - [ ] Add basic pawn AI for autonomously selecting tasks
+    - [ ] Implement idle behaviors when no work is available
+
+- **Basic Social Layer**
+    - [ ] Add simple relationship tracking between pawns
+    - [ ] Implement basic social interactions
+    - [ ] Create foundational mood effects from relationships
+
+## Phase 5: Colony Essentials (2 weeks)
+
+- **Resource Management**
+    - [ ] Implement stockpile zones for storage
+    - [ ] Create simple inventory system for pawns
+    - [ ] Add basic item categories and properties
+
+- **Basic Construction**
+    - [ ] Implement construction interface
+    - [ ] Create fundamental building types (walls, doors, beds)
+    - [ ] Add deconstruction mechanics
+
+- **Time & Environment**
+    - [ ] Implement day/night cycle
+    - [ ] Add basic weather system
+    - [ ] Create simple temperature fluctuations
 
 # Post-MVP Task List
 
