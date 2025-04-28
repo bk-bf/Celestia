@@ -72,81 +72,82 @@
 
 # Post-MVP Task List
 
-**Phase 1: Foundation Setup (2-3 weeks)**
+## Phase 1: Advanced World Generation (3-4 weeks)
 
-1. **Create Core Data Structures**
-    * [x] Create `MapData` class to store all terrain information
-    * [x] Define `Tile` class with properties (density, biome, resources)
-    * [x] Implement a `Grid` class to manage tile collections
-    * [x] Set up coordinate system and grid dimensions
-2. **Design Generator Framework**
-    * [x] Create a `StepGenerator` base class/interface
-    * [x] Implement `ChainMapGenerator` to run generators sequentially
-    * [ ] Create a system to track and validate generation dependencies
-    * [ ] Design a state tracking system (similar to `MapAspects` in the thesis)
-3. **Implement Basic Visualization**
-    * [x] Create debug visualization for terrain data
-    * [x] Set up conversion from generator data to `TileMapLayers`
-    * [x] Implement system to display generation progress
+1. **Enhanced Terrain System**
+   * [ ] Create Diamond-Square generator for terrain features
+   * [ ] Add PDS (Perlin + Diamond-Square) hybrid generator
+   * [ ] Implement erosion simulation for river paths
+   * [ ] Create ocean and lake definition system
 
-**Phase 2: Primary Generators (3-4 weeks)**
+2. **Environmental Systems**
+   * [ ] Implement temperature generation based on density and position
+   * [ ] Create humidity system spreading from water sources
+   * [ ] Add wind generation affecting temperature and humidity
+   * [ ] Implement seasonal variation system
 
-4. **Density Generation**
-    * [x] Implement Perlin noise generator for base terrain
-    * [ ] Create Diamond-Square generator for terrain features
-    * [ ] Add PDS (Perlin + Diamond-Square) hybrid generator
-    * [x] Implement density smoothing algorithms
-5. **Water System Generation**
-    * [ ] Create ocean and lake definition system
-    * [x] Implement river generation algorithm with flow paths
-    * [ ] Set up water level tracking for different water bodies
-    * [ ] Implement erosion simulation for river paths
-6. **Environment Factor Generation**
-    * [ ] Create temperature generation system based on density and position
-    * [ ] Implement humidity system spreading from water sources
-    * [ ] Add wind generation affecting temperature and humidity
-    * [ ] Create seasonal variation system (optional)
+3. **Territory and Exploration**
+   * [ ] Enhance monster territory system with difficulty gradients
+   * [ ] Add visual territory boundary indicators (claw marks, etc.)
+   * [ ] Implement fog of war with pawn vision radius
+   * [ ] Create scouting mechanics for map exploration
 
-**Phase 3: Biome and Resource System (2-3 weeks)**
+## Phase 2: Pawn and Colony Systems (3-4 weeks)
 
-7. **Biome System Implementation**
-    * [x] Create biome classification system based on environmental factors
-    * [ ] Implement biome smoothing with cellular automata
-    * [x] Add transition zones between biomes
-    * [x] Set up biome metadata storage
-8. **Resource Generation**
-    * [ ] Create resource distribution system based on biomes
-    * [ ] Implement resource density variation
-    * [ ] Add resource clustering algorithms
-    * [ ] Create special resource generation for unique terrain features
-9. **Object Placement System**
-    * [ ] Implement tree placement on valid terrain
-    * [ ] Create rock and boulder placement algorithms
-    * [ ] Add object variation based on biome types
-    * [ ] Implement object density controls
+4. **Advanced Pawn Mechanics**
+   * [ ] Implement combat skills system with progression
+   * [ ] Create elemental magic system with environmental affinities
+   * [ ] Add rideable animals with unique stats
+   * [ ] Develop complex social dynamics between pawns
 
-**Phase 4: Integration and Optimization (2-3 weeks)**
+5. **Colony Management**
+   * [ ] Create detailed crafting chains with intermediate steps
+   * [ ] Implement organic research system tied to pawn skills
+   * [ ] Add contextual disease system based on environment
+   * [ ] Develop master-apprentice teaching mechanics
 
-10. **TileMap Integration**
-    * [x] Convert generator output to multiple `TileMapLayers`
-    * [ ] Set up proper layer ordering (ground, objects, etc.)
-    * [ ] Add collision shapes to appropriate layers
-    * [x] Implement custom data attributes for interactive tiles
-11. **User Interface and Controls**
-    * [x] Create generator parameter controls
-    * [x] Implement seed management for reproducible maps
-    * [ ] Add preview generation options
-    * [ ] Create save/load system for generator configurations
-12. **Optimization**
+6. **Resource and Item Systems**
+   * [ ] Create resource distribution system based on biomes
+   * [ ] Implement special resource generation in monster territories
+   * [ ] Add procedural artifact and legendary item generation
+   * [ ] Develop inventory management system
+
+## Phase 3: World Interaction and Events (2-3 weeks)
+
+7. **Environmental Interaction**
+   * [ ] Create elemental interaction systems (water + fire = steam)
+   * [ ] Implement biome-specific events and hazards
+   * [ ] Add magical material crafting from monster resources
+   * [ ] Create weather effects with gameplay impact
+
+8. **Event System**
+   * [ ] Implement customizable event probabilities
+   * [ ] Create interconnected events (heat waves → droughts)
+   * [ ] Add relationship crises triggering unique events
+   * [ ] Develop faction-based event chains
+
+9. **World Map and Locations**
+   * [ ] Create overworld map system for exploration
+   * [ ] Implement procedural dungeon generation
+   * [ ] Add NPC faction settlements and diplomacy
+   * [ ] Develop quest system with rewards
+
+## Phase 4: Technical Improvements (2-3 weeks)
+
+10. **Performance Optimization**
     * [ ] Implement spatial partitioning for large maps
-    * [x] Set up chunk-based processing for memory efficiency (added max search limits)
     * [ ] Add multithreading for generation steps
-    * [ ] Implement caching for frequently accessed data
+    * [ ] Create chunk-based processing for memory efficiency
+    * [ ] Implement path caching for frequently traveled routes
 
-<div style="text-align: center">⁂</div>
+11. **User Interface**
+    * [ ] Create save/load system for games
+    * [ ] Implement advanced control schemes
+    * [ ] Add preview generation options
+    * [ ] Create comprehensive tutorial system
 
-[^1]: https://pplx-res.cloudinary.com/image/private/user_uploads/uOIaYrVNjJmCZpv/Selection_007.jpg
-
-[^2]: https://pplx-res.cloudinary.com/image/private/user_uploads/KrhYMGbKCevhekB/Selection_008.jpg
-
-[^3]: https://pplx-res.cloudinary.com/image/private/user_uploads/NmwTmXtTlFOgmja/Selection_009.jpg
+12. **Enhanced Visuals**
+    * [ ] Implement animated terrain elements
+    * [ ] Add visual effects for magic and combat
+    * [ ] Create day/night lighting system
+    * [ ] Develop atmospheric weather visualization
