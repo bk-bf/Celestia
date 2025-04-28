@@ -1,4 +1,4 @@
-class_name CoordinateUtils
+class_name CoordinatesUtils
 extends Object
 
 # Get all coordinates in a circle around center

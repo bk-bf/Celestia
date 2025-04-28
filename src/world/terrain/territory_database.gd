@@ -3,7 +3,7 @@ extends Resource
 
 var territory_definitions = {
 	
-	# territory_thresholds [0.3 - 2.0] and the terrains arent used/working
+	
 	"wolf_pack": {
 		"territory_thresholds": [0.3, 0.7], 
 		"preferred_terrain": ["forest"],
@@ -27,6 +27,7 @@ var territory_definitions = {
 	}
 }
 
+# ALL THIS SHIT HAS TO BE MOVED EVENTUALLY
 func get_monster_data(monster_type: String) -> Dictionary:
 	if monster_type in territory_definitions:
 		return territory_definitions[monster_type]

@@ -7,8 +7,14 @@ extends Resource
 @export var density: float = 0.5 # 0-1 range, 0.5 is default ground level
 @export var moisture: float = 0.5
 @export var temperature: float = 0.5
-@export var movement_speed: float = 1.0 # Default normal movement speed
+@export var movement_cost: float = 1.0 # Default normal movement speed
 var _is_water: bool = false
+
+# for pathfinding
+var g_cost: float = INF  # Cost from start to this tile
+var h_cost: float = 0    # Estimated cost from this tile to goal
+var f_cost: float = INF  # Total cost (g_cost + h_cost)
+var parent: Tile = null  # Previous tile in the optimal path
 
 # Resource properties
 @export var resources: Dictionary = {}

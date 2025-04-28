@@ -28,6 +28,10 @@ func grid_to_map(grid_coords: Vector2i) -> Vector2:
 # Convert map position to grid coordinates
 func map_to_grid(map_pos: Vector2) -> Vector2i:
 	return Vector2i((map_pos / cell_size).floor())
+	map_pos.x = clamp(map_pos.x, 0, width - 1)
+	map_pos.y = clamp(map_pos.y, 0, height - 1)
+	
+	return map_pos
 	
 # Create empty tiles for the entire grid
 func _initialize_grid() -> void:

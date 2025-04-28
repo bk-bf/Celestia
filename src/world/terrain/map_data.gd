@@ -162,9 +162,9 @@ func register_monster_territory(seed_value: int, territory_type: String, territo
 					#print("Tile object ID: " + str(tile.get_instance_id()) + " Tile terrain: '" + tile.terrain_type + ", Grid Coords: (" + str(x) + ", " + str(y) + ")")
 					tile.territory_owner = territory_type
 
-func post_process_territories():
-	var cleanup_count = 0
-	# Clean up each territory type
+var cleanup_count = 0 # outside of function to be accessible by statisctics.gd print
+func post_process_territories(): 	# Clean up each territory type
+
 	for territory_type in territory_database.get_monster_types():
 		var preferred_terrains = territory_database.get_monster_data(territory_type).preferred_terrain
 		

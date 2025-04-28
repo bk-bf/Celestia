@@ -102,6 +102,10 @@ func generate_terrain(seed = null, detail_seed = null):
 	# queues the draw() question is if this is the best placement for performance?		
 	queue_redraw()
 
+# helper function to expose the grid
+func get_grid():
+	return map_data.terrain_grid
+
 # Updated monster territories function using Territory Database
 func add_monster_territories(territory_seed = null):
 	# Set the seed for reproducible results
@@ -213,7 +217,7 @@ func _draw():
 			# Coordinate numbers
 			if show_coordinate_numbers:
 				var label = "(%d,%d)" % [x, y]
-				var font_size_coordinates = 4
+				var font_size_coordinates = 3
 				var text_pos = Vector2(
 					x * cell_size.x + (cell_size.x - text_size.x) / 2,
 					y * cell_size.y + (cell_size.y + text_size.y) / 2

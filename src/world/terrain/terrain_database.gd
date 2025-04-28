@@ -6,6 +6,7 @@ var terrain_definitions = {
 		"base_color": Color.DARK_GREEN,
 		"density_range": [0.5, 0.6],
 		"walkable": true,
+		"movement_cost": 1.5, 
 		"subterrain": ["dirt", "grass", "deep_grass", "tree"],
 		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6]  # Thresholds that determine subterrain
 	},
@@ -13,6 +14,7 @@ var terrain_definitions = {
 		"base_color": Color.DARK_OLIVE_GREEN,
 		"density_range": [0.2, 0.3],
 		"walkable": true,
+		"movement_cost": 2.0, 
 		"subterrain": ["shallow_water", "mud", "bog", "clay", "moss"],
 		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6]
 	},
@@ -20,6 +22,7 @@ var terrain_definitions = {
 		"base_color": Color.FOREST_GREEN,
 		"density_range": [0.3, 0.45],
 		"walkable": true,
+		"movement_cost": 1.0, 
 		"subterrain": ["dirt","grass", "bush", "deep_grass", "tree"],
 		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6]
 	},
@@ -27,13 +30,15 @@ var terrain_definitions = {
 		"base_color": Color(0.6, 0.6, 0.6, 0.6),
 		"density_range": [0.6, 1.0],
 		"walkable": false,
+		"movement_cost": 3.0,
 		"subterrain": ["rocky", "peak"],
-		"subterrain_thresholds": [-0.3]  # Just one threshold for mountains
+		"subterrain_thresholds": [-0.3]
 	},
 	"river": {
 		"base_color": Color.DODGER_BLUE,
 		"density_range": [0.0, 0.5],
 		"walkable": true,
+		"movement_cost": 2.5, 
 		"is_water": true,
 		"subterrain": ["shallow water", "water"],
 		"subterrain_thresholds": [-0.3]  
@@ -44,18 +49,18 @@ var subterrain_definitions = {
 	# Forest subterrains
 	"tree": {
 		"color_modifier": "darkened",
-		"color_amount": 0.2,
+		"color_amount": 0.3,
 		"walkable": true,
 		"resource": "wood",
 		"resource_factor": 0.5
 	},
 	"bush": {
 		"color_modifier": "darkened",
-		"color_amount": 0.1,
+		"color_amount": 0.2,
 		"walkable": true
 	},
 	"deep_grass": {
-		"color_modifier": "lightened",
+		"color_modifier": "darkened",
 		"color_amount": 0.1,
 		"walkable": true
 	},
@@ -65,8 +70,9 @@ var subterrain_definitions = {
 		"walkable": true
 	},
 	"dirt": {
-		"color_modifier": "lightened",
-		"color_amount": 0.2,
+		"base_color": Color.DARK_OLIVE_GREEN,
+		"color_modifier": "darkened",
+		"color_amount": 0.5,
 		"walkable": true
 	},
 	
@@ -94,14 +100,14 @@ var subterrain_definitions = {
 		"walkable": true
 	},
 	"clay": {
-		"color_modifier": "lightened",
-		"color_amount": 0.1,
+		"color_modifier": "darkened",
+		"color_amount": 0.5,
 		"walkable": true
 	},
 	"moss": {
-		"color_modifier": "none",
-		"color_amount": 0,
-		"base_color": Color(0.3, 0.6, 0.3, 0.7),
+		"base_color": Color.DARK_OLIVE_GREEN,
+		"color_modifier": "lightened",
+		"color_amount": 0.1,
 		"walkable": true
 	},
 	
@@ -118,6 +124,7 @@ var subterrain_definitions = {
 	}
 }
 
+# ALL THIS SHIT HAS TO BE MOVED EVENTUALLY
 # Get terrain type based on density value
 func get_terrain_type(density: float) -> String:
 	for terrain_type in terrain_definitions:

@@ -8,7 +8,6 @@ var map_data: MapData
 
 # Function to print statistics about a map
 # Get monster types from database
-
 static func print_map_statistics(map_data, terrain_database, seed = null, detail_seed = null, territory_seed = null):
 	
 	print("\n=== CELESTIA MAP STATISTICS ===")
@@ -65,10 +64,10 @@ static func print_map_statistics(map_data, terrain_database, seed = null, detail
 	print("MONSTER TERRITORIES:")
 	var territory_database = TerritoryDatabase.new() # Add monsters database
 	var available_monster_types = territory_database.get_monster_types()
-	print("- Generated " + str(available_monster_types.size()) + " monster territories")
-	print("- Total claimed territory: ", "%.1f" % (map_data.get_territory_coverage() * 100), "% of map")
 	print("Post-processing territories...")
 	print("Removed " + str(map_data.cleanup_count) + " territories from non-preferred terrain")
+	print("- Generated " + str(available_monster_types.size()) + " monster territories")
+	print("- Total claimed territory: ", "%.1f" % (map_data.get_territory_coverage() * 100), "% of map")
 	print("===============================")
 
 # function to append statistics to a file with time and datestamps
