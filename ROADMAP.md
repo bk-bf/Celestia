@@ -1,5 +1,5 @@
 
-# ROADMAP.md
+# ROADMAP
 
 ## Phase 1: Complete Foundation & Basic Visualization (1-2 weeks)
 
@@ -88,7 +88,7 @@
     - [ ] Add basic weather system
     - [ ] Create simple temperature fluctuations
 
-# Post-MVP Task List
+# Post-MVP ROADMAP
 
 ## Phase 1: Magic & Combat Systems (3-4 weeks)
 
