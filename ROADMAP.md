@@ -28,7 +28,25 @@
     - [ ] Simple resource harvesting mechanics
     - [ ] Implement pawn movement with terrain movement multipliers
 
-## Phase 4: Pawn Implementation (2-3 weeks)
+## Phase 4: Art and Sound Integration (2-3 weeks)
+
+- **AI-Generated Visual Assets**
+  - [ ] Set up Stable Diffusion 3 pipeline with custom LORA for consistent fantasy style
+  - [ ] Generate basic pawn sprites with variations for different roles
+  - [ ] Create terrain textures for all biome types
+  - [ ] Design object sprites (resources, furniture, buildings)
+  - [ ] Generate visual effects for magic and combat
+  - [ ] Create UI elements and icons matching fantasy aesthetic
+
+- **Sound Design**
+  - [ ] Research and select AI sound generation tools
+  - [ ] Create ambient biome-specific soundscapes
+  - [ ] Generate action sound effects (construction, combat, magic)
+  - [ ] Develop footstep sounds for different terrain types
+  - [ ] Create creature and monster sound effects
+  - [ ] Implement simple music system with day/night variations
+
+## Phase 5: Pawn Implementation (2-3 weeks)
 
 - **Pawn Creation & Attributes**
     - [ ] Implement basic pawn class with core attributes (strength, dexterity, intelligence)
@@ -151,3 +169,12 @@
     * [ ] Implement tutorial elements
     * [ ] Add atmospheric effects (day/night, weather)
     * [ ] Design customizable UI elements
+   
+13. **Advanced Art and Sound Systems**
+    * [ ] Implement sprite animation system for pawns and creatures
+    * [ ] Create advanced particle effects for elemental magic
+    * [ ] Develop weather-specific visual and sound effects
+    * [ ] Generate territory-specific visual indicators
+    * [ ] Create adaptive music system responding to game events
+    * [ ] Implement sound occlusion for indoor/outdoor environments
+    * [ ] Design unique sound profiles for special weapons and spells
