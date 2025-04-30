@@ -1,7 +1,7 @@
 class_name Pathfinder
 extends Resource
 
-var grid: Grid 
+var grid: Grid
 var open_set: Array = []
 var closed_set: Array = []
 
@@ -58,7 +58,7 @@ func find_path(start_pos: Vector2, end_pos: Vector2) -> Array:
 		tiles_searched += 1
 		if tiles_searched > max_search_limit:
 			print("Pathfinding aborted: Max search limit reached (" + str(max_search_limit) + " tiles)")
-			return []  # Return empty path when limit is reached
+			return [] # Return empty path when limit is reached
 		
 		var current_tile = get_lowest_f_cost_tile()
 		
@@ -76,8 +76,10 @@ func find_path(start_pos: Vector2, end_pos: Vector2) -> Array:
 			if not neighbor.walkable or closed_set.has(neighbor):
 				continue
 			
+			# Calculate movement cost based on terrain
+			var terrain_cost = neighbor.movement_cost
 			# Calculate new path cost
-			var new_cost = current_tile.g_cost + calculate_distance(current_tile, neighbor)
+			var new_cost = current_tile.g_cost + calculate_distance(current_tile, neighbor) # * terrain_cost literraly a death sentence for performance
 			
 			# If new path is better or neighbor not in open set
 			if new_cost < neighbor.g_cost or not open_set.has(neighbor):
@@ -144,7 +146,7 @@ func calculate_movement_cost(tile: Tile) -> float:
 	
 	# Consider monster territory
 	if tile.territory_owner != null:
-		cost *= 1.5  # Pawns might want to avoid monster territories
+		cost *= 1.5 # Pawns might want to avoid monster territories
 	
 	return cost
 
@@ -153,7 +155,7 @@ func reconstruct_path(end_tile: Tile) -> Array:
 	var current = end_tile
 	
 	while current != null:
-		path.append(current.get_coordinates())  # Use get_coordinates() instead of position
+		path.append(current.get_coordinates()) # Use get_coordinates() instead of position
 		current = current.parent
 	
 	path.reverse()

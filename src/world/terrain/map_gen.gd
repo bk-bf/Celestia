@@ -41,7 +41,7 @@ func _ready():
 	MapStatistics.print_map_statistics(map_data, terrain_database, seed, detail_seed, territory_seed)
 	
 	# Save the map data
-	var save_path = "res://test_map.tres"
+	var save_path = "res://resources/maps/test_map.tres"
 	var err = map_data.save_to_file(save_path)
 	print("map saved with result: ", err)
 	
@@ -125,7 +125,7 @@ func add_monster_territories(territory_seed = null):
 		var monster_seed = territory_seed + (i * 1000)
 		
 		# Register the territory with values from database
-		map_data.register_monster_territory(monster_seed,monster_type,territory_database.get_territory_thresholds(monster_type))
+		map_data.register_monster_territory(monster_seed, monster_type, territory_database.get_territory_thresholds(monster_type))
 
 	
 func is_in_territory(noise_value, territory_type):
@@ -264,8 +264,8 @@ func _draw():
 							
 							# Position in bottom-left corner with padding
 							var cost_pos = Vector2(
-								tile_x + 2,  # 2 pixels from left edge
-								tile_y + cell_size.y - 2  # 2 pixels from bottom edge
+								tile_x + 2, # 2 pixels from left edge
+								tile_y + cell_size.y - 2 # 2 pixels from bottom edge
 							)
 							
 							# Use contrasting color for visibility
@@ -279,8 +279,8 @@ func _draw():
 								draw_string(custom_font, cost_pos, cost_str, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size_cost, cost_color)
 						else:
 							# For non-walkable tiles, draw a red X
-							var red_color = Color(1.0, 0.2, 0.2, 0.9)  # Bright red
-							var padding = 4  # Padding from edges
+							var red_color = Color(1.0, 0.2, 0.2, 0.9) # Bright red
+							var padding = 4 # Padding from edges
 							
 							# Draw X lines
 							var x1 = tile_x + padding
