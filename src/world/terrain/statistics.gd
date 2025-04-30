@@ -2,20 +2,19 @@ extends Node
 class_name MapStatistics
 
 var map_data: MapData
-@export var seed: int = 0 # If left as 0, a random seed will be used
+@export var base_seed: int = 0 # If left as 0, a random seed will be used
 @export var detail_seed: int = 0 # If left as 0, a random seed will be used
 @export var territory_seed: int = 0
 
 # Function to print statistics about a map
 # Get monster types from database
-static func print_map_statistics(map_data, terrain_database, seed = null, detail_seed = null, territory_seed = null):
-	
+static func print_map_statistics(map_data, terrain_database, base_seed = null, detail_seed = null, territory_seed = null):
 	print("\n=== CELESTIA MAP STATISTICS ===")
 	print("Map dimensions: ", map_data.get_width(), "x", map_data.get_height(), " tiles")
 	
 	# Print seed information if provided
-	if seed != null:
-		print("Seed: ", seed)
+	if base_seed != null:
+		print("Seed: ", base_seed)
 	if detail_seed != null:
 		print("Detail Seed: ", detail_seed)
 	if territory_seed != null:
@@ -100,7 +99,7 @@ Detail Seed: %d
 - Total claimed territory: %.1f%%
 """ % [
 		map_data.get_width(), map_data.get_height(),
-		seed, detail_seed,
+		base_seed, detail_seed,
 		map_data.get_terrain_percentage("forest") * 100,
 		map_data.get_terrain_percentage("plains") * 100,
 		map_data.get_terrain_percentage("mountain") * 100,
@@ -137,4 +136,3 @@ Detail Seed: %d
 	file.close()
 	
 	print("Statistics saved to " + file_path)
-	

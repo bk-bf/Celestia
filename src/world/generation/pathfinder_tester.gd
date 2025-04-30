@@ -11,7 +11,7 @@ func _ready():
 	# Wait until map generation is complete
 	await get_tree().create_timer(0.5).timeout
 	# Get grid from map's MapData
-	var grid = map.map_data.terrain_grid
+	grid = map.map_data.terrain_grid
 	# Create pathfinder with this grid
 	pathfinder = Pathfinder.new(grid)
 	# Enable drawing of debug lines

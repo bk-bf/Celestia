@@ -11,10 +11,10 @@ extends Resource
 var _is_water: bool = false
 
 # for pathfinding
-var g_cost: float = INF  # Cost from start to this tile
-var h_cost: float = 0    # Estimated cost from this tile to goal
-var f_cost: float = INF  # Total cost (g_cost + h_cost)
-var parent: Tile = null  # Previous tile in the optimal path
+var g_cost: float = INF # Cost from start to this tile
+var h_cost: float = 0 # Estimated cost from this tile to goal
+var f_cost: float = INF # Total cost (g_cost + h_cost)
+var parent: Tile = null # Previous tile in the optimal path
 
 # Resource properties
 @export var resources: Dictionary = {}
@@ -46,9 +46,9 @@ func set_water(is_water_tile: bool) -> void:
 	# Store the water state in a private variable
 	_is_water = is_water_tile
 
-func get_resource_value(resource_name: String) -> float:
-	if resource_name in resources:
-		return resources[resource_name]
+func get_resource_value(res_name: String) -> float:
+	if res_name in resources:
+		return resources[res_name]
 	return 0.0
 	
 # Add any tile-specific calculation methods

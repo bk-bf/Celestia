@@ -15,7 +15,7 @@ func _init(grid_reference: Grid):
 
 func calculate_max_search_limit(width: int, height: int) -> int:
 	# Base limit for a 100x100 map (10,000 tiles)
-	var base_limit = 1000
+	var base_limit = 1500
 	# Scale factor: number of tiles divided by 10000
 	var scale_factor = (width * height) / 10000.0
 	# Calculate limit with scaling
@@ -100,8 +100,8 @@ func calculate_distance(tile_a: Tile, tile_b: Tile) -> float:
 	var pos_b = tile_b.get_coordinates()
 	
 	# For diagonal movement, use Chebyshev or Octile distance instead of Manhattan
-	var dx = abs(pos_a.x - pos_b.x)
-	var dy = abs(pos_a.y - pos_b.y)
+	#var dx = abs(pos_a.x - pos_b.x)
+	#var dy = abs(pos_a.y - pos_b.y)
 	# Octile distance (recommended)
 	#return 1.0 * (dx + dy) + (1.414 - 2.0 * 1.0) * min(dx, dy)
 	# Alternative: Chebyshev distance (diagonals cost same as orthogonal)

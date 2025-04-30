@@ -13,7 +13,7 @@ var territory_database = TerritoryDatabase.new() # Add monsters database
 @export var show_movement_costs: bool = true
 
 @export var cell_size: Vector2 = Vector2(16, 16)
-@export var seed: int = 0 # If left as 0, a random seed will be used
+@export var base_seed: int = 0 # If left as 0, a random seed will be used
 var detail_seed: int = 0
 var territory_seed: int = 0 # Derived seed for territories
 
@@ -27,11 +27,11 @@ func _ready():
 	# Initialize terrain database
 	terrain_database = TerrainDatabase.new()
 	# Check if seeds are 0 and generate random seeds if needed
-	if seed == 0:
-		seed = randi()
+	if base_seed == 0:
+		base_seed = randi()
 		
-	detail_seed = seed * 6971 # multiplied with prime
-	territory_seed = seed * 7919 # Using different prime multiplier
+	detail_seed = base_seed * 6971 # multiplied with prime
+	territory_seed = base_seed * 7919 # Using different prime multiplier
  	# Create a map with the same dimensions but procedurally generated
 	map_data = MapData.new(Vector2i(map_lengh, map_height), randi())
 
@@ -49,18 +49,18 @@ func _ready():
 	var map_stats = MapStatistics.new()
 	# Set required properties on the instance
 	map_stats.map_data = map_data
-	map_stats.seed = seed
+	map_stats.base_seed = base_seed
 	map_stats.detail_seed = detail_seed
 	# Call the save_statistics_to_file method on the instance
 	# map_stats.save_statistics_to_file() # this shit fails with error 7 but the directory it safes to exists and is always writeable
 	
 # function to generate terrain using noise and TerrainDatabase
-func generate_terrain(seed = null, detail_seed = null):
+func generate_terrain(terrain_seed = null, detailed_seed = null):
 	# Use provided seeds or generate new ones
-	seed = seed if seed != null else randi()
-	detail_seed = detail_seed if detail_seed != null else randi()
+	terrain_seed = terrain_seed if terrain_seed != null else randi()
+	detailed_seed = detailed_seed if detailed_seed != null else randi()
 
-	var noise_gen = NoiseGenerator.new(seed, detail_seed)
+	var noise_gen = NoiseGenerator.new(base_seed, detail_seed)
 
 	# First pass: Generate basic terrain types and terrain_subtypes
 	for y in range(map_data.get_height()):
@@ -108,10 +108,10 @@ func get_grid():
 	return map_data.terrain_grid
 
 # Updated monster territories function using Territory Database
-func add_monster_territories(territory_seed = null):
+func add_monster_territories(seed_override = null):
 	# Set the seed for reproducible results
-	if territory_seed != null:
-		seed(territory_seed)
+	if seed_override != null:
+		seed(seed_override)
 	
 	# Get monster types from database
 	var available_monster_types = territory_database.get_monster_types()
@@ -119,7 +119,7 @@ func add_monster_territories(territory_seed = null):
 	# Choose different base seeds for each monster type to ensure separation
 	for i in range(available_monster_types.size()):
 		var monster_type = available_monster_types[i]
-		var monster_data = territory_database.get_monster_data(monster_type)
+		# var monster_data = territory_database.get_monster_data(monster_type)
 		
 		# Create a unique seed for this monster territory
 		var monster_seed = territory_seed + (i * 1000)
@@ -189,7 +189,7 @@ func _draw():
 			var custom_font = preload("res://assets/fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf")
 			var font_size_territory = 10
 			var text_size = custom_font.get_string_size(territory_letter, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size_territory)
-			var map_pos = map_data.grid_to_map(grid_coords)
+			# var map_pos = map_data.grid_to_map(grid_coords)
 			
 			# Territory indicator
 			if tile.territory_owner != "":

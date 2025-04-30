@@ -30,9 +30,9 @@ var ocean_tiles: Array = []
 var tile_data = TileData.new()
 
 # Initialization
-func _init(size: Vector2i = Vector2i(200, 200), set_seed : int = 0):
+func _init(size: Vector2i = Vector2i(200, 200), set_seed: int = 0):
 	map_size = size
-	map_seed = set_seed 
+	map_seed = set_seed
 	terrain_grid = Grid.new(size.x, size.y)
 	
 # Save and load functionality
@@ -117,20 +117,19 @@ func find_tiles_by_density_range(min_density: float, max_density: float) -> Arra
 				
 	return matching_tiles
 
-func find_tiles_with_resource(resource_name: String, min_value: float = 0.0) -> Array:
+func find_tiles_with_resource(resource_key: String, min_value: float = 0.0) -> Array:
 	var matching_tiles = []
 	
 	for y in range(get_height()):
 		for x in range(get_width()):
 			var tile = get_tile(Vector2i(x, y))
-			if tile.get_resource_value(resource_name) >= min_value:
+			if tile.get_resource_value(resource_key) >= min_value:
 				matching_tiles.append(tile)
 				
 	return matching_tiles
 
 # For monster territory system
 func register_monster_territory(seed_value: int, territory_type: String, territory_thresholds: Array = [0.4, 0.6]) -> void:
-	
 	# Record territory in list with thresholds
 	monster_territories.append({
 		"seed": seed_value,
@@ -142,14 +141,14 @@ func register_monster_territory(seed_value: int, territory_type: String, territo
 	#var preferred_terrain = territory_database.get_monster_data(territory_type).preferred_terrain
 	
 	 # Get preferred terrain for this monster type
-	var preferred_terrain = territory_database.get_monster_data(territory_type).preferred_terrain
+	# var preferred_terrain = territory_database.get_monster_data(territory_type).preferred_terrain
 	
 	# Assign territory based on terrain noise
 	for y in range(get_height()):
 		for x in range(get_width()):
 			# Use existing terrain noise but normalize it
 			var raw_noise_val = noise_generator.get_terrain_noise(x, y)
-			var territory_density = (raw_noise_val + 1.0) 
+			var territory_density = (raw_noise_val + 1.0)
 			#print(territory_density)
 			
 			# Territory is where density is within thresholds
@@ -163,8 +162,7 @@ func register_monster_territory(seed_value: int, territory_type: String, territo
 					tile.territory_owner = territory_type
 
 var cleanup_count = 0 # outside of function to be accessible by statisctics.gd print
-func post_process_territories(): 	# Clean up each territory type
-
+func post_process_territories(): # Clean up each territory type
 	for territory_type in territory_database.get_monster_types():
 		var preferred_terrains = territory_database.get_monster_data(territory_type).preferred_terrain
 		
@@ -182,9 +180,9 @@ func post_process_territories(): 	# Clean up each territory type
 func count_territories_by_type(monster_type: String) -> int:
 	var count = 0
 	for territory in monster_territories:
-		if territory["monster_type"]  == monster_type:
+		if territory["monster_type"] == monster_type:
 			count += 1
-	return count			
+	return count
 		
 func get_territory_coverage() -> float:
 	var territory_count = 0
@@ -224,7 +222,7 @@ func generate_terrain(width: int, height: int):
 			
 			# Create tile with basic terrain type
 			var tile = Tile.new()
-			tile.density = (density + 1.0) / 2.0  # Normalize to 0-1 range
+			tile.density = (density + 1.0) / 2.0 # Normalize to 0-1 range
 			tile.terrain_type = determine_terrain_type(density)
 			
 			# Set water status
@@ -272,7 +270,7 @@ func determine_terrain_subtype(terrain_type: String, detail_val: float) -> Strin
 	var terrain_subtype = tile_data.terrain_definitions[terrain_type].variations
 	
 	# Select terrain subtype based on detail_val
-	var normalized_detail = (detail_val + 1.0) / 2.0  # Convert from -1,1 to 0,1
+	var normalized_detail = (detail_val + 1.0) / 2.0 # Convert from -1,1 to 0,1
 	var index = floor(normalized_detail * terrain_subtype.size())
 	index = clamp(index, 0, terrain_subtype.size() - 1)
 	

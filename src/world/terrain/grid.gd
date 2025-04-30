@@ -9,9 +9,9 @@ extends Resource
 @export var cell_size: Vector2 = Vector2(16, 16)
 
 # Storage for tiles
-var _tiles: Array = []  # Will store Tile objects in a 1D array
+var _tiles: Array = [] # Will store Tile objects in a 1D array
 var _half_cell_size: Vector2
-@export var chunk_size: int = 16  # For potential future optimization
+@export var chunk_size: int = 16 # For potential future optimization
 
 # Initialization
 func _init(w: int = 100, h: int = 100, cell_sz: Vector2 = Vector2(16, 16)):
@@ -26,13 +26,17 @@ func grid_to_map(grid_coords: Vector2i) -> Vector2:
 	return Vector2(grid_coords) * cell_size + _half_cell_size
 
 # Convert map position to grid coordinates
+#func map_to_grid(map_pos: Vector2) -> Vector2i:
+#	map_pos.x = clamp(map_pos.x, 0, width - 1)
+#	map_pos.y = clamp(map_pos.y, 0, height - 1)
+#	return Vector2i((map_pos / cell_size).floor())
+
+# Ensure the map position is within bounds before converting
 func map_to_grid(map_pos: Vector2) -> Vector2i:
+	map_pos.x = clamp(map_pos.x, 0, (width * cell_size.x) - 1)
+	map_pos.y = clamp(map_pos.y, 0, (height * cell_size.y) - 1)
 	return Vector2i((map_pos / cell_size).floor())
-	map_pos.x = clamp(map_pos.x, 0, width - 1)
-	map_pos.y = clamp(map_pos.y, 0, height - 1)
-	
-	return map_pos
-	
+
 # Create empty tiles for the entire grid
 func _initialize_grid() -> void:
 	_tiles.clear()
@@ -75,14 +79,14 @@ func set_tile(coords: Vector2i, tile: Tile) -> void:
 func get_neighbors(coords: Vector2i) -> Array:
 	var neighbors = []
 	var directions = [
-		Vector2i(0, -1),  # North
-		Vector2i(1, 0),   # East
-		Vector2i(0, 1),   # South
-		Vector2i(-1, 0),  # West
-		Vector2i(1, -1),  # Northeast
-		Vector2i(1, 1),   # Southeast
-		Vector2i(-1, 1),  # Southwest
-		Vector2i(-1, -1)  # Northwest
+		Vector2i(0, -1), # North
+		Vector2i(1, 0), # East
+		Vector2i(0, 1), # South
+		Vector2i(-1, 0), # West
+		Vector2i(1, -1), # Northeast
+		Vector2i(1, 1), # Southeast
+		Vector2i(-1, 1), # Southwest
+		Vector2i(-1, -1) # Northwest
 	]
 	
 	for dir in directions:
@@ -106,7 +110,6 @@ func get_neighbors(coords: Vector2i) -> Array:
 	return neighbors
 
 
-
 # Get all 8 surrounding tiles
 func get_neighbors_surrounding(coords: Vector2i) -> Array:
 	var neighbors = []
@@ -119,4 +122,3 @@ func get_neighbors_surrounding(coords: Vector2i) -> Array:
 				neighbors.append(get_tile(neighbor_coords))
 				
 	return neighbors
-	
