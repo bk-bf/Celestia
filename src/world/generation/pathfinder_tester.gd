@@ -4,7 +4,7 @@ var grid: Grid
 var pathfinder
 var debug_path = []
 var start_point = null
-@onready var map = get_parent()  # Reference to Map node
+@onready var map = get_parent() # Reference to Map node
 @onready var nav_agent = get_node("/root/Game/Map/NavigationAgent2D")
 
 func _ready():
