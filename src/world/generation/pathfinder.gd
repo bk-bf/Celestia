@@ -7,6 +7,10 @@ var closed_set: Array = []
 
 var max_search_limit: int = 1000 # Default fallback value
 
+# ACTUALLY HORENDOUS PATHFINDING ALGORITHM, 
+# IF YOU'RE ENABLING CALCULATIONS IN COMBINATION WITH TERRAIN COSTS, 
+# IT WILL ALWAYS FAIL THE MAX SEARCH LIMIT CHECKS
+
 func _init(grid_reference: Grid):
 	grid = grid_reference
 	# Automatically calculate appropriate search limit based on grid size
