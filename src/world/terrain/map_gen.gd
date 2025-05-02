@@ -1,7 +1,7 @@
 extends Node2D
 
 # Imports
-const MapStatisticsFile = preload("res://src/world/terrain/statistics.gd")
+const MapStatisticsFile = preload("res://src/core/utils/statistics.gd")
 const ResourceDB = preload("res://src/world/terrain/resource_database.gd")
 const MapDataFile = preload("res://src/world/terrain/map_data.gd")
 const MapRendererFile = preload("res://src/core/utils/map_renderer.gd")
@@ -45,7 +45,7 @@ func _ready():
 	# Generate terrain with stored seeds
 	generate_terrain(seed, detail_seed)
 	
-	MapStatistics.print_map_statistics(map_data, terrain_database, seed, detail_seed, territory_seed)
+	MapStatistics.print_map_statistics(map_data, terrain_database, resource_db, base_seed, detail_seed, territory_seed)
 	
 	# Save the map data
 	var save_path = "res://resources/maps/test_map.tres"
@@ -91,7 +91,7 @@ func sync_renderer_settings():
 		map_renderer.show_terrain_letters = show_terrain_letters
 		map_renderer.show_density_values = show_density_values
 		map_renderer.show_movement_costs = show_movement_costs
-		queue_redraw()
+		
 
 # function to generate terrain using noise and TerrainDatabase
 func generate_terrain(terrain_seed = null, detailed_seed = null):

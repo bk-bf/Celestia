@@ -8,7 +8,7 @@ var map_data: MapData
 
 # Function to print statistics about a map
 # Get monster types from database
-static func print_map_statistics(map_data, terrain_database, base_seed = null, detail_seed = null, territory_seed = null):
+static func print_map_statistics(map_data, terrain_database, resource_db = null, base_seed = null, detail_seed = null, territory_seed = null):
 	print("\n=== CELESTIA MAP STATISTICS ===")
 	print("Map dimensions: ", map_data.get_width(), "x", map_data.get_height(), " tiles")
 	
@@ -54,8 +54,36 @@ static func print_map_statistics(map_data, terrain_database, base_seed = null, d
 	
 	print("------------------------------")
 	print("RESOURCES:")
-	#var total_tiles = map_data.get_width() * map_data.get_height()
-	
+	if resource_db:
+		var resource_stats = {}
+		
+		# Collect resource statistics
+		for resource_id in resource_db.resources:
+			var locations = 0
+			var total_amount = 0
+			
+			for y in range(map_data.get_height()):
+				for x in range(map_data.get_width()):
+					var tile = map_data.get_tile(Vector2i(x, y))
+					if "resources" in tile and resource_id in tile.resources:
+						locations += 1
+						total_amount += tile.resources[resource_id]
+			
+			resource_stats[resource_id] = {
+				"locations": locations,
+				"total_amount": total_amount
+			}
+			
+			# Print statistics for each resource
+			print("Generated %s: %d locations, %d total units" % [resource_id, locations, total_amount])
+			
+			# Calculate percentage of map covered by this resource
+			var total_tiles = map_data.get_width() * map_data.get_height()
+			var coverage_percentage = (locations / float(total_tiles)) * 100
+			print("- %s coverage: %.1f%%" % [resource_id.capitalize(), coverage_percentage])
+	else:
+		print("No resource database provided.")
+
 	print("------------------------------")
 	print("MONSTER TERRITORIES:")
 	var territory_database = TerritoryDatabase.new() # Add monsters database
@@ -65,71 +93,3 @@ static func print_map_statistics(map_data, terrain_database, base_seed = null, d
 	print("- Generated " + str(available_monster_types.size()) + " monster territories")
 	print("- Total claimed territory: ", "%.1f" % (map_data.get_territory_coverage() * 100), "% of map")
 	print("===============================")
-
-# function to append statistics to a file with time and datestamps
-func save_statistics_to_file(): # this shit doesnt work properly
-	var timestamp = Time.get_datetime_string_from_system(false, true) # Format: YYYY-MM-DD HH:MM:SS
-	var file_path = "user://map_statistics.md"
-	
-	# Format the statistics as a string
-	var statistics = """
-Map dimensions: %dx%d tiles
-Terrain Seed: %d
-Detail Seed: %d
-
-**TERRAIN DISTRIBUTION:**
-- Forest: %.1f%%
-- Plains: %.1f%%
-- Mountain: %.1f%%
-- Swamp: %.1f%%
-- Water: %.1f%%
-
-**TERRAIN PROPERTIES:**
-- Average density: %.2f
-- Walkable tiles: %.1f%%
-
-**RESOURCES:**
-- Wood-rich tiles: %d (%.1f%%)
-
-**MONSTER TERRITORIES:**
-- Monster territories: %d
-- Total claimed territory: %.1f%%
-""" % [
-		map_data.get_width(), map_data.get_height(),
-		base_seed, detail_seed,
-		map_data.get_terrain_percentage("forest") * 100,
-		map_data.get_terrain_percentage("plains") * 100,
-		map_data.get_terrain_percentage("mountain") * 100,
-		map_data.get_terrain_percentage("swamp") * 100,
-		map_data.get_terrain_percentage("river") * 100,
-		map_data.get_average_density(),
-		map_data.get_walkable_percentage() * 100,
-		map_data.find_tiles_with_resource("wood", 0.5).size(),
-		map_data.find_tiles_with_resource("wood", 0.5).size() / float(map_data.get_width() * map_data.get_height()) * 100,
-		map_data.count_territories_by_type("wolf_pack"),
-		map_data.get_territory_coverage() * 100
-		
-	]
-	
-	# Open the file in append mode
-	var file = FileAccess.open(file_path, FileAccess.READ_WRITE)
-	if file == null:
-		print("Error opening file: ", FileAccess.get_open_error())
-		return
-	file.seek_end()
-	if FileAccess.file_exists(file_path):
-		file = FileAccess.open(file_path, FileAccess.READ_WRITE)
-		file.seek_end()
-	else:
-		file = FileAccess.open(file_path, FileAccess.WRITE)
-		file.store_line("# Celestia Map Generation Statistics")
-		file.store_line("")
-	
-	# Write the statistics with a header and timestamp
-	file.store_line("## Map Statistics - " + timestamp)
-	file.store_line(statistics)
-	file.store_line("---")
-	file.store_line("")
-	file.close()
-	
-	print("Statistics saved to " + file_path)

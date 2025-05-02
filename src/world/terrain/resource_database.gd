@@ -16,7 +16,7 @@ var resources = {
     "stone": {
         "display_name": "Stone",
         "terrain_type": ["mountain"],
-        "terrain_subtype": ["rocky", "cliff"],
+        "terrain_subtype": ["rocky", "cliff", "peak"],
         "frequency": 1.0,
         "cluster_size": 4,
         "harvest_tool": "pickaxe",

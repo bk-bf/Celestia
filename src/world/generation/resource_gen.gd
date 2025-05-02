@@ -64,5 +64,3 @@ func generate_specific_resource(resource_id):
 				
 				placed_count += 1
 				total_amount += amount
-
-	print("Generated %s: %d locations, %d total units" % [resource_id, placed_count, total_amount])
