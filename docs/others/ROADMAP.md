@@ -19,7 +19,7 @@
     - [x] Basic biome assignment (forest, plains, mountains, swamp)
 - **Core Gameplay Elements**
     - [x] Implement pathfinding using your Tile.walkable property
-    - [ ] Add resource generation focusing on 2-3 main resources
+    - [x] Add resource generation focusing on 2-3 main resources
 
 ## Phase 3: Game Mechanics Integration (2 weeks)
 
