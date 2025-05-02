@@ -1,0 +1,310 @@
+# core/utils/map_renderer.gd
+class_name MapRenderer
+extends RefCounted
+
+var map_data: MapData
+var terrain_database: TerrainDatabase
+var territory_database: TerritoryDatabase
+var resource_db: ResourceDatabase
+var cell_size: Vector2
+var camera: Camera2D
+var zoom_threshold: float = 0.5
+
+# Configuration flags
+var show_grid_lines: bool = false
+var show_coordinate_numbers: bool = false
+var show_density_values: bool = false
+var show_movement_costs: bool = true
+var show_terrain_letters: bool = true
+var show_resources: bool = true
+
+func _init(
+	map_data_ref,
+	terrain_db_ref,
+	territory_db_ref,
+	resource_db_ref,
+	cell_size_ref,
+	camera_ref
+):
+	map_data = map_data_ref
+	terrain_database = terrain_db_ref
+	territory_database = territory_db_ref
+	resource_db = resource_db_ref
+	cell_size = cell_size_ref
+	camera = camera_ref
+
+# Main render function that calls all the specific drawing functions
+func render(canvas_item: CanvasItem):
+	if !map_data:
+		return
+	
+	draw_terrain_tiles(canvas_item)
+	
+	if show_grid_lines:
+		draw_grid_lines(canvas_item)
+	
+	draw_territory_markers(canvas_item)
+	
+	if show_resources:
+		draw_resources(canvas_item)
+	
+	if show_coordinate_numbers:
+		draw_coordinate_numbers(canvas_item)
+	
+	if show_density_values:
+		draw_density_values(canvas_item)
+	
+	if show_movement_costs:
+		draw_movement_costs(canvas_item)
+	
+	if show_terrain_letters:
+		draw_terrain_letters(canvas_item)
+
+# Draw the base terrain tiles with their colors
+func draw_terrain_tiles(canvas_item: CanvasItem):
+	for y in range(map_data.get_height()):
+		for x in range(map_data.get_width()):
+			var grid_coords = Vector2i(x, y)
+			var tile = map_data.get_tile(grid_coords)
+			var rect = Rect2(
+				x * cell_size.x,
+				y * cell_size.y,
+				cell_size.x,
+				cell_size.y
+			)
+			
+			# Get base color from terrain database
+			var base_color = Color.WHITE # Default color if terrain type isn't found
+			if tile.terrain_type in terrain_database.terrain_definitions:
+				base_color = terrain_database.terrain_definitions[tile.terrain_type].base_color
+			
+			# Apply subterrain modification if applicable
+			var color = base_color
+			if tile.terrain_subtype != "":
+				color = terrain_database.get_modified_color(base_color, tile.terrain_subtype)
+			
+			canvas_item.draw_rect(rect, color)
+
+# Draw the grid lines
+func draw_grid_lines(canvas_item: CanvasItem):
+	var width = map_data.get_width() * cell_size.x
+	var height = map_data.get_height() * cell_size.y
+	
+	# Draw vertical lines
+	for x in range(map_data.get_width() + 1):
+		var start = Vector2(x * cell_size.x, 0)
+		var end = Vector2(x * cell_size.x, height)
+		canvas_item.draw_line(start, end, Color.DARK_GRAY, 1.0)
+		
+	# Draw horizontal lines
+	for y in range(map_data.get_height() + 1):
+		var start = Vector2(0, y * cell_size.y)
+		var end = Vector2(width, y * cell_size.y)
+		canvas_item.draw_line(start, end, Color.DARK_GRAY, 1.0)
+
+# Draw territory markers
+func draw_territory_markers(canvas_item: CanvasItem):
+	var custom_font = preload("res://assets/fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf")
+	var font_size_territory = 10
+	
+	for y in range(map_data.get_height()):
+		for x in range(map_data.get_width()):
+			var grid_coords = Vector2i(x, y)
+			var tile = map_data.get_tile(grid_coords)
+			
+			if tile.territory_owner != "":
+				var territory_letter = tile.territory_owner.substr(0, 1).to_upper()
+				var text_size = custom_font.get_string_size(territory_letter, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size_territory)
+				
+				var center = Vector2(
+					x * cell_size.x + cell_size.x / 2,
+					y * cell_size.y + cell_size.y / 2
+				)
+				
+				# Calculate position to center the letter
+				var text_pos = Vector2(
+					center.x - text_size.x / 2,
+					center.y + text_size.y / 2
+				)
+				
+				# Get color from territory_database on territory_owner
+				var letter_color = Color(0.9, 0.2, 0.2, 0.9) # Default red fallback
+				if territory_database and tile.territory_owner in territory_database.territory_definitions:
+					var monster_data = territory_database.territory_definitions[tile.territory_owner]
+					if "color" in monster_data:
+						letter_color = monster_data.color
+				
+				# Draw the letter
+				canvas_item.draw_string(custom_font, text_pos, territory_letter, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size_territory, letter_color)
+
+# Draw resources on the map
+func draw_resources(canvas_item: CanvasItem):
+	for y in range(map_data.get_height()):
+		for x in range(map_data.get_width()):
+			var grid_coords = Vector2i(x, y)
+			var tile = map_data.get_tile(grid_coords)
+				
+			for resource_id in tile.resources:
+				var resource_data = resource_db.get_resource(resource_id)
+				if resource_data:
+					var resource_color = resource_data.color
+					
+					# Draw resource indicator
+					var pixel_pos = Vector2(
+						x * cell_size.x + cell_size.x / 2,
+						y * cell_size.y + cell_size.y / 2
+					)
+					canvas_item.draw_circle(pixel_pos, cell_size.x * 0.25, resource_color)
+					
+					# For larger resource amounts, add visual indicator
+					if tile.resources[resource_id] > resource_data.yield_amount[0] + 1:
+						var custom_font = preload("res://assets/fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf")
+						var font_size = cell_size.x * 0.4
+						canvas_item.draw_string(custom_font,
+									pixel_pos + Vector2(-font_size * 0.25, font_size * 0.3),
+									str(tile.resources[resource_id]),
+									resource_color.darkened(0.3),
+									HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+
+# Draw coordinate numbers
+func draw_coordinate_numbers(canvas_item: CanvasItem):
+	var custom_font = preload("res://assets/fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf")
+	var font_size_coordinates = 3
+	
+	if camera.zoom.x > zoom_threshold:
+		return
+	
+	for y in range(map_data.get_height()):
+		for x in range(map_data.get_width()):
+			var label = "(%d,%d)" % [x, y]
+			var text_size = custom_font.get_string_size(label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size_coordinates)
+			var text_pos = Vector2(
+				x * cell_size.x + (cell_size.x - text_size.x) / 2,
+				y * cell_size.y + (cell_size.y + text_size.y) / 2
+			)
+			canvas_item.draw_string(custom_font, text_pos, label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size_coordinates)
+
+# Draw density values
+func draw_density_values(canvas_item: CanvasItem):
+	var custom_font = preload("res://assets/fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf")
+	var font_size_density = 4
+	
+	if camera.zoom.x > zoom_threshold * 1.5:
+		return
+	
+	for y in range(map_data.get_height()):
+		for x in range(map_data.get_width()):
+			var grid_coords = Vector2i(x, y)
+			var tile = map_data.get_tile(grid_coords)
+			
+			var density_str = "%.1f" % tile.density # Format to 1 decimal place
+			
+			# Position the density in the lower-right corner of the tile
+			var density_pos = Vector2(
+				(x + 1) * cell_size.x - 2 - custom_font.get_string_size(density_str, HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size_density).x,
+				(y + 1) * cell_size.y - 2
+			)
+			
+			# Use a contrasting color for visibility
+			var density_color = Color.WHITE
+			if tile.is_water():
+				density_color = Color.WHITE
+			elif tile.terrain_type == "mountain":
+				density_color = Color.BLACK
+			
+			canvas_item.draw_string(custom_font, density_pos, density_str, HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size_density, density_color)
+
+# Draw movement costs or walkability indicators
+func draw_movement_costs(canvas_item: CanvasItem):
+	var custom_font = preload("res://assets/fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf")
+	var font_size_cost = 4
+	
+	if camera.zoom.x > zoom_threshold * 1.5:
+		return
+	
+	for y in range(map_data.get_height()):
+		for x in range(map_data.get_width()):
+			var grid_coords = Vector2i(x, y)
+			var tile = map_data.get_tile(grid_coords)
+			
+			# Calculate tile pixel positions
+			var tile_x = x * cell_size.x
+			var tile_y = y * cell_size.y
+			
+			if tile.walkable:
+				# For walkable tiles, show movement cost
+				var movement_cost = 1.0
+				if tile.terrain_type in terrain_database.terrain_definitions:
+					movement_cost = terrain_database.terrain_definitions[tile.terrain_type].get("movement_cost", 1.0)
+				
+				# Format as percentage
+				var cost_str = str(int(movement_cost * 100)) + "%"
+				
+				# Position in bottom-left corner with padding
+				var cost_pos = Vector2(
+					tile_x + 2, # 2 pixels from left edge
+					tile_y + cell_size.y - 2 # 2 pixels from bottom edge
+				)
+				
+				# Use contrasting color for visibility
+				var cost_color = Color.WHITE
+				if tile.is_water():
+					cost_color = Color.WHITE
+				elif tile.terrain_type == "mountain":
+					cost_color = Color.BLACK
+				
+				canvas_item.draw_string(custom_font, cost_pos, cost_str, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size_cost, cost_color)
+			else:
+				# For non-walkable tiles, draw a red X
+				var red_color = Color(1.0, 0.2, 0.2, 0.9) # Bright red
+				var padding = 4 # Padding from edges
+				
+				# Draw X lines
+				var x1 = tile_x + padding
+				var y1 = tile_y + padding
+				var x2 = tile_x + cell_size.x - padding
+				var y2 = tile_y + cell_size.y - padding
+				
+				# Line 1: top-left to bottom-right
+				canvas_item.draw_line(Vector2(x1, y1), Vector2(x2, y2), red_color, 2.0)
+				# Line 2: bottom-left to top-right
+				canvas_item.draw_line(Vector2(x1, y2), Vector2(x2, y1), red_color, 2.0)
+
+# Draw terrain and subterrain type letters
+func draw_terrain_letters(canvas_item: CanvasItem):
+	var custom_font = preload("res://assets/fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf")
+	var font_size_terrain = 4
+	
+	if camera.zoom.x > zoom_threshold * 1.5:
+		return
+	
+	for y in range(map_data.get_height()):
+		for x in range(map_data.get_width()):
+			var grid_coords = Vector2i(x, y)
+			var tile = map_data.get_tile(grid_coords)
+			
+			# Get first letter of terrain and subterrain
+			var terrain_letter = tile.terrain_type.substr(0, 1).to_upper()
+			var subterrain_letter = ""
+			if tile.terrain_subtype != "":
+				subterrain_letter = tile.terrain_subtype.substr(0, 1).to_upper()
+			
+			# Format as "T/S" or just "T" if no subterrain
+			var type_label = terrain_letter
+			if subterrain_letter != "":
+				type_label = terrain_letter + "/" + subterrain_letter
+			
+			# Position in center-top of tile
+			var label_pos = Vector2(
+				x * cell_size.x + cell_size.x / 2 - custom_font.get_string_size(type_label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size_terrain).x / 2,
+				y * cell_size.y + font_size_terrain + 2
+			)
+			
+			# Choose contrasting colors based on terrain type
+			var label_color = Color.WHITE
+			if tile.terrain_type == "forest":
+				label_color = Color.WHITE
+			elif tile.is_water():
+				label_color = Color.WHITE
+			
+			canvas_item.draw_string(custom_font, label_pos, type_label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size_terrain, label_color)

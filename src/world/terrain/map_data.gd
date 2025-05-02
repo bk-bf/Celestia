@@ -117,17 +117,6 @@ func find_tiles_by_density_range(min_density: float, max_density: float) -> Arra
 				
 	return matching_tiles
 
-func find_tiles_with_resource(resource_key: String, min_value: float = 0.0) -> Array:
-	var matching_tiles = []
-	
-	for y in range(get_height()):
-		for x in range(get_width()):
-			var tile = get_tile(Vector2i(x, y))
-			if tile.get_resource_value(resource_key) >= min_value:
-				matching_tiles.append(tile)
-				
-	return matching_tiles
-
 # For monster territory system
 func register_monster_territory(seed_value: int, territory_type: String, territory_thresholds: Array = [0.4, 0.6]) -> void:
 	# Record territory in list with thresholds
@@ -208,7 +197,7 @@ func is_within_bounds_map(map_pos: Vector2) -> bool:
 	var grid_coords = map_to_grid(map_pos)
 	return terrain_grid.is_valid_coordinates(grid_coords)
 	
-# In your MapData or similar class
+
 func generate_terrain(width: int, height: int):
 	var noise_gen = NoiseGenerator.new()
 	

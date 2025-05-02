@@ -6,15 +6,15 @@ var terrain_definitions = {
 		"base_color": Color.DARK_GREEN,
 		"density_range": [0.5, 0.6],
 		"walkable": true,
-		"movement_cost": 1.5, 
+		"movement_cost": 1.5,
 		"subterrain": ["dirt", "grass", "deep_grass", "tree"],
-		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6]  # Thresholds that determine subterrain
+		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6] # Thresholds that determine subterrain
 	},
 	"swamp": {
 		"base_color": Color.DARK_OLIVE_GREEN,
 		"density_range": [0.2, 0.3],
 		"walkable": true,
-		"movement_cost": 2.0, 
+		"movement_cost": 2.0,
 		"subterrain": ["shallow_water", "mud", "bog", "clay", "moss"],
 		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6]
 	},
@@ -22,8 +22,8 @@ var terrain_definitions = {
 		"base_color": Color.FOREST_GREEN,
 		"density_range": [0.3, 0.45],
 		"walkable": true,
-		"movement_cost": 1.0, 
-		"subterrain": ["dirt","grass", "bush", "deep_grass", "tree"],
+		"movement_cost": 1.0,
+		"subterrain": ["dirt", "grass", "bush", "deep_grass", "tree"],
 		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6]
 	},
 	"mountain": {
@@ -38,10 +38,10 @@ var terrain_definitions = {
 		"base_color": Color.DODGER_BLUE,
 		"density_range": [0.0, 0.5],
 		"walkable": true,
-		"movement_cost": 2.5, 
+		"movement_cost": 2.5,
 		"is_water": true,
 		"subterrain": ["shallow water", "water"],
-		"subterrain_thresholds": [-0.3]  
+		"subterrain_thresholds": [-0.3]
 	}
 }
 
@@ -51,8 +51,6 @@ var subterrain_definitions = {
 		"color_modifier": "darkened",
 		"color_amount": 0.3,
 		"walkable": true,
-		"resource": "wood",
-		"resource_factor": 0.5
 	},
 	"bush": {
 		"color_modifier": "darkened",
@@ -132,7 +130,7 @@ func get_terrain_type(density: float) -> String:
 		if range_values.size() == 2:
 			if density >= range_values[0] and density < range_values[1]:
 				return terrain_type
-	return "plains"  # Default
+	return "plains" # Default
 
 # Get subterrain based on terrain type and detail value
 func get_subterrain(terrain_type: String, detail_val: float) -> String:
@@ -190,4 +188,4 @@ func is_walkable(terrain_type: String, subterrain: String) -> bool:
 	if terrain_type in terrain_definitions and terrain_definitions[terrain_type].has("walkable"):
 		return terrain_definitions[terrain_type].walkable
 	
-	return true  # Default to walkable
+	return true # Default to walkable

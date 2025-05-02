@@ -54,10 +54,7 @@ static func print_map_statistics(map_data, terrain_database, base_seed = null, d
 	
 	print("------------------------------")
 	print("RESOURCES:")
-	var wood_tiles = map_data.find_tiles_with_resource("wood", 0.5)
-	var total_tiles = map_data.get_width() * map_data.get_height()
-	var wood_percentage = (wood_tiles.size() / float(total_tiles)) * 100
-	print("- Wood-rich tiles: ", wood_tiles.size(), " (", "%.1f" % wood_percentage, "%)")
+	#var total_tiles = map_data.get_width() * map_data.get_height()
 	
 	print("------------------------------")
 	print("MONSTER TERRITORIES:")

@@ -29,6 +29,10 @@ var parent: Tile = null # Previous tile in the optimal path
 @export var territory_owner: String = "" # For monster territory system
 @export var magic_influence: Dictionary = {} # For elemental magic system
 
+var resource_type = null # String ID of the resource
+var resource_amount = 0 # How much of the resource is available
+
+
 func _init(coords: Vector2i = Vector2i(0, 0), den: float = 0.5, terrain: String = "plains"):
 	x = coords.x
 	y = coords.y
@@ -46,13 +50,22 @@ func set_water(is_water_tile: bool) -> void:
 	# Store the water state in a private variable
 	_is_water = is_water_tile
 
-func get_resource_value(res_name: String) -> float:
-	if res_name in resources:
-		return resources[res_name]
-	return 0.0
+func has_resource(resource_id = null):
+	if not "resources" in self or self.resources.size() == 0:
+		return false
+		
+	if resource_id == null:
+		return self.resources.size() > 0
 	
-# Add any tile-specific calculation methods
-func is_resource_rich(resource_type: String, threshold: float) -> bool:
-	if resource_type in resources:
-		return resources[resource_type] >= threshold
-	return false
+	return resource_id in self.resources and self.resources[resource_id] > 0
+
+func harvest_resource(resource_id, amount = 1):
+	if has_resource(resource_id):
+		var actual_amount = min(amount, self.resources[resource_id])
+		self.resources[resource_id] -= actual_amount
+		
+		if self.resources[resource_id] <= 0:
+			self.resources.erase(resource_id)
+			
+		return actual_amount
+	return 0

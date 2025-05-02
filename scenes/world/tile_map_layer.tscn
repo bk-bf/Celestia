@@ -12,6 +12,8 @@ map_lengh = 200
 map_height = 200
 show_grid_lines = false
 show_coordinate_numbers = false
+show_density_values = false
+show_movement_costs = false
 
 [node name="Camera2D" type="Camera2D" parent="Map"]
 script = ExtResource("2_a07fb")
