@@ -78,7 +78,7 @@ func _ready():
 	map_renderer.show_density_values = show_density_values
 	map_renderer.show_movement_costs = show_movement_costs
 	map_renderer.show_terrain_letters = show_terrain_letters
-	map_renderer.show_resources = true # Enable resource visualization
+	map_renderer.show_resources = show_resources
 
 	# Initial sync of settings
 	sync_renderer_settings()
