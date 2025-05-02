@@ -1,4 +1,3 @@
-<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
 
 # Celestia Progress Report: Resource Generation System Implementation
 
@@ -33,9 +32,8 @@ This report summarizes the development progress on the Resource Generation Syste
 ## Design Decisions - Resource System Architecture
 
 - Adopted a separate ResourceGenerator approach rather than embedding resource generation within terrain generation for better modularity and future expansion
-- Designed the resource system to support future growth to 23+ planned resource types
-- Created a direct relationship between visual indicators (terrain subtypes) and resource availability for player intuition
-- Removed the initially proposed resource_revealed property in favor of the existing vision range system
+- Designed the resource system to support future growth for planned resources
+- Removed the initially proposed resource_revealed property in favor of the planned pawn vision range system
 - Implemented resource statistics tracking in the existing MapStatistics system
 - Made resource frequency values configurable, allowing easy balancing of resource abundance
 - Implemented subterrain-specific resource generation to create logical connection between visible terrain features and available resources
@@ -48,7 +46,7 @@ This report summarizes the development progress on the Resource Generation Syste
 - Implemented toggle functions for all visualization features
 - Added resource statistics to the map statistics system
 - Improved resource distribution visualization and balancing tools
-- Implemented proper synchronization between the map generator and renderer settings
+- Implemented synchronization between the map generator and renderer settings
 
 
 ## Current Status
@@ -58,7 +56,7 @@ This report summarizes the development progress on the Resource Generation Syste
 - Resource statistics tracking integrated with existing statistics system
 - Fully seed-based generation ensuring reproducible worlds
 - Resource balancing tools in place for future fine-tuning
-
+- Tile debug statistics (containing fonts) are experiencing rendering issues, might need redisign soon
 
 ## Next Steps Prioritized
 
@@ -68,18 +66,3 @@ This report summarizes the development progress on the Resource Generation Syste
 4. Implement basic inventory system for resource storage
 5. Design job system for resource collection
 6. Expand resource types based on gameplay testing feedback
-
-This progress represents the successful completion of the "Add resource generation focusing on 2-3 main resources" task from Phase 2 of the roadmap, laying important groundwork for the crafting and resource management systems that are core to Celestia's gameplay experience.
-
-<div style="text-align: center">⁂</div>
-
-[^1]: ROADMAP-2.md
-
-[^2]: Progress_Report_-1.md
-
-[^3]: Progress_Report_-2.md
-
-[^4]: README-2.md
-
-[^5]: Progress_Report_-3.md
-
