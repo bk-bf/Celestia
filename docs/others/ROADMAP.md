@@ -19,19 +19,15 @@
     - [x] Basic biome assignment (forest, plains, mountains, swamp)
 - **Core Gameplay Elements**
     - [x] Implement pathfinding using your Tile.walkable property
+  	- [x] Basic monster territory system using your existing territory_owner property
     - [x] Add resource generation focusing on 2-3 main resources
 
-## Phase 3: Game Mechanics Integration (2 weeks)
-
-- **Key Systems**
-    - [x] Basic monster territory system using your existing territory_owner property
-    - [ ] Simple resource harvesting mechanics
-
-## Phase 4: Pawn Implementation (2-3 weeks)
+## Phase 3: Pawn Implementation (2-3 weeks)
 
 - **Pawn Creation & Attributes**
-    - [ ] Implement basic pawn class with core attributes (strength, dexterity, intelligence)
+    - [x] Implement basic pawn class with core attributes (strength, dexterity, intelligence)
     - [ ] Implement pawn movement with terrain movement multipliers
+    - [ ] Simple resource harvesting mechanics
     - [ ] Create simple trait system for pawn personality
     - [ ] Add basic pawn appearance generation
     - [ ] Implement pawn naming system
@@ -53,7 +49,7 @@
     - [ ] Implement basic social interactions
     - [ ] Create foundational mood effects from relationships
 
-## Phase 5: Colony Essentials (2 weeks)
+## Phase 4: Colony Essentials (2 weeks)
 
 - **Resource Management**
     - [ ] Implement stockpile zones for storage
@@ -70,7 +66,7 @@
     - [ ] Add basic weather system
     - [ ] Create simple temperature fluctuations
 
-## Phase 6: Art and Sound Integration (2-3 weeks)
+## Phase 5: Art and Sound Integration (2-3 weeks)
 
 - **AI-Generated Visual Assets**
   - [ ] Set up Stable Diffusion 3 pipeline with custom LORA for consistent fantasy style
