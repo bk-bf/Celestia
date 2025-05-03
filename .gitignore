@@ -28,4 +28,4 @@ __pycache__/
 *.pyo
 *.pyd
 *.gd.uid
-
+test_map.tres
