@@ -26,12 +26,12 @@
 - **Key Systems**
     - [x] Basic monster territory system using your existing territory_owner property
     - [ ] Simple resource harvesting mechanics
-    - [ ] Implement pawn movement with terrain movement multipliers
 
 ## Phase 4: Pawn Implementation (2-3 weeks)
 
 - **Pawn Creation & Attributes**
     - [ ] Implement basic pawn class with core attributes (strength, dexterity, intelligence)
+    - [ ] Implement pawn movement with terrain movement multipliers
     - [ ] Create simple trait system for pawn personality
     - [ ] Add basic pawn appearance generation
     - [ ] Implement pawn naming system
