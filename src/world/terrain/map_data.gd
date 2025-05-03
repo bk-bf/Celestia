@@ -69,7 +69,32 @@ func get_average_density() -> float:
 			count += 1
 			
 	return sum / count if count > 0 else 0.5 # Default to normal ground density
+
+func get_random_center_position() -> Vector2i:
+	# Calculate the center of the map
+	var center_x = get_width() / 2
+	var center_y = get_height() / 2
 	
+	# Define the 10x10 area (5 tiles in each direction from center)
+	var start_x = center_x - 5
+	var start_y = center_y - 5
+	
+	# Try a limited number of times to find a valid position
+	for _attempt in range(10):
+		# Generate random position within this area
+		var random_x = start_x + randi() % 10
+		var random_y = start_y + randi() % 10
+		
+		# Make sure the position is valid and walkable
+		var position = Vector2i(random_x, random_y)
+		if is_within_bounds_map(Vector2(position.x, position.y)):
+			var tile = get_tile(position)
+			if tile.walkable:
+				return position
+	
+	# If no valid position found after attempts, fall back to the center
+	return Vector2i(center_x, center_y)
+
 func get_walkable_percentage() -> float:
 	var count = 0
 	var total = get_width() * get_height()
@@ -151,6 +176,7 @@ func register_monster_territory(seed_value: int, territory_type: String, territo
 					tile.territory_owner = territory_type
 
 var cleanup_count = 0 # outside of function to be accessible by statisctics.gd print
+
 func post_process_territories(): # Clean up each territory type
 	for territory_type in territory_database.get_monster_types():
 		var preferred_terrains = territory_database.get_monster_data(territory_type).preferred_terrain
