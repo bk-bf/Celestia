@@ -13,6 +13,6 @@ chunk_size = 16
 [resource]
 script = ExtResource("1_aqy0t")
 terrain_grid = SubResource("Resource_0w0xq")
-map_seed = 2761187062
+map_seed = 903528076
 map_name = "Celestia Map"
 map_size = Vector2i(200, 200)

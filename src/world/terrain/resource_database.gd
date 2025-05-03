@@ -9,6 +9,7 @@ var resources = {
         "frequency": 1.0, # Higher values = more common
         "cluster_size": 3, # Average resources per cluster
         "harvest_tool": "axe",
+		"skill_used": ["woodcutting"],
         "harvest_time": 5.0,
         "yield_amount": [2, 4], # Random range
         "color": Color(0.54, 0.27, 0.07)
@@ -19,7 +20,8 @@ var resources = {
         "terrain_subtype": ["rocky", "cliff", "peak"],
         "frequency": 1.0,
         "cluster_size": 4,
-        "harvest_tool": "pickaxe",
+        "harvest_tool": ["pickaxe"],
+		"skill_used": "mining",
         "harvest_time": 8.0,
         "yield_amount": [3, 6],
         "color": Color(0.7, 0.7, 0.7)
@@ -30,7 +32,8 @@ var resources = {
         "terrain_subtype": ["flower_field", "moss", "deep_grass"],
         "frequency": 1.0,
         "cluster_size": 2,
-        "harvest_tool": "none",
+        "harvest_tool": ["none", "knife"],
+		"skill_used": "gathering",
         "harvest_time": 3.0,
         "yield_amount": [1, 3],
         "color": Color(0.2, 0.8, 0.4)
