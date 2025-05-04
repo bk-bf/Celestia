@@ -67,9 +67,11 @@ func _ready():
 		map_data,
 		terrain_database,
 		territory_database,
+		$Pathfinder,
 		resource_db,
 		cell_size,
-		camera
+		camera,
+		$"../InputHandler"
 	)
 
 	# Configure renderer settings

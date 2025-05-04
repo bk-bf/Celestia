@@ -5,10 +5,14 @@ extends RefCounted
 var map_data: MapData
 var terrain_database: TerrainDatabase
 var territory_database: TerritoryDatabase
+var pathfinder = null
+var input_handler = null
 var resource_db: ResourceDatabase
 var cell_size: Vector2
 var camera: Camera2D
 var zoom_threshold: float = 0.5
+var debug_path: Array = []
+var map: MapRenderer
 
 # Configuration flags
 var show_grid_lines: bool = false
@@ -22,16 +26,20 @@ func _init(
 	map_data_ref,
 	terrain_db_ref,
 	territory_db_ref,
+	pathfinder_ref,
 	resource_db_ref,
 	cell_size_ref,
-	camera_ref
+	camera_ref,
+	input_handler_ref = null
 ):
 	map_data = map_data_ref
 	terrain_database = terrain_db_ref
 	territory_database = territory_db_ref
+	pathfinder = pathfinder_ref
 	resource_db = resource_db_ref
 	cell_size = cell_size_ref
 	camera = camera_ref
+	input_handler = input_handler_ref
 
 # Main render function that calls all the specific drawing functions
 func render(canvas_item: CanvasItem):
@@ -44,6 +52,9 @@ func render(canvas_item: CanvasItem):
 		draw_grid_lines(canvas_item)
 	
 	draw_territory_markers(canvas_item)
+
+	if draw_pathfinder:
+		draw_pathfinder(canvas_item)
 	
 	if show_resources:
 		draw_resources(canvas_item)
@@ -136,6 +147,16 @@ func draw_territory_markers(canvas_item: CanvasItem):
 				
 				# Draw the letter
 				canvas_item.draw_string(custom_font, text_pos, territory_letter, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size_territory, letter_color)
+
+func set_debug_path(path: Array):
+	debug_path = path
+
+func draw_pathfinder(canvas_item: CanvasItem):
+	if debug_path.size() > 1:
+		for i in range(debug_path.size() - 1):
+			var start_pos = map_data.grid_to_map(debug_path[i])
+			var end_pos = map_data.grid_to_map(debug_path[i + 1])
+			canvas_item.draw_line(start_pos, end_pos, Color.RED, 1.0)
 
 # Draw resources on the map
 func draw_resources(canvas_item: CanvasItem):

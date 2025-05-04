@@ -3,12 +3,15 @@
 [ext_resource type="Script" uid="uid://dsc4bw3ss6jel" path="res://src/core/main.gd" id="1_a07fb"]
 [ext_resource type="Script" uid="uid://dadowb7yknfjj" path="res://src/world/terrain/map_gen.gd" id="1_sodj5"]
 [ext_resource type="Script" uid="uid://cdfk4qi21bb6x" path="res://src/components/camera/camera_2d.gd" id="2_a07fb"]
-[ext_resource type="Script" uid="uid://bchirmnxmphwd" path="res://src/world/generation/pathfinder_tester.gd" id="3_sodj5"]
+[ext_resource type="Script" uid="uid://duynfs6n6kueb" path="res://src/core/utils/input_handler.gd" id="2_wcgg5"]
 
 [node name="Game" type="Node2D"]
 
 [node name="Main" type="Node" parent="."]
 script = ExtResource("1_a07fb")
+
+[node name="InputHandler" type="Node2D" parent="Main"]
+script = ExtResource("2_wcgg5")
 
 [node name="Map" type="Node2D" parent="Main"]
 script = ExtResource("1_sodj5")
@@ -19,12 +22,12 @@ show_coordinate_numbers = false
 show_terrain_letters = false
 show_density_values = false
 show_movement_costs = false
+base_seed = 1497914610
 
 [node name="Camera2D" type="Camera2D" parent="Main/Map"]
 script = ExtResource("2_a07fb")
 
 [node name="Pathfinder" type="Node2D" parent="Main/Map"]
-script = ExtResource("3_sodj5")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="Main/Map"]
 debug_enabled = true
