@@ -28,7 +28,7 @@
     - [x] Implement basic pawn class with core attributes (strength, dexterity, intelligence)
     - [x] Implement pawn movement with terrain movement multipliers
     - [ ] Simple resource harvesting mechanics
-    - [ ] Create simple trait system for pawn personality
+    - [ ] Create a simple trait system for pawn personality
     - [ ] Add basic pawn appearance generation
     - [ ] Implement pawn naming system
 
