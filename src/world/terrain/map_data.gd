@@ -303,3 +303,13 @@ func get_subterrain_percentage(subterrain_type: String) -> float:
 				count += 1
 	
 	return float(count) / total if total > 0 else 0.0
+
+# In MapData.gd
+func reduce_resource_at(position: Vector2i, amount: int = 1):
+	var tile = get_tile(position)
+	if tile and tile.has_resource():
+		# Get the first resource type in the dictionary
+		var resource_id = tile.resources.keys()[0] if tile.resources.size() > 0 else ""
+		if resource_id != "":
+			return tile.harvest_resource(resource_id, amount)
+	return 0

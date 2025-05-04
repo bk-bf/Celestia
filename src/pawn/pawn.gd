@@ -20,10 +20,27 @@ var is_selected: bool = false
 var movement_path: Array = []
 var current_path_index: int = 0
 var pathfinder = null
+var path_blocked = false
 
 # References
-var map_data = null # Will hold reference to your map
+var map_data = MapDataManager.map_data # autoload/singleton for Resource
 var terrain_db = TerrainDatabase.new() # Reference to terrain database
+var sprite_renderer: SpriteRenderer
+
+# pawn inventory
+var inventory = Inventory.new()
+var max_carry_weight = 50 # Default value
+var current_carry_weight = 0
+
+# state machine
+var state_machine
+var current_job = null
+var harvesting_speed = 1.0
+var harvest_time = 0.0
+var harvest_progress = 0.0
+var progress_bar
+var harvesting_target = null
+var has_reached_destination = false
 
 # Visual representation
 var sprite: Sprite2D
@@ -35,14 +52,16 @@ func _init(id: int, start_position: Vector2i, map_reference):
 	
 	# Use the existing conversion function
 	position = map_data.grid_to_map(start_position)
-	
-	# Initialize the sprite
-	sprite = Sprite2D.new()
-	sprite.texture = preload("res://assets/tiles/pawn_placeholder.png") # Create this placeholder image
-	add_child(sprite)
+	#print(map_data.map_to_grid(position))
 	
 	# Initialize terrain movement multipliers from TerrainDatabase
 	initialize_movement_multipliers()
+
+	# Initialize the sprite renderer
+	sprite_renderer = SpriteRenderer.new(false) # Use basic sprite for now
+	sprite_renderer.set_texture("res://assets/tiles/pawn_placeholder.png")
+	add_child(sprite_renderer)
+	
 
 func initialize_movement_multipliers():
 	# Populate movement multipliers from terrain database
@@ -58,13 +77,57 @@ func _ready():
 	# Initialize pathfinder
 	pathfinder = Pathfinder.new(map_data.terrain_grid)
 	
+	# Calculate max carrying capacity based on strength
+	max_carry_weight = 30 + (strength * 5) # Simple formula, adjust as needed
+	
+	# Calculate harvesting speed based on attributes
+	# For example, dexterity could affect harvesting speed
+	harvesting_speed = 1.0 + (dexterity * 0.1) # Simple formula, adjust as needed
+	 
+	 # Create progress bar
+	progress_bar = ProgressBar.new()
+	progress_bar.min_value = 0
+	progress_bar.max_value = 1
+	progress_bar.value = 0
+	progress_bar.size = Vector2(50, 10)
+	progress_bar.position = Vector2(-25, -40)
+	progress_bar.visible = false
+	add_child(progress_bar)
+	print("Progress bar added:", progress_bar != null)
+	print("Progress bar parent:", progress_bar.get_parent() if progress_bar else "None")
+	
+	# Set up state machine
+	state_machine = PawnStateMachine.new(self)
+	add_child(state_machine)
+	print("Added the State Machine...")
+	
+	# Add states
+	state_machine.add_state("Idle", IdleState.new())
+	state_machine.add_state("MovingToResource", MovingToResourceState.new())
+	state_machine.add_state("Harvesting", HarvestingState.new())
+	print("States registered:", state_machine.states.keys())
+	
+	# Set initial state
+	state_machine.change_state("Idle")
+
+	# debug
+	print("Pawn " + str(pawn_id) + " ready called")
+	print("Sprite exists: " + str(sprite_renderer.sprite != null))
+
+	#sprite.scale = Vector2(2, 2) # Adjust based on your art size
 	# Set up initial appearance
 	update_visual()
+
+# Assign a harvesting job to this pawn
+func assign_harvesting_job(positions, resource_type, amount, time):
+	current_job = HarvestingJob.new(positions, resource_type, amount, time)
+	# State machine will handle the transition to MovingToResource
 
 func _process(delta):
 	# Handle movement and other per-frame updates
 	if is_moving:
 		move_toward_target(delta)
+
 
 func set_selected(selected: bool):
 	is_selected = selected
@@ -73,10 +136,10 @@ func set_selected(selected: bool):
 # Update the pawn's visual appearance
 func update_visual():
 	if is_selected:
-		# Add selection indicator (e.g., change color or add outline)
-		modulate = Color(1.5, 1.5, 1.5) # Brighten the sprite
+		sprite_renderer.modulate = Color(1.5, 1.5, 1.5)
 	else:
-		modulate = Color(1, 1, 1) # Normal color
+		sprite_renderer.modulate = Color(1, 1, 1)
+
 
 # Generate random attributes within a range
 func generate_random_attributes(min_value: int = 3, max_value: int = 8):
@@ -142,7 +205,9 @@ func move_to(target_position: Vector2i) -> bool:
 func move_toward_target(delta):
 	if current_path_index >= movement_path.size():
 		# We've reached the end of the path
-		is_moving = false
+		is_moving = false #
+		has_reached_destination = true
+		print("Reached destination, has_reached_destination set to:", has_reached_destination)
 		return
 	
 	# Get the next tile in the path
@@ -175,7 +240,19 @@ func move_toward_target(delta):
 		 # Check if we've reached the end of the path
 		if current_path_index >= movement_path.size():
 			is_moving = false
+			has_reached_destination = true
 			print("Reached destination")
+		else:
+			has_reached_destination = false # Reset when moving
+
+	if current_path_index < movement_path.size():
+		var next_tile = map_data.get_tile(next_tile_pos)
+		
+		if !next_tile.walkable:
+			path_blocked = true
+			print("Path blocked at position: ", next_tile_pos)
+		else:
+			path_blocked = false
 			
 # Strength affects carrying capacity and melee damage
 func get_carrying_capacity() -> float:
@@ -204,56 +281,35 @@ func calculate_magic_power() -> float:
 	# Base power plus intelligence bonus
 	return 10.0 + calculate_attribute_bonus(intelligence) * 3.0
 
-# Add these functions to your Pawn class
 
-# Start harvesting a resource at the target position
-func harvest_resource(target_position: Vector2i) -> bool:
-	# First, move to the position adjacent to the resource
-	# Find an adjacent tile that is walkable
-	var adjacent_positions = [
-		Vector2i(target_position.x + 1, target_position.y),
-		Vector2i(target_position.x - 1, target_position.y),
-		Vector2i(target_position.x, target_position.y + 1),
-		Vector2i(target_position.x, target_position.y - 1)
-	]
+func harvest_resource(grid_position: Vector2i, resource_id: String, amount: int):
+	print("Pawn " + str(pawn_id) + " attempting to harvest " + resource_id + " at position:", grid_position)
 	
-	var harvest_position = null
-	for pos in adjacent_positions:
-		if map_data.is_tile_walkable(pos.x, pos.y):
-			harvest_position = pos
-			break
+	if state_machine.current_state == "Harvesting":
+		# Complete current job
+		current_job = null
+		# Reset progress
+		progress_bar.value = 0
+		progress_bar.visible = false
+		# Change to idle first
+		state_machine.change_state("Idle")
 	
-	if harvest_position == null:
-		print("No accessible position adjacent to resource")
-		return false
+	# Create a new harvesting job
+	var job = HarvestingJob.new(
+		grid_position,
+		resource_id,
+		amount,
+		2.0 # Default harvest time
+	)
 	
-	# Move to the position
-	if current_tile_position != harvest_position:
-		move_to(harvest_position)
-		# We'll need to wait until movement is complete before harvesting
-		# This would be handled by a state machine in a more complete implementation
-		return true
+	# Assign the job to this pawn
+	current_job = job
+	job.assigned_pawn = self
 	
-	# Get the resource information
-	var resource_tile = map_data.get_tile(target_position.x, target_position.y)
-	if resource_tile.resource_type == null or resource_tile.resource_amount <= 0:
-		print("No resource to harvest!")
-		return false
+	#print("Created harvesting job for resource:", resource_id)
+	#print("Current job is now:", current_job)
 	
-	# Calculate harvest speed based on strength (for now)
-	var harvest_speed = 1.0 + calculate_attribute_bonus(strength) * 0.2
+	# Change state to MovingToResource
+	state_machine.change_state("MovingToResource")
 	
-	# In a complete implementation, you would start a timer here
-	# and perform the actual harvesting when the timer completes
-	print("Starting to harvest with speed multiplier: " + str(harvest_speed))
-	
-	# For now, just instantly harvest one unit
-	resource_tile.resource_amount -= 1
-	
-	# If depleted, remove resource from tile
-	if resource_tile.resource_amount <= 0:
-		resource_tile.resource_type = null
-		# Update tile appearance would happen here
-	
-	print("Harvested resource!")
 	return true

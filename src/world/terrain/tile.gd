@@ -29,8 +29,8 @@ var parent: Tile = null # Previous tile in the optimal path
 @export var territory_owner: String = "" # For monster territory system
 @export var magic_influence: Dictionary = {} # For elemental magic system
 
-var resource_type = null # String ID of the resource
-var resource_amount = 0 # How much of the resource is available
+# var resource_type = null # String ID of the resource
+# var resource_amount = 0 # How much of the resource is available
 
 
 func _init(coords: Vector2i = Vector2i(0, 0), den: float = 0.5, terrain: String = "plains"):

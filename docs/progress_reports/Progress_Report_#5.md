@@ -1,5 +1,3 @@
-You've successfully implemented the toggle feature for path visualization, which allows you to disable the performance-heavy path drawing when not needed for debugging.
-
 # Progress Report for Celestia Development
 
 ## Completed Tasks
@@ -66,5 +64,4 @@ The foundation you've built with the core pawn system and movement mechanics pro
 
 <div style="text-align: center">⁂</div>
 
-[^1]: Selection_013.jpg
 

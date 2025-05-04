@@ -7,14 +7,14 @@ var selected_pawn_id = -1 # Track the currently selected pawn
 func _ready():
 	# Get reference to your existing map
 	var map = $Map
-	
 	# Access the map_data through your map's getter
 	var map_data = map.map_data
+
+	# Get reference to existing PawnManager node
+	pawn_manager = $PawnManager
 	
-	# Initialize the pawn manager with map_data reference
-	pawn_manager = PawnManager.new(map_data)
-	add_child(pawn_manager)
-	
+	# Initialize it with map_data
+	pawn_manager.initialize(map_data)
 	# Create some initial test pawns in the center area
 	for i in range(3): # Create 3 pawns
 		var center_position = map_data.get_random_center_position()

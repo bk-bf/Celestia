@@ -45,14 +45,13 @@ func _ready():
 	# Generate terrain with stored seeds
 	generate_terrain(seed, detail_seed)
 	
+	# Set the map data in the global manager
+	MapDataManager.map_data = map_data
+	MapDataManager.save_map()
+	
+	# Map Statistics
 	MapStatistics.print_map_statistics(map_data, terrain_database, resource_db, base_seed, detail_seed, territory_seed)
 	
-	# Save the map data
-	var save_path = "res://resources/maps/test_map.tres"
-	var err = map_data.save_to_file(save_path)
-	print("map saved with result: ", err)
-	
-	# this is still work in progress I think
 	# Create an instance of MapStatistics
 	var map_stats = MapStatistics.new()
 	# Set required properties on the instance
