@@ -4,6 +4,7 @@ extends Resource
 var territory_database = TerritoryDatabase.new() # Add monsters database
 var noise_generator = NoiseGenerator.new()
 var terrain_database = TerrainDatabase.new()
+var pathfinder = Pathfinder
 # Core terrain grid
 @export var terrain_grid: Grid
 
@@ -17,6 +18,7 @@ var terrain_distribution: Dictionary = {}
 
 # Resource maps
 var resource_maps: Dictionary = {}
+signal tile_resource_changed(position)
 
 # Territory data for monster system
 var monster_territories: Array = []
@@ -34,6 +36,7 @@ func _init(size: Vector2i = Vector2i(200, 200), set_seed: int = 0):
 	map_size = size
 	map_seed = set_seed
 	terrain_grid = Grid.new(size.x, size.y)
+	pathfinder = Pathfinder.new(terrain_grid) # Create an instance
 	
 # Save and load functionality
 func save_to_file(path: String) -> Error:
@@ -106,6 +109,12 @@ func get_walkable_percentage() -> float:
 				count += 1
 	
 	return float(count) / total
+
+func get_resources_at(position: Vector2i):
+	var tile = get_tile(position)
+	if tile and "resources" in tile:
+		return tile.resources
+	return null
 
 func get_terrain_percentage(terrain_type: String) -> float:
 	var count = 0
@@ -304,12 +313,33 @@ func get_subterrain_percentage(subterrain_type: String) -> float:
 	
 	return float(count) / total if total > 0 else 0.0
 
-# In MapData.gd
-func reduce_resource_at(position: Vector2i, amount: int = 1):
+	
+func reduce_resource_at(position: Vector2i, amount: int):
 	var tile = get_tile(position)
-	if tile and tile.has_resource():
-		# Get the first resource type in the dictionary
-		var resource_id = tile.resources.keys()[0] if tile.resources.size() > 0 else ""
-		if resource_id != "":
-			return tile.harvest_resource(resource_id, amount)
-	return 0
+	if not tile or not "resources" in tile:
+		return false
+
+	# Assuming there's only one resource type per tile for simplicity
+	var resource_type = tile.resources.keys()[0] if tile.resources.size() > 0 else null
+
+	if not resource_type:
+		return false
+
+	# Reduce the resource
+	tile.resources[resource_type] -= amount
+
+	# If resource is depleted, remove it from the dictionary
+	if tile.resources[resource_type] <= 0:
+		tile.resources.erase(resource_type)
+		
+		# If no resources left, remove the resources dictionary
+		if tile.resources.size() == 0:
+			# Simply remove the resources property instead of calling a method
+			tile.resources = {} # Or you could use: tile.set("resources", {})
+	
+	# Emit signal that this tile changed
+	emit_signal("tile_resource_changed", position)
+	print("Emitting tile_resource_changed signal for position: ", position)
+	super.emit_signal("tile_resource_changed", position)
+
+	return true

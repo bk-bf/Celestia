@@ -18,12 +18,17 @@ func generate_resources():
 	
 	print("Resource generation complete")
 
+
 func generate_specific_resource(resource_id):
 	var resource_data = resource_db.get_resource(resource_id)
 	
 	# Track statistics for debugging
 	var placed_count = 0
 	var total_amount = 0
+	
+	# Set up random number generator with the resource seed
+	var rng = RandomNumberGenerator.new()
+	rng.seed = resource_seed + resource_id.hash()
 	
 	# Place resources based on terrain type and noise value
 	for y in range(map_data.get_height()):
@@ -38,18 +43,14 @@ func generate_specific_resource(resource_id):
 			if not tile.terrain_type in resource_data.terrain_type:
 				continue
 			
-			# CHANGE: Only place resources on matching subterrains
+			# Only place resources on matching subterrains
 			if tile.terrain_subtype in resource_data.terrain_subtype:
-				# Determine resource amount (with some variety)
-				# Use detail noise for variety in resource amounts
-				var noise_value = noise_gen.get_detail_noise(x + resource_seed, y + resource_id.hash() % 10000)
-				# Normalize to 0-1 range (FastNoiseLite returns -1 to 1)
-				noise_value = (noise_value + 1) * 0.5
+				# Get the resource amount range from the resource definition
+				var min_amount = resource_data.resource_amount[0]
+				var max_amount = resource_data.resource_amount[1]
 				
-				var base_amount = resource_data.cluster_size
-				var variance = noise_value * 2 # Higher noise value = more resources
-				var amount = round(base_amount * variance)
-				amount = clamp(amount, resource_data.yield_amount[0], resource_data.yield_amount[1])
+				# Generate a random amount within the range
+				var amount = rng.randi_range(min_amount, max_amount)
 				
 				# Apply territory penalty to amount if in monster territory
 				if tile.territory_owner != "":

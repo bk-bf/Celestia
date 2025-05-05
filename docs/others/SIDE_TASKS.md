@@ -20,3 +20,27 @@
 - [ ] apply random coloring to pawn sprites (to differentiate between them)
 - [ ] implement quick progress bar for harvesting (maybe)
 
+
+
+
+
+func _init(
+map_data_ref,
+drawing_node_ref,
+terrain_db_ref,
+territory_db_ref,
+pathfinder_ref,
+resource_db_ref,
+cell_size_ref,
+camera_ref,
+input_handler_ref = null
+):
+map_data = map_data_ref
+drawing_node = drawing_node_ref # Trying to assign value of type 'Resource' to a variable of type 'CanvasItem'.
+terrain_database = terrain_db_ref
+territory_database = territory_db_ref
+pathfinder = pathfinder_ref
+resource_db = resource_db_ref
+cell_size = cell_size_ref
+camera = camera_ref
+input_handler = input_handler_ref

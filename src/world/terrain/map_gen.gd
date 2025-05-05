@@ -1,7 +1,7 @@
 extends Node2D
 
 # Imports
-const MapStatisticsFile = preload("res://src/core/utils/statistics.gd")
+const MapStatisticsFile = preload("res://src/core/utils/map_statistics.gd")
 const ResourceDB = preload("res://src/world/terrain/resource_database.gd")
 const MapDataFile = preload("res://src/world/terrain/map_data.gd")
 const MapRendererFile = preload("res://src/core/utils/map_renderer.gd")
@@ -72,6 +72,9 @@ func _ready():
 		camera,
 		$"../InputHandler"
 	)
+
+	# calling the MapRenderer intitializer
+	map_renderer.initialize(map_data, self)
 
 	# Configure renderer settings
 	map_renderer.show_grid_lines = show_grid_lines

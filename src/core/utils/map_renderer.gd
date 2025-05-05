@@ -13,6 +13,8 @@ var camera: Camera2D
 var zoom_threshold: float = 0.5
 var debug_path: Array = []
 var map: MapRenderer
+var drawing_node: CanvasItem
+
 
 # Configuration flags
 var show_grid_lines: bool = false
@@ -21,6 +23,9 @@ var show_density_values: bool = false
 var show_movement_costs: bool = true
 var show_terrain_letters: bool = true
 var show_resources: bool = true
+
+# Tracker
+var dirty_tiles = {}
 
 func _init(
 	map_data_ref,
@@ -40,6 +45,29 @@ func _init(
 	cell_size = cell_size_ref
 	camera = camera_ref
 	input_handler = input_handler_ref
+	var dirty_tiles = {}
+
+
+func initialize(map_data_ref, drawing_node_ref):
+	map_data = map_data_ref
+	drawing_node = drawing_node_ref
+	print("Initializing MapRenderer with map_data:", map_data_ref, " and drawing_node:", drawing_node_ref)
+	
+	# Connect to the signal
+	var connection_result = map_data.connect("tile_resource_changed", _on_tile_resource_changed)
+	print("Signal connection result:", connection_result)
+
+
+func _on_tile_resource_changed(position):
+	print("Received tile_resource_changed signal for position: ", position)
+	# Mark this tile as dirty
+	dirty_tiles[position] = true
+	# Request a redraw on the drawing node
+	if drawing_node:
+		print("Calling queue_redraw() on drawing node")
+		drawing_node.queue_redraw()
+	else:
+		print("ERROR: drawing_node is null!")
 
 # Main render function that calls all the specific drawing functions
 func render(canvas_item: CanvasItem):
@@ -57,7 +85,7 @@ func render(canvas_item: CanvasItem):
 		draw_pathfinder(canvas_item)
 	
 	if show_resources:
-		draw_resources(canvas_item)
+		draw_resources(canvas_item, )
 	
 	if show_coordinate_numbers:
 		draw_coordinate_numbers(canvas_item)
@@ -70,6 +98,12 @@ func render(canvas_item: CanvasItem):
 	
 	if show_terrain_letters:
 		draw_terrain_letters(canvas_item)
+
+
+func cleanup():
+	if map_data:
+		map_data.disconnect("tile_resource_changed", _on_tile_resource_changed)
+
 
 # Draw the base terrain tiles with their colors
 func draw_terrain_tiles(canvas_item: CanvasItem):
@@ -160,32 +194,73 @@ func draw_pathfinder(canvas_item: CanvasItem):
 
 # Draw resources on the map
 func draw_resources(canvas_item: CanvasItem):
+	# Always draw all tiles with resources
 	for y in range(map_data.get_height()):
 		for x in range(map_data.get_width()):
-			var grid_coords = Vector2i(x, y)
-			var tile = map_data.get_tile(grid_coords)
-				
-			for resource_id in tile.resources:
-				var resource_data = resource_db.get_resource(resource_id)
-				if resource_data:
-					var resource_color = resource_data.color
-					
-					# Draw resource indicator
-					var pixel_pos = Vector2(
-						x * cell_size.x + cell_size.x / 2,
-						y * cell_size.y + cell_size.y / 2
-					)
-					canvas_item.draw_circle(pixel_pos, cell_size.x * 0.25, resource_color)
-					
-					# For larger resource amounts, add visual indicator
-					if tile.resources[resource_id] > resource_data.yield_amount[0] + 1:
-						var custom_font = preload("res://assets/fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf")
-						var font_size = cell_size.x * 0.4
-						canvas_item.draw_string(custom_font,
-									pixel_pos + Vector2(-font_size * 0.25, font_size * 0.3),
-									str(tile.resources[resource_id]),
-									resource_color.darkened(0.3),
-									HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+			_draw_tile_resources(canvas_item, Vector2i(x, y))
+	
+	# Clear dirty tiles after handling them
+	if dirty_tiles and dirty_tiles.size() > 0:
+		dirty_tiles.clear()
+
+
+# Helper method to draw resources for a single tile
+func _draw_tile_resources(canvas_item: CanvasItem, grid_coords: Vector2i):
+	var tile = map_data.get_tile(grid_coords)
+	
+	# For dirty tiles with no resources, we need to clear any previous resource visuals
+	# by redrawing the terrain
+	if not "resources" in tile or tile.resources.size() == 0:
+		# Get the tile's terrain color to redraw the background
+		var base_color = Color.WHITE
+		if tile.terrain_type in terrain_database.terrain_definitions:
+			base_color = terrain_database.terrain_definitions[tile.terrain_type].base_color
+		
+		# Apply subterrain modification if applicable
+		var color = base_color
+		if tile.terrain_subtype != "":
+			color = terrain_database.get_modified_color(base_color, tile.terrain_subtype)
+		
+		# Redraw the tile background to clear any resource visuals
+		var rect = Rect2(
+			grid_coords.x * cell_size.x,
+			grid_coords.y * cell_size.y,
+			cell_size.x,
+			cell_size.y
+		)
+		canvas_item.draw_rect(rect, color)
+		return
+	
+	# Draw resources if present
+	for resource_id in tile.resources.keys():
+		# Skip if resource amount is 0 or negative
+		if tile.resources[resource_id] <= 0:
+			continue
+			
+		var resource_data = resource_db.get_resource(resource_id)
+		if resource_data:
+			var resource_color = resource_data.color
+			
+			# Draw resource indicator
+			var pixel_pos = Vector2(
+				grid_coords.x * cell_size.x + cell_size.x / 2,
+				grid_coords.y * cell_size.y + cell_size.y / 2
+			)
+			canvas_item.draw_circle(pixel_pos, cell_size.x * 0.25, resource_color)
+			
+			# For larger resource amounts, add visual indicator
+			if tile.resources[resource_id] > 1:
+				var custom_font = preload("res://assets/fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf")
+				var font_size = cell_size.x * 0.4
+				canvas_item.draw_string(
+							custom_font,
+							pixel_pos + Vector2(-font_size * 0.25, font_size * 0.3),
+							str(tile.resources[resource_id]),
+							HORIZONTAL_ALIGNMENT_CENTER,
+							-1,
+							font_size,
+							resource_color.darkened(0.3),
+							)
 
 # Draw coordinate numbers
 func draw_coordinate_numbers(canvas_item: CanvasItem):

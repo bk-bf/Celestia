@@ -17,3 +17,35 @@ func _init(pos, type, amount, time = 2.0):
 
 func is_complete():
     return progress >= 1.0
+
+func complete_harvesting():
+    # Calculate the amount harvested
+    var harvested_amount = calculate_harvest_amount()
+    
+    # Log the harvesting event
+    if DebugLogger.instance:
+        DebugLogger.instance.log_resource_harvested(
+            assigned_pawn.name,
+            resource_type,
+            harvested_amount,
+            target_position
+        )
+    
+    # Return the harvested resources
+    return {
+        "type": resource_type,
+        "amount": harvested_amount
+    }
+
+func calculate_harvest_amount():
+    # Get the resource definition from the database
+    var resource_db = ResourceDatabase.new()
+    var resource_def = resource_db.get_resource(resource_type)
+    
+    if resource_def:
+        # Instead of using yield_amount for randomization,
+        # just return the full amount available on the tile
+        return amount_available
+    else:
+        # Fallback if resource definition not found
+        return min(1, amount_available)

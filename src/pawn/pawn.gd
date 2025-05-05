@@ -294,11 +294,25 @@ func harvest_resource(grid_position: Vector2i, resource_id: String, amount: int)
 		# Change to idle first
 		state_machine.change_state("Idle")
 	
+	# Get the actual amount available on the tile
+	var tile_resources = map_data.get_resources_at(grid_position)
+	var amount_available = 0
+	if tile_resources and resource_id in tile_resources:
+		amount_available = tile_resources[resource_id]
+
+	# Get the resource definition
+	var resource_db = ResourceDatabase.new()
+	var resource_def = resource_db.get_resource(resource_id)
+	var harvest_time = 2.0 # Default harvest time
+	
+	if resource_def and "harvest_time" in resource_def:
+		harvest_time = resource_def.harvest_time
+
 	# Create a new harvesting job
 	var job = HarvestingJob.new(
 		grid_position,
 		resource_id,
-		amount,
+		amount_available, # Use the actual amount on the tile
 		2.0 # Default harvest time
 	)
 	
