@@ -31,6 +31,12 @@
     - [ ] Create a simple trait system for pawn personality
     - [ ] Add basic pawn appearance generation
     - [ ] Implement pawn naming system
+- **TileMap Integration (Technical Improvement)**
+    - [ ] Replace current `draw()` implementation with TileMap-based rendering
+    - [ ] Create basic placeholder sprites for terrain types
+    - [ ] Implement proper z-indexing for entities and terrain
+    - [ ] Add sprite-based visualization for resources
+    - [ ] Implement chunking for large map optimization
 - **Enhanced Monster Territory System**
     - [x] Basic monster territory system using territory_owner property
     - [ ] Expand territory system with difficulty gradients from periphery to center

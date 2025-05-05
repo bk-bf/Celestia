@@ -8,7 +8,7 @@ func enter():
 	# Play harvesting animation
 	# Show progress bar
 	print('Entered HarvestingState')
-	pawn.progress_bar.visible = true
+	pawn.progress_bar.visible = false
 
 func exit():
 	# Hide progress bar

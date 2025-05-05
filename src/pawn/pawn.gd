@@ -38,7 +38,7 @@ var current_job = null
 var harvesting_speed = 1.0
 var harvest_time = 0.0
 var harvest_progress = 0.0
-var progress_bar
+var progress_bar = false
 var harvesting_target = null
 var has_reached_destination = false
 
@@ -84,12 +84,13 @@ func _ready():
 	# For example, dexterity could affect harvesting speed
 	harvesting_speed = 1.0 + (dexterity * 0.1) # Simple formula, adjust as needed
 	 
-	 # Create progress bar
+	 # Create progress bar - doesnt work properly
 	progress_bar = ProgressBar.new()
+	progress_bar.z_index = 11 # Choose a value higher than your map's z-index
 	progress_bar.min_value = 0
 	progress_bar.max_value = 1
 	progress_bar.value = 0
-	progress_bar.size = Vector2(50, 10)
+	progress_bar.size = Vector2(5, 1)
 	progress_bar.position = Vector2(-25, -40)
 	progress_bar.visible = false
 	add_child(progress_bar)
@@ -294,25 +295,11 @@ func harvest_resource(grid_position: Vector2i, resource_id: String, amount: int)
 		# Change to idle first
 		state_machine.change_state("Idle")
 	
-	# Get the actual amount available on the tile
-	var tile_resources = map_data.get_resources_at(grid_position)
-	var amount_available = 0
-	if tile_resources and resource_id in tile_resources:
-		amount_available = tile_resources[resource_id]
-
-	# Get the resource definition
-	var resource_db = ResourceDatabase.new()
-	var resource_def = resource_db.get_resource(resource_id)
-	var harvest_time = 2.0 # Default harvest time
-	
-	if resource_def and "harvest_time" in resource_def:
-		harvest_time = resource_def.harvest_time
-
 	# Create a new harvesting job
 	var job = HarvestingJob.new(
 		grid_position,
 		resource_id,
-		amount_available, # Use the actual amount on the tile
+		amount,
 		2.0 # Default harvest time
 	)
 	

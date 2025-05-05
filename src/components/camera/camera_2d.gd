@@ -19,8 +19,22 @@ var is_dragging = false
 var drag_start_position = Vector2.ZERO
 
 func _ready():
-	target_position = global_position
+	var map_data = MapDataManager.map_data # autoload/singleton for Resource
+	# Assuming each tile is 16×16 pixels (adjust as needed)
+	var tile_size = 16
+	
+	var map_size = map_data.map_size
+	
+	# Calculate the center in world coordinates
+	var map_center = Vector2(map_size.x * tile_size / 2, map_size.y * tile_size / 2)
+	
+	# Set the camera position
+	target_position = map_center
+	global_position = target_position
+	
+	# Initialize zoom
 	target_zoom = zoom
+
 
 func _process(delta):
 	# Handle smooth movement
