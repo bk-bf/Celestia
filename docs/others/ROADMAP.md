@@ -86,7 +86,7 @@
     - [ ] Design specialized workstations for different crafting types
 
 
-### Phase 5: Survival \& Colony Management (2-3 weeks)
+## Phase 5: Survival \& Colony Management (2-3 weeks)
 
 - **Pawn Needs \& Work Systems**
     - [ ] Implement hunger and rest needs
