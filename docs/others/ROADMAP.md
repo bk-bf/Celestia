@@ -1,5 +1,7 @@
 # ROADMAP
 
+## ERP
+
 ## Phase 1: Complete Foundation \& Basic Visualization (1-2 weeks)
 
 - **Finish Core Structure**
@@ -22,10 +24,11 @@
     - [x] Basic monster territory system using your existing territory_owner property
     - [x] Add resource generation focusing on 2-3 main resources
 
-## Phase 3: Pawn \& Territory Enhancement (3-4 weeks)
+
+## Phase 3A: Core Pawn \& Territory Systems (2-3 weeks)
 
 - **Pawn Creation \& Attributes**
-    - [x] Implement basic pawn class with core attributes (strength, dexterity, intelligence)
+    - [x] Implement basic pawn class with core attributes
     - [x] Implement pawn movement with terrain movement multipliers
     - [x] Simple resource harvesting mechanics
     - [ ] Create a simple trait system for pawn personality
@@ -36,44 +39,36 @@
     - [ ] Create basic placeholder sprites for terrain types
     - [ ] Implement proper z-indexing for entities and terrain
     - [ ] Add sprite-based visualization for resources
-    - [ ] Implement chunking for large map optimization
 - **Enhanced Monster Territory System**
     - [x] Basic monster territory system using territory_owner property
     - [ ] Expand territory system with difficulty gradients from periphery to center
     - [ ] Add visual boundary indicators (claw marks, monster signs)
-    - [ ] Implement monster spawning based on territory type
     - [ ] Create territory-specific resource generation (rare materials)
+- **Database Foundation**
+    - [ ] Create comprehensive DatabaseManager to handle all database types
+    - [ ] Initial Database Population (Phase 1)
+        - [x] Populate TerrainDatabase with 5 main terrain types
+        - [ ] Expand TerrainDatabase with 15+ subtypes
+        - [x] Populate TerritoryDatabase with 4 territory types
+
+
+## Phase 3B: Exploration \& Vision Systems (2-3 weeks)
+
 - **Pawn Vision \& Exploration System**
     - [ ] Implement pawn vision range system
     - [ ] Create fog of war mechanics based on pawn visibility
     - [ ] Implement vision radius affected by terrain and time of day
     - [ ] Add vision sharing between colony pawns
-    - [ ] Design territory discovery mechanics and rewards
-- **Database Systems Implementation**
-    - [ ] Create comprehensive DatabaseManager to handle all database types
-    - [ ] Initial Database Population
-        - [x] Populate TerrainDatabase with 5 main terrain types
-        - [ ] Expand TerrainDatabase with 15+ subtypes
-        - [ ] Expand ResourceDatabase with 3-5 basic resources and their properties
-        - [x] Populate TerritoryDatabase with 4 territory types
-        - [ ] Enhance TerritoryDatabase with unique behaviors and difficulty gradients
-    - [ ] Implement ItemDatabase with basic structure
-    - [ ] Create EntityDatabase structure for monsters and animals
-- **Pawn Needs \& Work Systems**
-    - [ ] Implement hunger and rest needs
-    - [ ] Add mood/happiness tracking
-    - [ ] Create basic temperature effects (comfort zone)
-    - [ ] Implement shelter requirements
-    - [ ] Create job assignment interface
-    - [ ] Implement work priorities system
-    - [ ] Add basic pawn AI for autonomously selecting tasks
-    - [ ] Implement idle behaviors when no work is available
-- **AI Behavior Systems**
+- **Monster AI \& Spawning**
+    - [ ] Implement monster spawning based on territory type
     - [ ] Develop animal and monster AI behaviors
     - [ ] Implement territory-based aggression for monsters
-    - [ ] Create basic social interactions between pawns
-    - [ ] Implement simple relationship tracking
-    - [ ] Add foundational mood effects from relationships
+- **Expanded Database Implementation**
+    - [ ] Implement ItemDatabase with basic structure
+    - [ ] Create EntityDatabase structure for monsters and animals
+    - [ ] Enhance TerritoryDatabase with unique behaviors and difficulty gradients
+    - [ ] Expand ResourceDatabase with territory-specific resources
+
 
 ## Phase 4: Core Differentiation Systems (3-4 weeks)
 
@@ -81,42 +76,30 @@
     - [ ] Implement environmental affinity mechanics for different magic types
     - [ ] Create MagicDatabase with 4 elemental types
     - [ ] Add simple environmental interactions (water + fire = steam)
-    - [ ] Implement basic spell effects on terrain and entities
-    - [ ] Design magic resource gathering from territory centers
 - **Combat \& Monster Interaction**
     - [ ] Implement basic combat system with weapon types
     - [ ] Create SkillDatabase with combat progression tracking
-    - [ ] Design monster AI with territory-based behaviors
     - [ ] Add basic critical strikes and special attacks
-    - [ ] Implement monster loot drops with unique materials
 - **Multi-Stage Crafting System**
     - [ ] Create ItemDatabase with crafting requirements
     - [ ] Implement multi-step crafting for key resource chains
     - [ ] Design specialized workstations for different crafting types
-    - [ ] Add quality variation in crafted items
-    - [ ] Implement magical material crafting from monster resources
 
 
-## Phase 5: Survival \& Colony Management (2-3 weeks)
+### Phase 5: Survival \& Colony Management (2-3 weeks)
 
-- **Pawn Needs \& Survival**
+- **Pawn Needs \& Work Systems**
     - [ ] Implement hunger and rest needs
-    - [ ] Add mood/happiness tracking with territory effects
-    - [ ] Create temperature effects with magical environmental modifiers
-    - [ ] Implement shelter requirements against monster incursions
+    - [ ] Add mood/happiness tracking
+    - [ ] Create job assignment interface
+    - [ ] Implement work priorities system
+    - [ ] Add basic pawn AI for autonomously selecting tasks
 - **Resource Management \& Construction**
     - [ ] Implement stockpile zones with territory safety ratings
     - [ ] Create inventory system for pawns with magical item effects
     - [ ] Design construction interface with magical reinforcement options
-    - [ ] Implement basic building types with territory protection features
-- **Work System \& AI Behaviors**
-    - [ ] Create job assignment interface with territory risk assessment
-    - [ ] Implement work priorities system
-    - [ ] Add pawn AI for autonomously selecting tasks based on safety
-    - [ ] Design idle behaviors with territory awareness
 
-
-## Phase 6: Environmental Systems \& Social Layer (2-3 weeks)
+## Phase 6: Environmental Systems & Social Layer (2-3 weeks)
 
 - **Dynamic Environment**
     - [ ] Implement day/night cycle with territory behavior changes
@@ -168,7 +151,7 @@
     - [ ] Add save/load interface with territory discovery tracking
 
 
-# Post-MVP ROADMAP
+# Post-ERP ROADMAP
 
 ## Phase 1: Magic \& Combat Systems (3-4 weeks)
 
@@ -184,16 +167,20 @@
     - [ ] Add elemental interactions (water + fire = steam)
     - [ ] Implement visual effects for spells and environmental interactions
     - [ ] Create MagicDatabase with spell effects and progression
+
 - **Combat Skills Framework**
     - [ ] Design skill trees for different weapon specializations
     - [ ] Implement combat skill progression through practical use
     - [ ] Add critical strikes and special attacks based on skill level
     - [ ] Create tactical positioning advantages system
+	- [ ] Design territory discovery mechanics and rewards
+
 - **Monster Territory Expansion**
     - [ ] Enhance monster territory system with difficulty gradients
     - [ ] Add visual boundary indicators (claw marks, etc.)
     - [ ] Implement boss monsters at territory centers
     - [ ] Create special resource drops from different monster types
+	- [ ] Create territory-specific resource generation (rare materials)
 
 
 ## Phase 2: Advanced Pawn \& Colony Systems (3-4 weeks)
