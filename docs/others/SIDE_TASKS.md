@@ -6,9 +6,9 @@
 
 *Simple resource harvesting mechanics:*
 (For Completion)
-- [ ] ensure 1 harvest removes the specified resource to harvest from the harvested map tile
-- [ ] remove resource drawing after it has been harvested
-- [ ] add debug log how much resources where harvested and which pawn got it added to its inventory
+- [x] ensure 1 harvest removes the specified resource to harvest from the harvested map tile
+- [x] remove resource drawing after it has been harvested
+- [x] add debug log how much resources where harvested and which pawn got it added to its inventory
 
 (Optional)
 - [x] what to do with current get_carrying_capacity()
@@ -23,24 +23,3 @@
 
 
 
-
-func _init(
-map_data_ref,
-drawing_node_ref,
-terrain_db_ref,
-territory_db_ref,
-pathfinder_ref,
-resource_db_ref,
-cell_size_ref,
-camera_ref,
-input_handler_ref = null
-):
-map_data = map_data_ref
-drawing_node = drawing_node_ref # Trying to assign value of type 'Resource' to a variable of type 'CanvasItem'.
-terrain_database = terrain_db_ref
-territory_database = territory_db_ref
-pathfinder = pathfinder_ref
-resource_db = resource_db_ref
-cell_size = cell_size_ref
-camera = camera_ref
-input_handler = input_handler_ref
