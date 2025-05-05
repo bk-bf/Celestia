@@ -21,9 +21,12 @@ func update(delta):
 		state_machine.change_state("Idle")
 		has_logged_start = false
 		return
-		
-	# Progress the harvesting
-	pawn.current_job.progress += delta * pawn.harvesting_speed / pawn.current_job.time_to_harvest
+	
+	# Get work speed modifier from traits
+	var work_speed_modifier = pawn.get_work_speed()
+	
+	# Progress the harvesting with trait modifications
+	pawn.current_job.progress += delta * pawn.harvesting_speed * work_speed_modifier / pawn.current_job.time_to_harvest
 	pawn.progress_bar.value = pawn.current_job.progress
 	
 	# Log only at the beginning (0%)
@@ -31,7 +34,7 @@ func update(delta):
 		print('Harvesting progress: 0%')
 		has_logged_start = true
 	
-		# Check if harvesting is complete
+	# Check if harvesting is complete
 	if pawn.current_job.is_complete():
 		# Log completion (100%)
 		print('Harvesting progress: 100%')
@@ -67,14 +70,10 @@ func update(delta):
 		print("Attempting to reduce resource by: ", amount_on_tile)
 		pawn.map_data.reduce_resource_at(pawn.current_job.target_position, amount_on_tile)
 		
-		 # debug
-		#pawn.map_data.reduce_resource_at(pawn.current_job.target_position, 1)
-
 		# Verify resource was removed
 		tile_resources = pawn.map_data.get_resources_at(pawn.current_job.target_position)
 		print("Resources at tile after harvest: ", tile_resources)
 		
-       
 		# Reset for next job
 		has_logged_start = false
 		

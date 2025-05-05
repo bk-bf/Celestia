@@ -1,6 +1,6 @@
 # ROADMAP
 
-## ERP
+# ERP
 
 ## Phase 1: Complete Foundation \& Basic Visualization (1-2 weeks)
 
@@ -32,7 +32,7 @@
     - [x] Implement pawn movement with terrain movement multipliers
     - [x] Simple resource harvesting mechanics
     - [ ] Create a simple trait system for pawn personality
-    - [ ] Add basic pawn appearance generation
+    - [ ] Add basic pawn appearance generation	
     - [ ] Implement pawn naming system
 - **TileMap Integration (Technical Improvement)**
     - [ ] Replace current `draw()` implementation with TileMap-based rendering

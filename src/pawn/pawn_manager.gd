@@ -4,6 +4,7 @@ extends Node
 var pawns = {} # Dictionary of all pawns, keyed by ID
 var next_pawn_id = 0
 var map_data = null
+@onready var pawn_info_ui = get_node("/root/Game/Main/PawnInfoUI")
 
 func _init():
 	pass
@@ -45,6 +46,13 @@ func remove_pawn(pawn_id: int) -> bool:
 		pawn.queue_free()
 		return true
 	return false
+
+func _on_pawn_selected(pawn):
+	# Other selection code...
+	# Update the UI
+	var pawn_ui = get_node("../PawnInfoUI")
+	if pawn_ui:
+		pawn_ui.set_selected_pawn(pawn)
 
 # Create a pawn with a specific role tendency
 func create_role_pawn(position: Vector2i, role: String) -> Pawn:

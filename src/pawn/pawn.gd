@@ -10,6 +10,9 @@ var intelligence: int = 5
 var pawn_name: String = "Unnamed"
 var pawn_id: int = 0
 
+# List of traits this pawn has
+var traits = []
+
 # Position and movement
 var current_tile_position: Vector2i = Vector2i(0, 0)
 var target_tile_position: Vector2i = Vector2i(0, 0)
@@ -26,6 +29,7 @@ var path_blocked = false
 var map_data = MapDataManager.map_data # autoload/singleton for Resource
 var terrain_db = TerrainDatabase.new() # Reference to terrain database
 var sprite_renderer: SpriteRenderer
+@onready var trait_db = get_node("/root/TraitDatabaseManager")
 
 # pawn inventory
 var inventory = Inventory.new()
@@ -83,6 +87,9 @@ func _ready():
 	# Calculate harvesting speed based on attributes
 	# For example, dexterity could affect harvesting speed
 	harvesting_speed = 1.0 + (dexterity * 0.1) # Simple formula, adjust as needed
+	
+	# For testing, assign a random trait
+	assign_random_trait()
 	 
 	 # Create progress bar - doesnt work properly
 	progress_bar = ProgressBar.new()
@@ -118,6 +125,57 @@ func _ready():
 	#sprite.scale = Vector2(2, 2) # Adjust based on your art size
 	# Set up initial appearance
 	update_visual()
+
+
+func assign_random_trait():
+	var all_traits = TraitDatabaseManager.trait_database.traits.keys()
+	var random_trait = all_traits[randi() % all_traits.size()]
+	add_trait(random_trait)
+
+func add_trait(trait_name):
+	if TraitDatabaseManager.get_trait(trait_name) != null and not traits.has(trait_name):
+		traits.append(trait_name)
+		print("Pawn received trait: " + trait_name)
+
+
+# Check if a condition is met for a trait
+func is_condition_met(conditions):
+	if conditions.has("time_of_day"):
+		# You'll need to implement a day/night system
+		var current_time = "day" # Placeholder
+		if conditions["time_of_day"] != current_time:
+			return false
+
+	if conditions.has("health_percentage_below"):
+		# Assuming you have a health system
+		var health_percentage = 1.0 # Placeholder
+		if health_percentage >= conditions["health_percentage_below"]:
+			return false
+	
+	if conditions.has("same_task_hours"):
+		# You'll need to track how long a pawn has been on a task
+		var hours_on_task = 0 # Placeholder
+		if hours_on_task < conditions["same_task_hours"]:
+			return false
+	
+	return true
+
+# Get modified stat value based on traits
+func get_modified_stat(stat_name, base_value):
+	var modified_value = base_value
+	
+	for trait_name in traits:
+		var traits = trait_db.get_trait(trait_name)
+		if traits == null:
+			continue
+			
+		# Check if trait affects this stat
+		if traits["effects"].has(stat_name):
+			# Check if conditions are met
+			if is_condition_met(traits["conditions"]):
+				modified_value *= traits["effects"][stat_name]
+	
+	return modified_value
 
 # Assign a harvesting job to this pawn
 func assign_harvesting_job(positions, resource_type, amount, time):
@@ -266,8 +324,26 @@ func calculate_melee_damage() -> float:
 
 # Dexterity affects movement speed and ranged accuracy
 func get_movement_speed() -> float:
-	# Base speed modified by dexterity
-	return movement_speed * (1.0 + calculate_attribute_bonus(dexterity) * 0.1)
+	# Calculate base speed using dexterity
+	var base_speed = movement_speed * (1.0 + calculate_attribute_bonus(dexterity) * 0.1)
+	
+	# Apply trait modifiers to the base speed
+	return get_modified_stat("movement_speed", base_speed)
+
+# Example usage in vision range calculation
+func get_vision_range():
+	var base_range = 5 + (dexterity * 0.2)
+	return get_modified_stat("vision_range", base_range)
+
+# Example usage in damage calculation
+func get_melee_damage():
+	var base_damage = 10 + (strength * 2)
+	return get_modified_stat("melee_damage", base_damage)
+
+# Example usage in work speed calculation
+func get_work_speed():
+	var base_speed = 1.0 + (dexterity * 0.05)
+	return get_modified_stat("work_speed", base_speed)
 
 func calculate_ranged_accuracy() -> float:
 	# Base accuracy plus dexterity bonus (percentage)

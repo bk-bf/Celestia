@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 MapDataManager="*res://src/core/utils/map_data_manager.gd"
 DebugLog="*res://src/core/utils/debug_logger.gd"
+TraitDatabaseManager="*res://src/core/utils/trait_database_manager.gd"
 
 [display]
 
