@@ -31,7 +31,7 @@
     - [x] Implement basic pawn class with core attributes
     - [x] Implement pawn movement with terrain movement multipliers
     - [x] Simple resource harvesting mechanics
-    - [ ] Create a simple trait system for pawn personality
+    - [x] Create a simple trait system for pawn personality
     - [ ] Add basic pawn appearance generation	
     - [ ] Implement pawn naming system
 - **TileMap Integration (Technical Improvement)**
