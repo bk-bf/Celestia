@@ -72,7 +72,7 @@
     - [ ] Add basic weather system
     - [ ] Create simple temperature fluctuations
 
-## Phase 5: Art and Sound Integration (2-3 weeks)
+## Phase 5: Art and Sound Integration (2-3 weeks) -> in parallel with Phase 6
 
 - **AI-Generated Visual Assets**
   - [ ] Set up Stable Diffusion 3 pipeline with custom LORA for consistent fantasy style
@@ -90,7 +90,7 @@
   - [ ] Create creature and monster sound effects
   - [ ] Implement simple music system with day/night variations
 
-## Phase 6: UI/UX Development (2-3 weeks)
+## Phase 6: UI/UX Development (2-3 weeks)  -> in parallel with Phase 5
 
 **Core Interface Framework**
 
