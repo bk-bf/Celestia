@@ -56,6 +56,12 @@
     - [ ] Create simple inventory system for pawns
     - [ ] Add basic item categories and properties
 
+- **Terrain Transformation System**
+  	- [ ] Implement terrain subtype changes after resource harvesting (e.g., "peak" becomes "mined_peak")
+  	- [ ] Create visual representations for post-harvesting terrain states
+  	- [ ] Update pathfinding to recognize transformed terrain walkability
+  	- [ ] Ensure proper integration with future art assets
+
 - **Basic Construction**
     - [ ] Implement construction interface
     - [ ] Create fundamental building types (walls, doors, beds)
