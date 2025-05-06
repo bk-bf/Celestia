@@ -12,9 +12,9 @@ var pathfinder = Pathfinder
 @export var map_seed: int = 0
 @export var map_name: String = "Celestia Map"
 @export var map_size: Vector2i = Vector2i(200, 200)
-@export var max_territoy_size: int = 500
-@export var max_territory_count: int = 400
-@export var min_territory_count: int = 200
+@export var max_territoy_size: int = 700
+@export var max_territory_count: int = 200
+@export var min_territory_count: int = 100
 @export var territory_coverage_percentage: float = 0.8
 
 # terrain distribution
@@ -211,7 +211,7 @@ func register_monster_territories() -> void:
 			# Expand territory from seed point
 			expand_territory_from_seed(seed_point, monster_type, terrain_type)
 
-
+###OMG PLEASE END IT THAT IS INSANE AND SHOULD BE ILLEGAL
 func expand_territory_from_seed(seed_point: Vector2i, monster_type: String, terrain_type: String, max_size: int = max_territoy_size) -> void:
 	# Create a queue for flood fill algorithm
 	var queue = []
@@ -235,10 +235,59 @@ func expand_territory_from_seed(seed_point: Vector2i, monster_type: String, terr
 		# Get the current tile
 		var tile = get_tile(current)
 		
-		# Skip if this tile already has a territory owner
+		# Skip if this tile already has a territory owner with a different coexistence layer
 		if "territory_owner" in tile and tile["territory_owner"] != "":
-			continue
+			var current_owner = tile["territory_owner"]
+			var current_layer
+			var new_layer = TerritoryDatabaseManager.territory_database.territory_definitions[monster_type].get("coexistence_layer", null)
 			
+			# Handle both string and array territory owners
+			if typeof(current_owner) == TYPE_STRING:
+				# Check if the current owner contains multiple territories
+				if "," in current_owner:
+					# Split the comma-separated string into individual territory types
+					var owners = current_owner.split(",")
+					
+					# Check if monster_type already exists in the list
+					if monster_type in owners:
+						continue # Skip if already in the list
+						
+					# Get the coexistence layer of the first territory
+					current_layer = TerritoryDatabaseManager.territory_database.territory_definitions[owners[0]]["coexistence_layer"]
+					
+					if current_layer != new_layer:
+						continue # Skip if layers don't match
+					else:
+						# Add to existing comma-separated list
+						tile["territory_owner"] = current_owner + "," + monster_type
+						territory_size += 1
+				else:
+					# Single territory owner
+					current_layer = TerritoryDatabaseManager.territory_database.territory_definitions[current_owner]["coexistence_layer"]
+					
+					# Skip if it's the same monster type
+					if current_owner == monster_type:
+						continue
+						
+					if current_layer != new_layer:
+						continue # Skip if layers don't match
+					else:
+						# Territories can coexist, store as a list
+						tile["territory_owner"] = current_owner + "," + monster_type
+						territory_size += 1
+			else: # Array of territory owners
+				# Get the coexistence layer of the first territory (assuming all have the same layer)
+				current_layer = TerritoryDatabaseManager.territory_database.territory_definitions[current_owner[0]]["coexistence_layer"]
+				
+				if current_layer != new_layer:
+					continue # Skip if layers don't match
+				elif not monster_type in current_owner: # Avoid duplicates
+					# Add to existing array
+					tile["territory_owner"].append(monster_type)
+					territory_size += 1
+				else:
+					continue # Skip if already in the list
+
 		# Skip if this tile isn't the preferred terrain type
 		if tile["terrain_type"] != terrain_type:
 			continue
@@ -251,22 +300,21 @@ func expand_territory_from_seed(seed_point: Vector2i, monster_type: String, terr
 		tile["territory_owner"] = monster_type
 		territory_size += 1
 		
-		# Add neighboring tiles to the queue (4-way connectivity)
+		# Add neighboring tiles to the queue (8-way connectivity)
 		var neighbors = [
-		Vector2i(current.x + 1, current.y),
-		Vector2i(current.x - 1, current.y),
-		Vector2i(current.x, current.y + 1),
-		Vector2i(current.x, current.y - 1),
-		Vector2i(current.x + 1, current.y + 1),
-		Vector2i(current.x - 1, current.y - 1),
-		Vector2i(current.x + 1, current.y - 1),
-		Vector2i(current.x - 1, current.y + 1)
-	]
-
+			Vector2i(current.x + 1, current.y),
+			Vector2i(current.x - 1, current.y),
+			Vector2i(current.x, current.y + 1),
+			Vector2i(current.x, current.y - 1),
+			Vector2i(current.x + 1, current.y + 1),
+			Vector2i(current.x - 1, current.y - 1),
+			Vector2i(current.x + 1, current.y - 1),
+			Vector2i(current.x - 1, current.y + 1)
+		]
 		
 		# Process each neighbor
 		for neighbor in neighbors:
-			# skip some tiles for organic look
+			# Skip some tiles for organic look
 			if randf() < 0.3:
 				continue
 			# Skip if out of bounds
@@ -287,8 +335,6 @@ func expand_territory_from_seed(seed_point: Vector2i, monster_type: String, terr
 		"monster_type": monster_type,
 		"size": territory_size
 	})
-	
-	#print("Generated " + monster_type + " territory with " + str(territory_size) + " tiles on " + terrain_type + " terrain")
 
 
 func count_territories_by_type(monster_type: String) -> int:

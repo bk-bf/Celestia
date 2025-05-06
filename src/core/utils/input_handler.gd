@@ -24,8 +24,13 @@ func _unhandled_input(event):
 		var click_position = get_global_mouse_position()
 		var grid_coords = MapDataManager.map_data.map_to_grid(click_position)
 
+		# Left click with shift held
+		if event.button_index == MOUSE_BUTTON_LEFT and Input.is_key_pressed(KEY_SHIFT):
+			handle_shift_click_territory_info(grid_coords)
+			get_viewport().set_input_as_handled()
+
 		# Handle left-click for pawn selection
-		if event.button_index == MOUSE_BUTTON_LEFT:
+		elif event.button_index == MOUSE_BUTTON_LEFT:
 			handle_pawn_selection(grid_coords)
 
 		# Handle right-click for movement
@@ -112,3 +117,43 @@ func handle_pawn_movement(grid_coords, click_position):
 							map.map_renderer.set_debug_path(debug_path)
 							# Force redraw
 							map.queue_redraw()
+
+
+# for debugging, might be removed later
+func handle_shift_click_territory_info(grid_coords: Vector2i) -> void:
+	# Get the tile at the clicked position
+	var tile = MapDataManager.map_data.get_tile(grid_coords)
+	
+	# Check if the tile has territory owners
+	if "territory_owner" in tile:
+		var owners = tile["territory_owner"]
+		print("=== TERRITORY INFO AT " + str(grid_coords) + " ===")
+		
+		# Handle different territory owner storage formats
+		if typeof(owners) == TYPE_STRING:
+			if "," in owners:
+				# Multiple territories stored as comma-separated string
+				var territory_list = owners.split(",")
+				print("Multiple territories (" + str(territory_list.size()) + "):")
+				for territory in territory_list:
+					print_territory_details(territory.strip_edges() if typeof(territory) == TYPE_STRING else str(territory))
+
+			else:
+				# Single territory stored as string
+				print("Single territory:")
+				print_territory_details(owners)
+		elif typeof(owners) == TYPE_ARRAY:
+			# Multiple territories stored as array
+			print("Multiple territories (" + str(owners.size()) + "):")
+			for territory in owners:
+				print_territory_details(territory)
+		print("===============================")
+	else:
+		print("No territories at " + str(grid_coords))
+
+func print_territory_details(territory_type: String) -> void:
+	var territory_data = TerritoryDatabaseManager.territory_database.territory_definitions[territory_type]
+	print("- " + territory_type.capitalize())
+	print("  Rarity: " + str(territory_data.get("rarity", "Unknown")))
+	print("  Coexistence Layer: " + str(territory_data.get("coexistence_layer", "Unknown")))
+	print("  Preferred Terrain: " + str(territory_data.get("preferred_terrain", [])))
