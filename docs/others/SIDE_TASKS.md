@@ -2,13 +2,6 @@
 
 ## Polish, Bugfixes & Questions
 
-**Pawn Creation & Attributes**
-
-*Simple resource harvesting mechanics:*
-(For Completion)
-- [x] ensure 1 harvest removes the specified resource to harvest from the harvested map tile
-- [x] remove resource drawing after it has been harvested
-- [x] add debug log how much resources where harvested and which pawn got it added to its inventory
 
 (Optional)
 - [x] what to do with current get_carrying_capacity()
@@ -19,6 +12,7 @@
 - [ ] implement autogen debug naming for pawns, eg. Pawn1, Pawn2 etc.
 - [ ] apply random coloring to pawn sprites (to differentiate between them)
 - [ ] implement quick progress bar for harvesting (maybe)
+- [ ] Initial Database Population (Phase 1) has to possibly be refactored again to ensure -> @onready var map_data = DatabaseManager.map_data
 
 
 
