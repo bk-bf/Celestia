@@ -45,7 +45,7 @@
     - [ ] Add visual boundary indicators (claw marks, monster signs)
     - [ ] Create territory-specific resource generation (rare materials)
 - **Database Foundation**
-    - [ ] Create comprehensive DatabaseManager to handle all database types
+    - [x] Create comprehensive DatabaseManager to handle all database types
     - [x] Initial Database Population (Phase 1)
         - [x] Populate TerrainDatabase with 5 main terrain types
         - [x] Expand TerrainDatabase with 15+ subtypes
