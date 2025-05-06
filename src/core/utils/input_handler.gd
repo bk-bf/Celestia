@@ -29,16 +29,21 @@ func _unhandled_input(event):
 			handle_shift_click_territory_info(grid_coords)
 			get_viewport().set_input_as_handled()
 
+		# Right click with shift held
+		elif event.button_index == MOUSE_BUTTON_RIGHT and Input.is_key_pressed(KEY_SHIFT):
+			handle_shift_right_click_terrain_info(grid_coords)
+			get_viewport().set_input_as_handled()
+
 		# Handle left-click for pawn selection
 		elif event.button_index == MOUSE_BUTTON_LEFT:
 			handle_pawn_selection(grid_coords)
 
 		# Handle right-click for movement
-		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			handle_pawn_movement(grid_coords, click_position)
 
 		# Handle middle-click for resource harvesting
-		elif event.button_index == MOUSE_BUTTON_MIDDLE and event.pressed:
+		elif event.button_index == MOUSE_BUTTON_MIDDLE:
 			if MapDataManager.map_data.is_within_bounds_map(grid_coords):
 				print("middle mouse button clicked on map")
 				# Check if there's a resource at this position
@@ -152,8 +157,61 @@ func handle_shift_click_territory_info(grid_coords: Vector2i) -> void:
 		print("No territories at " + str(grid_coords))
 
 func print_territory_details(territory_type: String) -> void:
-	var territory_data = TerritoryDatabaseManager.territory_database.territory_definitions[territory_type]
-	print("- " + territory_type.capitalize())
-	print("  Rarity: " + str(territory_data.get("rarity", "Unknown")))
-	print("  Coexistence Layer: " + str(territory_data.get("coexistence_layer", "Unknown")))
-	print("  Preferred Terrain: " + str(territory_data.get("preferred_terrain", [])))
+	if territory_type == "":
+		print("- Unknown Territory")
+		print("  Rarity: Unknown")
+		print("  Coexistence Layer: Unknown")
+		print("  Preferred Terrain: []")
+	else:
+		var territory_data = TerritoryDatabaseManager.territory_database.territory_definitions.get(territory_type, {})
+		print("- " + territory_type.capitalize())
+		print("  Rarity: " + str(territory_data.get("rarity", "Unknown")))
+		print("  Coexistence Layer: " + str(territory_data.get("coexistence_layer", "Unknown")))
+		print("  Preferred Terrain: " + str(territory_data.get("preferred_terrain", [])))
+
+func handle_shift_right_click_terrain_info(grid_coords: Vector2i) -> void:
+	# Get the tile at the clicked position
+	var tile = MapDataManager.map_data.get_tile(grid_coords)
+	
+	print("=== TERRAIN INFO AT " + str(grid_coords) + " ===")
+	
+	# Print terrain type
+	if "terrain_type" in tile:
+		var terrain_type = tile["terrain_type"]
+		print("Terrain: " + terrain_type.capitalize())
+		
+		# Get terrain details from database
+		var terrain_data = TerrainDatabaseManager.terrain_database.terrain_definitions[terrain_type]
+		print("- Color: " + str(terrain_data.get("base_color", "Default")))
+		print("- Walkable: " + str(terrain_data.get("walkable", true)))
+		print("- Movement Cost: " + str(terrain_data.get("movement_cost", 1.0)))
+	else:
+		print("No terrain type defined")
+	
+	# Print subterrain type
+	if "terrain_subtype" in tile:
+		var terrain_subtype = tile["terrain_subtype"]
+		print("\nSubterrain: " + terrain_subtype.capitalize())
+		
+		# Get subterrain details from database
+		var subterrain_data = TerrainDatabaseManager.terrain_database.subterrain_definitions[terrain_subtype]
+		print("- Color Modifier: " + str(subterrain_data.get("color_modifier", "none")))
+		print("- Color Amount: " + str(subterrain_data.get("color_amount", 0)))
+		print("- Walkable: " + str(subterrain_data.get("walkable", true)))
+		print("- Movement Cost: " + str(subterrain_data.get("movement_cost", 1.0)))
+		if "is_water" in subterrain_data:
+			print("- Water: " + str(subterrain_data["is_water"]))
+	else:
+		print("\nNo subterrain type defined")
+	
+	# Print resources if present
+	if "resources" in tile and tile["resources"].size() > 0:
+		print("\nResources:")
+		for resource_type in tile["resources"]:
+			print("- " + resource_type + ": " + str(tile["resources"][resource_type]))
+	
+	# Print density value if available
+	if "density" in tile:
+		print("\nDensity Value: " + str(tile["density"]))
+	
+	print("===============================")

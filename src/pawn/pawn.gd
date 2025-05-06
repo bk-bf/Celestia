@@ -74,7 +74,7 @@ func _init(id: int, start_position: Vector2i, map_reference):
 	
 
 func initialize_movement_multipliers():
-	# Populate movement multipliers from terrain database
+	# Populate movement multipliers from terrain and subterrain definitions
 	for terrain_type in terrain_db.terrain_definitions:
 		var terrain_def = terrain_db.terrain_definitions[terrain_type]
 		if terrain_def.has("movement_cost"):
@@ -82,6 +82,14 @@ func initialize_movement_multipliers():
 		else:
 			# Default value if not specified
 			terrain_movement_multipliers[terrain_type] = 1.0
+
+	for subterrain_type in terrain_db.subterrain_definitions:
+		var subterrain_def = terrain_db.subterrain_definitions[subterrain_type]
+		if subterrain_def.has("movement_cost"):
+			terrain_movement_multipliers[subterrain_type] = subterrain_def.movement_cost
+		else:
+			# Default value if not specified
+			terrain_movement_multipliers[subterrain_type] = 1.0
 
 func _ready():
 	# Randomly assign gender during initialization
@@ -298,8 +306,15 @@ func move_toward_target(delta):
 	
 	# Get terrain type for movement speed calculation
 	var terrain_type = map_data.get_tile(next_tile_pos).terrain_type
+	var subterrain_type = map_data.get_tile(next_tile_pos).terrain_subtype if map_data.get_tile(next_tile_pos) else null
+
+
 	var speed_multiplier = 1.0
-	if terrain_type in terrain_movement_multipliers:
+	
+	# Check if subterrain_type has a movement cost and use it if available
+	if subterrain_type in terrain_movement_multipliers:
+		speed_multiplier = terrain_movement_multipliers[subterrain_type]
+	elif terrain_type in terrain_movement_multipliers:
 		speed_multiplier = terrain_movement_multipliers[terrain_type]
 	
 	# Calculate adjusted speed based on dexterity and terrain

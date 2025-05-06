@@ -23,6 +23,7 @@ TraitDatabaseManager="*res://src/core/utils/trait_database_manager.gd"
 NameDatabaseManager="*res://src/pawn/name_database.gd"
 TerritoryDatabaseManager="*res://src/autoload/territory_database_manager.gd"
 PawnManagerSingleton="*res://src/autoload/pawn_manager_singleton.gd"
+TerrainDatabaseManager="*res://src/autoload/terrain_database_manager.gd"
 
 [display]
 

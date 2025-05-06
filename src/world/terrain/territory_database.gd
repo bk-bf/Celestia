@@ -71,7 +71,14 @@ var territory_definitions = {
         "color": Color.RED,
         "rarity": 90,
 		"coexistence_layer": 99
-    }
+    },
+	"river_ghouls": {
+        "territory_thresholds": [0.6, 1.0],
+        "preferred_terrain": ["river"],
+        "color": Color.LIME_GREEN,
+        "rarity": 10,
+		"coexistence_layer": 101
+	}
 }
 
 

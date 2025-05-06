@@ -7,32 +7,32 @@ var terrain_definitions = {
 		"density_range": [0.5, 0.60],
 		"walkable": true,
 		"movement_cost": 1.5,
-		"subterrain": ["dirt", "grass", "deep_grass", "tree"],
-		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6] # Thresholds that determine subterrain
+		"subterrain": ["dirt", "grass", "deep_grass", "tree", "bush", "tree_stump", "fallen_logs", "mushroom_patch"],
+		"subterrain_thresholds": [-0.8, -0.6, -0.4, -0.2, 0.2, 0.7, 0.9] # Adjusted fallen_logs threshold to match rarity of scrubland in plains
 	},
 	"swamp": {
 		"base_color": Color.DARK_OLIVE_GREEN,
 		"density_range": [0.2, 0.3],
 		"walkable": true,
 		"movement_cost": 2.0,
-		"subterrain": ["shallow_water", "mud", "bog", "clay", "moss"],
-		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6]
+		"subterrain": ["shallow_water", "mud", "bog", "clay", "moss", "quicksand", "dead_trees"],
+		"subterrain_thresholds": [-0.8, -0.6, -0.4, -0.2, 0.2, 0.6, 0.8] # Adjusted thresholds
 	},
 	"plains": {
 		"base_color": Color.FOREST_GREEN,
 		"density_range": [0.3, 0.45],
 		"walkable": true,
 		"movement_cost": 1.0,
-		"subterrain": ["dirt", "grass", "bush", "deep_grass", "tree"],
-		"subterrain_thresholds": [-0.6, -0.2, 0.2, 0.6]
+		"subterrain": ["dirt", "grass", "bush", "deep_grass", "tree", "tall_grass", "wildflowers", "scrubland", "savanna"],
+		"subterrain_thresholds": [-0.8, -0.6, -0.4, -0.2, 0.2, 0.4, 0.6, 0.8] # Adjusted thresholds
 	},
 	"mountain": {
 		"base_color": Color(0.6, 0.6, 0.6, 0.6),
 		"density_range": [0.60, 1.0],
 		"walkable": false,
 		"movement_cost": 3.0,
-		"subterrain": ["rocky", "peak"],
-		"subterrain_thresholds": [-0.3]
+		"subterrain": ["rocky", "peak", "cave", "cliff", "mineral_deposit", "crystal_formation", "arcane_glade"],
+		"subterrain_thresholds": [-0.6, -0.3, 0.0, 0.3, 0.6, 0.85, 0.95] # Adjusted thresholds
 	},
 	"river": {
 		"base_color": Color.DODGER_BLUE,
@@ -40,8 +40,8 @@ var terrain_definitions = {
 		"walkable": true,
 		"movement_cost": 2.5,
 		"is_water": true,
-		"subterrain": ["shallow water", "water"],
-		"subterrain_thresholds": [-0.3]
+		"subterrain": ["shallow_water", "water", "rapids", "riverbank"],
+		"subterrain_thresholds": [-0.6, -0.3, 0.0, 0.3] # Adjusted thresholds
 	}
 }
 
@@ -51,27 +51,35 @@ var subterrain_definitions = {
 		"color_modifier": "darkened",
 		"color_amount": 0.3,
 		"walkable": true,
+		"base_color": Color(0.13, 0.55, 0.13), # Forest green
+		"movement_cost": 2.0
 	},
 	"bush": {
 		"color_modifier": "darkened",
 		"color_amount": 0.2,
-		"walkable": true
+		"walkable": true,
+		"base_color": Color(0.18, 0.31, 0.18), # Dark green
+		"movement_cost": 1.8
 	},
 	"deep_grass": {
 		"color_modifier": "darkened",
 		"color_amount": 0.1,
-		"walkable": true
+		"walkable": true,
+		"base_color": Color(0.25, 0.41, 0.25), # Medium green
+		"movement_cost": 1.5
 	},
 	"grass": {
 		"color_modifier": "none",
 		"color_amount": 0,
-		"walkable": true
+		"walkable": true,
+		"movement_cost": 1.0
 	},
 	"dirt": {
 		"base_color": Color.DARK_OLIVE_GREEN,
 		"color_modifier": "darkened",
 		"color_amount": 0.5,
-		"walkable": true
+		"walkable": true,
+		"movement_cost": 1.2
 	},
 	
 	# Swamp subterrains
@@ -79,46 +87,185 @@ var subterrain_definitions = {
 		"color_modifier": "lightened",
 		"color_amount": 0.1,
 		"walkable": true,
-		"is_water": true
+		"is_water": true,
+		"base_color": Color(0.0, 0.5, 0.5), # Teal
+		"movement_cost": 2.5
 	},
 	"water": {
 		"color_modifier": "darkened",
 		"color_amount": 0.2,
 		"walkable": false,
-		"is_water": true
+		"is_water": true,
+		"movement_cost": 0.0 # Not walkable
 	},
 	"mud": {
 		"color_modifier": "darkened",
 		"color_amount": 0.2,
-		"walkable": true
+		"walkable": true,
+		"base_color": Color(0.36, 0.25, 0.20), # Brown
+		"movement_cost": 3.0
 	},
 	"bog": {
 		"color_modifier": "darkened",
 		"color_amount": 0.3,
-		"walkable": true
+		"walkable": true,
+		"base_color": Color(0.25, 0.25, 0.20), # Dark brown-green
+		"movement_cost": 3.5
 	},
 	"clay": {
 		"color_modifier": "darkened",
 		"color_amount": 0.5,
-		"walkable": true
+		"walkable": true,
+		"base_color": Color(0.69, 0.40, 0.20), # Clay brown
+		"movement_cost": 2.8
 	},
 	"moss": {
 		"base_color": Color.DARK_OLIVE_GREEN,
 		"color_modifier": "lightened",
 		"color_amount": 0.1,
-		"walkable": true
+		"walkable": true,
+		"movement_cost": 1.5
 	},
 	
 	# Mountain subterrains
 	"peak": {
 		"color_modifier": "darkened",
 		"color_amount": 0.2,
-		"walkable": false
+		"walkable": false,
+		"base_color": Color(0.5, 0.5, 0.5), # Gray
+		"movement_cost": 0.0 # Not walkable
 	},
 	"rocky": {
 		"color_modifier": "lightened",
 		"color_amount": 0.1,
+		"walkable": true,
+		"base_color": Color(0.6, 0.6, 0.6), # Light gray
+		"movement_cost": 2.5
+	},
+	
+	# Plains subterrains
+	"tall_grass": {
+		"color_modifier": "darkened",
+		"color_amount": 0.15,
+		"walkable": true,
+		"base_color": Color(0.33, 0.42, 0.18), # Olive green
+		"movement_cost": 1.3
+	},
+	"wildflowers": {
+		"color_modifier": "lightened",
+		"color_amount": 0.2,
+		"walkable": true,
+		"base_color": Color(0.85, 0.44, 0.84), # Orchid
+		"movement_cost": 1.1
+	},
+	"scrubland": {
+		"color_modifier": "darkened",
+		"color_amount": 0.25,
+		"walkable": true,
+		"base_color": Color(0.42, 0.26, 0.15), # Scrub brown
+		"movement_cost": 1.7
+	},
+	"savanna": {
+		"base_color": Color.GOLD,
+		"color_modifier": "lightened",
+		"color_amount": 0.1,
+		"walkable": true,
+		"movement_cost": 1.2
+	},
+	
+	# River subterrains
+	"rapids": {
+		"color_modifier": "lightened",
+		"color_amount": 0.3,
+		"walkable": false,
+		"is_water": true,
+		"base_color": Color(0.0, 0.75, 1.0), # Sky blue
+		"movement_cost": 0.0 # Not walkable
+	},
+	"riverbank": {
+		"color_modifier": "darkened",
+		"color_amount": 0.1,
+		"walkable": true,
+		"base_color": Color(0.54, 0.27, 0.07), # Saddle brown
+		"movement_cost": 1.4
+	},
+	
+	# Additional forest subterrains
+	"fallen_logs": {
+		"base_color": Color.SADDLE_BROWN,
+		"color_modifier": "darkened",
+		"color_amount": 0.4,
+		"walkable": true,
+		"movement_cost": 2.2
+	},
+	"mushroom_patch": {
+		"base_color": Color.DIM_GRAY,
+		"color_modifier": "darkened",
+		"color_amount": 0.2,
+		"walkable": true,
+		"movement_cost": 1.6
+	},
+
+	"tree_stump": {
+		"base_color": Color.BURLYWOOD,
+		"color_modifier": "darkened",
+		"color_amount": 0.4,
+		"walkable": true,
+		"movement_cost": 2.0
+	},
+	# Additional mountain subterrains
+	"cave": {
+		"color_modifier": "darkened",
+		"color_amount": 0.6,
+		"walkable": true,
+		"base_color": Color(0.2, 0.2, 0.2), # Dark gray
+		"movement_cost": 1.0
+	},
+	"cliff": {
+		"color_modifier": "darkened",
+		"color_amount": 0.4,
+		"walkable": false,
+		"base_color": Color(0.4, 0.4, 0.4), # Medium gray
+		"movement_cost": 0.0 # Not walkable
+	},
+	"mineral_deposit": {
+		"color_modifier": "lightened",
+		"color_amount": 0.3,
+		"walkable": true,
+		"base_color": Color(0.8, 0.8, 0.0), # Gold-like yellow
+		"movement_cost": 2.8
+	},
+	
+	# Additional swamp subterrains
+	"quicksand": {
+		"base_color": Color.SANDY_BROWN,
+		"color_modifier": "darkened",
+		"color_amount": 0.3,
+		"movement_cost": 25.0,
 		"walkable": true
+	},
+	"dead_trees": {
+		"color_modifier": "darkened",
+		"color_amount": 0.5,
+		"walkable": true,
+		"base_color": Color(0.36, 0.25, 0.20), # Brown
+		"movement_cost": 2.5
+	},
+	
+	# Magic-influenced subterrains
+	"arcane_glade": {
+		"base_color": Color.MEDIUM_PURPLE,
+		"color_modifier": "lightened",
+		"color_amount": 0.3,
+		"walkable": true,
+		"movement_cost": 1.8
+	},
+	"crystal_formation": {
+		"base_color": Color.AQUA,
+		"color_modifier": "lightened",
+		"color_amount": 0.4,
+		"walkable": true,
+		"movement_cost": 2.0
 	}
 }
 

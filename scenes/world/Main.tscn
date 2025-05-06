@@ -19,14 +19,14 @@ script = ExtResource("3_26o6m")
 
 [node name="Map" type="Node2D" parent="Main"]
 script = ExtResource("4_b3pok")
-map_lengh = 100
-map_height = 100
+map_lengh = 300
+map_height = 300
 show_grid_lines = false
 show_coordinate_numbers = false
 show_terrain_letters = false
-show_territory_markers = false
 show_density_values = false
 show_movement_costs = false
+show_resources = false
 
 [node name="Camera2D" type="Camera2D" parent="Main/Map"]
 script = ExtResource("5_vanwo")

@@ -41,14 +41,14 @@
     - [ ] Add sprite-based visualization for resources
 - **Enhanced Monster Territory System**
     - [x] Basic monster territory system using territory_owner property
-    - [ ] Expand territory system with difficulty gradients from periphery to center
+    - [ ] Expand territory system with difficulty gradients from map-center to periphery
     - [ ] Add visual boundary indicators (claw marks, monster signs)
     - [ ] Create territory-specific resource generation (rare materials)
 - **Database Foundation**
     - [ ] Create comprehensive DatabaseManager to handle all database types
-    - [ ] Initial Database Population (Phase 1)
+    - [x] Initial Database Population (Phase 1)
         - [x] Populate TerrainDatabase with 5 main terrain types
-        - [ ] Expand TerrainDatabase with 15+ subtypes
+        - [x] Expand TerrainDatabase with 15+ subtypes
         - [x] Populate TerritoryDatabase with 4 territory types
 
 
