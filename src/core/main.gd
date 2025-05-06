@@ -1,7 +1,7 @@
 extends Node
 
 # References to major subsystems
-var pawn_manager = null
+var pawn_manager = DatabaseManager.pawn_manager
 var selected_paw
 var center_position = null
 
@@ -27,7 +27,7 @@ func _ready():
 
 
 func clear_territories_around_center(center_position: Vector2i, radius: int = 30) -> void:
-	var map_data = MapDataManager.map_data
+	var map_data = DatabaseManager.map_data
 	if center_position == null:
 		print("Error: No center position provided")
 		return

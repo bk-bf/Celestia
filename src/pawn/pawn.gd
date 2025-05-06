@@ -28,11 +28,10 @@ var pathfinder = null
 var path_blocked = false
 
 # References
-var map_data = MapDataManager.map_data # autoload/singleton for Resource
-var terrain_db = TerrainDatabase.new() # Reference to terrain database
-#var name_db = NameDatabase.new() # Reference to the name database
+var map_data = DatabaseManager.map_data # autoload/singleton for Resource
+var terrain_db = DatabaseManager.terrain_database # Reference to terrain database
 var sprite_renderer: SpriteRenderer
-@onready var trait_db = get_node("/root/TraitDatabaseManager")
+@onready var trait_db = get_node("/root/DatabaseManager")
 
 
 # pawn inventory
@@ -93,7 +92,7 @@ func initialize_movement_multipliers():
 
 func _ready():
 	# Randomly assign gender during initialization
-	var name_data = NameDatabaseManager.get_random_name()
+	var name_data = DatabaseManager.get_random_name()
 	pawn_name = name_data.name
 	pawn_gender = name_data.gender
 	# Initialize pathfinder
@@ -134,7 +133,7 @@ func _ready():
 
 func assign_random_traits():
 	# Get all available traits
-	var all_traits = TraitDatabaseManager.trait_database.traits.keys()
+	var all_traits = DatabaseManager.trait_database.traits.keys()
 	
 	# Determine how many traits to assign (2-5)
 	var num_traits = randi() % 4 + 2 # Random number between 2-5
@@ -163,7 +162,7 @@ func assign_random_traits():
 
 
 func add_trait(trait_name):
-	if TraitDatabaseManager.get_trait(trait_name) != null and not traits.has(trait_name):
+	if DatabaseManager.get_trait(trait_name) != null and not traits.has(trait_name):
 		traits.append(trait_name)
 		#print("Pawn received trait: " + trait_name)
 

@@ -4,7 +4,9 @@ extends Node2D
 # References to other nodes
 @onready var map = get_node("../Map")
 @onready var main = get_parent()
-var pawn_manager
+var pawn_manager = DatabaseManager.pawn_manager
+var territory_database = DatabaseManager.territory_database
+var terrain_database = DatabaseManager.terrain_database
 @export var draw_pathfinder: bool = false
 
 # Pawn selection tracking
@@ -12,17 +14,19 @@ var selected_pawn_id = -1
 var debug_path = []
 
 func _ready():
+	var map_data = DatabaseManager.map_data
 	# Wait until map generation is complete
 	await get_tree().create_timer(0.5).timeout
-	var map_data = MapDataManager.map_data # autoload/singleton for Resource
+	#var map_data = map_data # autoload/singleton for Resource
 	print("InputHandler initialized")
 	# Get reference to the PawnManager
 	pawn_manager = get_node("/root/Game/Main/PawnManager")
 
 func _unhandled_input(event):
+	var map_data = DatabaseManager.map_data
 	if event is InputEventMouseButton and event.pressed:
 		var click_position = get_global_mouse_position()
-		var grid_coords = MapDataManager.map_data.map_to_grid(click_position)
+		var grid_coords = map_data.map_to_grid(click_position)
 
 		# Left click with shift held
 		if event.button_index == MOUSE_BUTTON_LEFT and Input.is_key_pressed(KEY_SHIFT):
@@ -44,10 +48,10 @@ func _unhandled_input(event):
 
 		# Handle middle-click for resource harvesting
 		elif event.button_index == MOUSE_BUTTON_MIDDLE:
-			if MapDataManager.map_data.is_within_bounds_map(grid_coords):
+			if map_data.is_within_bounds_map(grid_coords):
 				print("middle mouse button clicked on map")
 				# Check if there's a resource at this position
-				var tile = MapDataManager.map_data.get_tile(grid_coords)
+				var tile = map_data.get_tile(grid_coords)
 				print(tile)
 				
 				if tile and tile.has_resource():
@@ -105,13 +109,14 @@ func handle_pawn_selection(grid_coords):
 		selected_pawn_id = -1
 
 func handle_pawn_movement(grid_coords, click_position):
+	var map_data = DatabaseManager.map_data
 	# Only process if we have a pawn selected
 	if selected_pawn_id != -1:
 		var pawn = pawn_manager.get_pawn(selected_pawn_id)
 		if pawn:
 			# Check if target is valid
-			if MapDataManager.map_data.is_within_bounds_map(click_position):
-				var target_tile = MapDataManager.map_data.get_tile(grid_coords)
+			if map_data.is_within_bounds_map(click_position):
+				var target_tile = map_data.get_tile(grid_coords)
 				if target_tile.walkable:
 					# Command pawn to move to this location
 					var success = pawn.move_to(grid_coords)
@@ -126,8 +131,9 @@ func handle_pawn_movement(grid_coords, click_position):
 
 # for debugging, might be removed later
 func handle_shift_click_territory_info(grid_coords: Vector2i) -> void:
+	var map_data = DatabaseManager.map_data
 	# Get the tile at the clicked position
-	var tile = MapDataManager.map_data.get_tile(grid_coords)
+	var tile = map_data.get_tile(grid_coords)
 	
 	# Check if the tile has territory owners
 	if "territory_owner" in tile:
@@ -163,15 +169,16 @@ func print_territory_details(territory_type: String) -> void:
 		print("  Coexistence Layer: Unknown")
 		print("  Preferred Terrain: []")
 	else:
-		var territory_data = TerritoryDatabaseManager.territory_database.territory_definitions.get(territory_type, {})
+		var territory_data = territory_database.territory_definitions.get(territory_type, {})
 		print("- " + territory_type.capitalize())
 		print("  Rarity: " + str(territory_data.get("rarity", "Unknown")))
 		print("  Coexistence Layer: " + str(territory_data.get("coexistence_layer", "Unknown")))
 		print("  Preferred Terrain: " + str(territory_data.get("preferred_terrain", [])))
 
 func handle_shift_right_click_terrain_info(grid_coords: Vector2i) -> void:
+	var map_data = DatabaseManager.map_data
 	# Get the tile at the clicked position
-	var tile = MapDataManager.map_data.get_tile(grid_coords)
+	var tile = map_data.get_tile(grid_coords)
 	
 	print("=== TERRAIN INFO AT " + str(grid_coords) + " ===")
 	
@@ -181,7 +188,7 @@ func handle_shift_right_click_terrain_info(grid_coords: Vector2i) -> void:
 		print("Terrain: " + terrain_type.capitalize())
 		
 		# Get terrain details from database
-		var terrain_data = TerrainDatabaseManager.terrain_database.terrain_definitions[terrain_type]
+		var terrain_data = terrain_database.terrain_definitions[terrain_type]
 		print("- Color: " + str(terrain_data.get("base_color", "Default")))
 		print("- Walkable: " + str(terrain_data.get("walkable", true)))
 		print("- Movement Cost: " + str(terrain_data.get("movement_cost", 1.0)))
@@ -194,7 +201,7 @@ func handle_shift_right_click_terrain_info(grid_coords: Vector2i) -> void:
 		print("\nSubterrain: " + terrain_subtype.capitalize())
 		
 		# Get subterrain details from database
-		var subterrain_data = TerrainDatabaseManager.terrain_database.subterrain_definitions[terrain_subtype]
+		var subterrain_data = terrain_database.subterrain_definitions[terrain_subtype]
 		print("- Color Modifier: " + str(subterrain_data.get("color_modifier", "none")))
 		print("- Color Amount: " + str(subterrain_data.get("color_amount", 0)))
 		print("- Walkable: " + str(subterrain_data.get("walkable", true)))

@@ -1,5 +1,6 @@
 extends Camera2D
 
+
 # Camera movement speed
 @export var pan_speed: float = 500.0
 
@@ -19,7 +20,7 @@ var is_dragging = false
 var drag_start_position = Vector2.ZERO
 
 func _ready():
-	var map_data = MapDataManager.map_data # autoload/singleton for Resource
+	var map_data = DatabaseManager.map_data
 	# Assuming each tile is 16×16 pixels (adjust as needed)
 	var tile_size = 16
 	

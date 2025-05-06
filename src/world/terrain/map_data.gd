@@ -1,9 +1,8 @@
 class_name MapData
 extends Resource
 
-var territory_database = TerritoryDatabase.new() # Add monsters database
-var noise_generator = NoiseGenerator.new()
-var terrain_database = TerrainDatabase.new()
+var territory_database = DatabaseManager.territory_database
+var terrain_database = DatabaseManager.terrain_database
 var pathfinder = Pathfinder
 # Core terrain grid
 @export var terrain_grid: Grid
@@ -157,8 +156,6 @@ func find_tiles_by_density_range(min_density: float, max_density: float) -> Arra
 
 # For monster territory system
 func register_monster_territories() -> void:
-	var territory_database = TerritoryDatabase.new()
-	
 	# First, group territories by preferred terrain
 	var territories_by_terrain = {}
 	
@@ -225,7 +222,7 @@ func expand_territory_from_seed(seed_point: Vector2i, monster_type: String, terr
 	var territory_size = 0
 	
 	# Get territory color for visualization
-	var territory_color = TerritoryDatabaseManager.territory_database.territory_definitions[monster_type]["color"]
+	var territory_color = territory_database.territory_definitions[monster_type]["color"]
 	
 	# Process the queue until empty or we reach max size
 	while queue.size() > 0 and territory_size < max_size:
@@ -239,7 +236,7 @@ func expand_territory_from_seed(seed_point: Vector2i, monster_type: String, terr
 		if "territory_owner" in tile and tile["territory_owner"] != "":
 			var current_owner = tile["territory_owner"]
 			var current_layer
-			var new_layer = TerritoryDatabaseManager.territory_database.territory_definitions[monster_type].get("coexistence_layer", null)
+			var new_layer = territory_database.territory_definitions[monster_type].get("coexistence_layer", null)
 			
 			# Handle both string and array territory owners
 			if typeof(current_owner) == TYPE_STRING:
@@ -253,7 +250,7 @@ func expand_territory_from_seed(seed_point: Vector2i, monster_type: String, terr
 						continue # Skip if already in the list
 						
 					# Get the coexistence layer of the first territory
-					current_layer = TerritoryDatabaseManager.territory_database.territory_definitions[owners[0]]["coexistence_layer"]
+					current_layer = territory_database.territory_definitions[owners[0]]["coexistence_layer"]
 					
 					if current_layer != new_layer:
 						continue # Skip if layers don't match
@@ -263,7 +260,7 @@ func expand_territory_from_seed(seed_point: Vector2i, monster_type: String, terr
 						territory_size += 1
 				else:
 					# Single territory owner
-					current_layer = TerritoryDatabaseManager.territory_database.territory_definitions[current_owner]["coexistence_layer"]
+					current_layer = territory_database.territory_definitions[current_owner]["coexistence_layer"]
 					
 					# Skip if it's the same monster type
 					if current_owner == monster_type:
@@ -277,7 +274,7 @@ func expand_territory_from_seed(seed_point: Vector2i, monster_type: String, terr
 						territory_size += 1
 			else: # Array of territory owners
 				# Get the coexistence layer of the first territory (assuming all have the same layer)
-				current_layer = TerritoryDatabaseManager.territory_database.territory_definitions[current_owner[0]]["coexistence_layer"]
+				current_layer = territory_database.territory_definitions[current_owner[0]]["coexistence_layer"]
 				
 				if current_layer != new_layer:
 					continue # Skip if layers don't match
