@@ -339,7 +339,7 @@ func reduce_resource_at(position: Vector2i, amount: int):
 	
 	# Emit signal that this tile changed
 	emit_signal("tile_resource_changed", position)
-	print("Emitting tile_resource_changed signal for position: ", position)
+	#print("Emitting tile_resource_changed signal for position: ", position)
 	super.emit_signal("tile_resource_changed", position)
 
 	return true

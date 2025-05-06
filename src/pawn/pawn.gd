@@ -169,7 +169,7 @@ func assign_random_traits():
 func add_trait(trait_name):
 	if TraitDatabaseManager.get_trait(trait_name) != null and not traits.has(trait_name):
 		traits.append(trait_name)
-		print("Pawn received trait: " + trait_name)
+		#print("Pawn received trait: " + trait_name)
 
 
 # Check if a condition is met for a trait

@@ -4,7 +4,7 @@ extends Node
 var pawns = {} # Dictionary of all pawns, keyed by ID
 var next_pawn_id = 0
 var map_data = null
-@onready var pawn_info_ui = get_node("/root/Game/Main/PawnInfoUI")
+#@onready var pawn_info_ui = get_node("/root/Game/Main/PawnInfoUI")
 
 func _init():
 	pass
