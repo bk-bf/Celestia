@@ -7,8 +7,10 @@ var dexterity: int = 5
 var intelligence: int = 5
 
 # Basic identification
-var pawn_name: String = "Unnamed"
 var pawn_id: int = 0
+var pawn_name = ""
+var pawn_gender = NameDatabaseManager.pawn_gender
+
 
 # List of traits this pawn has
 var traits = []
@@ -28,8 +30,10 @@ var path_blocked = false
 # References
 var map_data = MapDataManager.map_data # autoload/singleton for Resource
 var terrain_db = TerrainDatabase.new() # Reference to terrain database
+#var name_db = NameDatabase.new() # Reference to the name database
 var sprite_renderer: SpriteRenderer
 @onready var trait_db = get_node("/root/TraitDatabaseManager")
+
 
 # pawn inventory
 var inventory = Inventory.new()
@@ -48,6 +52,8 @@ var has_reached_destination = false
 
 # Visual representation
 var sprite: Sprite2D
+var appearance_color: Color
+
 
 func _init(id: int, start_position: Vector2i, map_reference):
 	pawn_id = id
@@ -78,6 +84,9 @@ func initialize_movement_multipliers():
 			terrain_movement_multipliers[terrain_type] = 1.0
 
 func _ready():
+	# Randomly assign gender during initialization
+	pawn_name = NameDatabaseManager.get_random_name()
+
 	# Initialize pathfinder
 	pathfinder = Pathfinder.new(map_data.terrain_grid)
 	
@@ -89,7 +98,7 @@ func _ready():
 	harvesting_speed = 1.0 + (dexterity * 0.1) # Simple formula, adjust as needed
 	
 	# For testing, assign a random trait
-	assign_random_trait()
+	assign_random_traits()
 	 
 	 # Create progress bar - doesnt work properly
 	progress_bar = ProgressBar.new()
@@ -121,16 +130,41 @@ func _ready():
 	# debug
 	print("Pawn " + str(pawn_id) + " ready called")
 	print("Sprite exists: " + str(sprite_renderer.sprite != null))
-
+	
+	appearance_color = sprite_renderer.randomize_appearance() # adds a color overlay over the basic pawn placeholder to diffirentiate between them
 	#sprite.scale = Vector2(2, 2) # Adjust based on your art size
 	# Set up initial appearance
 	update_visual()
 
-
-func assign_random_trait():
+func assign_random_traits():
+	# Get all available traits
 	var all_traits = TraitDatabaseManager.trait_database.traits.keys()
-	var random_trait = all_traits[randi() % all_traits.size()]
-	add_trait(random_trait)
+	
+	# Determine how many traits to assign (2-5)
+	var num_traits = randi() % 4 + 2 # Random number between 2-5
+	
+	# Make sure we don't try to assign more traits than are available
+	num_traits = min(num_traits, all_traits.size())
+	
+	# Create a temporary copy of the traits array to pick from
+	var available_traits = all_traits.duplicate()
+	
+	# Assign the random traits
+	for i in range(num_traits):
+		if available_traits.size() > 0:
+			# Pick a random trait from the remaining available traits
+			var random_index = randi() % available_traits.size()
+			var trait_name = available_traits[random_index]
+			
+			# Add the trait to the pawn
+			add_trait(trait_name)
+			
+			# Remove the trait from available traits to prevent duplicates
+			available_traits.remove_at(random_index)
+	
+	# Print the final traits list for debugging
+	print("Pawn assigned traits (" + str(traits.size()) + "): " + str(traits))
+
 
 func add_trait(trait_name):
 	if TraitDatabaseManager.get_trait(trait_name) != null and not traits.has(trait_name):

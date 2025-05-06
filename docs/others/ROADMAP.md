@@ -32,8 +32,8 @@
     - [x] Implement pawn movement with terrain movement multipliers
     - [x] Simple resource harvesting mechanics
     - [x] Create a simple trait system for pawn personality
-    - [ ] Add basic pawn appearance generation	
-    - [ ] Implement pawn naming system
+    - [x] Add basic pawn color differentiation
+    - [x] Implement basic randomised pawn naming system
 - **TileMap Integration (Technical Improvement)**
     - [ ] Replace current `draw()` implementation with TileMap-based rendering
     - [ ] Create basic placeholder sprites for terrain types

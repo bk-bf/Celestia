@@ -16,7 +16,7 @@ func _ready():
 	# Initialize it with map_data
 	pawn_manager.initialize(map_data)
 	# Create some initial test pawns in the center area
-	for i in range(3): # Create 3 pawns
+	for i in range(10): # Spawn pawns
 		var center_position = map_data.get_random_center_position()
 		var test_pawn = pawn_manager.create_pawn(center_position)
 		print("Created test pawn " + str(i) + " at position: ", center_position)

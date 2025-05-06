@@ -83,7 +83,7 @@ show_coordinate_numbers = false
 show_terrain_letters = false
 show_density_values = false
 show_movement_costs = false
-base_seed = 1497914610
+base_seed = 3523321541
 
 [node name="Camera2D" type="Camera2D" parent="Main/Map"]
 script = ExtResource("2_a07fb")
