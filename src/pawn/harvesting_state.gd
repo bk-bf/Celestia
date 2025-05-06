@@ -8,13 +8,7 @@ func enter():
 	# Play harvesting animation
 	# Show progress bar
 	print('Entered HarvestingState')
-	pawn.progress_bar.visible = false
-
-func exit():
-	# Hide progress bar
-	pawn.progress_bar.visible = false
-
-
+	
 func update(delta):
 	# If job was canceled
 	if pawn.current_job == null:
@@ -27,7 +21,6 @@ func update(delta):
 	
 	# Progress the harvesting with trait modifications
 	pawn.current_job.progress += delta * pawn.harvesting_speed * work_speed_modifier / pawn.current_job.time_to_harvest
-	pawn.progress_bar.value = pawn.current_job.progress
 	
 	# Log only at the beginning (0%)
 	if not has_logged_start:

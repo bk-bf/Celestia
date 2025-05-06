@@ -45,18 +45,15 @@ var surnames = [
 var pawn_gender = "male" # default gender (no offence)
 
 func get_random_name():
-	pawn_gender = "male" if randf() > 0.5 else "female" # assign random gender
-	var first_name
-	if pawn_gender == "male":
-		first_name = male_first_names[randi() % male_first_names.size()]
-	elif pawn_gender == "female":
-		first_name = female_first_names[randi() % female_first_names.size()]
-	else:
-		# Random gender if none specified
-		if randf() > 0.5:
-			first_name = male_first_names[randi() % male_first_names.size()]
-		else:
-			first_name = female_first_names[randi() % female_first_names.size()]
-	
-	var surname = surnames[randi() % surnames.size()]
-	return first_name + " " + surname
+    pawn_gender = "male" if randf() > 0.5 else "female" # assign random gender
+    var first_name
+    if pawn_gender == "male":
+        first_name = male_first_names[randi() % male_first_names.size()]
+    else: # pawn_gender == "female"
+        first_name = female_first_names[randi() % female_first_names.size()]
+    
+    var surname = surnames[randi() % surnames.size()]
+    return {
+        "name": first_name + " " + surname,
+        "gender": pawn_gender
+    }

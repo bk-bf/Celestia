@@ -2,30 +2,68 @@ class_name TerritoryDatabase
 extends Resource
 
 var territory_definitions = {
-	
-	
-	"wolf_pack": {
-		"territory_thresholds": [0.3, 0.7], 
-		"preferred_terrain": ["forest"],
-		"color": Color.RED,
-	},
-	"bear_den": {
-		"territory_thresholds": [0.7, 1.1], 
-		"preferred_terrain": ["mountain"],
-		"color": Color.ORANGE,
-	},
-	"goblin_tribe": {
-		"territory_thresholds": [1.1, 1.5], 
-		"preferred_terrain": ["swamp"],
-
-		"color": Color.PURPLE,
-	},
-	"drake_nest": {
-		"territory_thresholds": [1.5, 1.9],
-		"preferred_terrain": ["mountain"],
-		"color": Color.BLUE,
-	}
+    "wolfs": {
+        "territory_thresholds": [0.3, 0.7],
+        "preferred_terrain": ["forest"],
+        "color": Color.BLACK,
+        "rarity": 100 # the higher the more common
+    },
+    "bears": {
+        "territory_thresholds": [0.7, 1.1],
+        "preferred_terrain": ["mountain"],
+        "color": Color.ORANGE,
+        "rarity": 100
+    },
+    "goblins": {
+        "territory_thresholds": [1.1, 1.5],
+        "preferred_terrain": ["swamp"],
+        "color": Color.PURPLE,
+        "rarity": 99
+    },
+    "drakes": {
+        "territory_thresholds": [1.5, 1.9],
+        "preferred_terrain": ["mountain"],
+        "color": Color.SEA_GREEN,
+        "rarity": 10
+    },
+    "orcs": {
+        "territory_thresholds": [1.3, 1.7],
+        "preferred_terrain": ["forest"],
+        "color": Color.DIM_GRAY,
+        "rarity": 98
+    },
+    "pigman": {
+        "territory_thresholds": [0.4, 0.8],
+        "preferred_terrain": ["plains"],
+        "color": Color.PINK,
+        "rarity": 100
+    },
+    "slime": {
+        "territory_thresholds": [0.2, 0.6],
+        "preferred_terrain": ["plains", "forest"],
+        "color": Color.SKY_BLUE,
+        "rarity": 99
+    },
+    "kobolds": {
+        "territory_thresholds": [0.5, 0.9],
+        "preferred_terrain": ["plains", "forest"],
+        "color": Color.YELLOW,
+        "rarity": 99
+    },
+    "spiders": {
+        "territory_thresholds": [1.2, 1.6],
+        "preferred_terrain": ["plains"],
+        "color": Color.BLACK,
+        "rarity": 50
+    },
+    "bandits": {
+        "territory_thresholds": [0.6, 1.0],
+        "preferred_terrain": ["forest", "mountain"],
+        "color": Color.RED,
+        "rarity": 90
+    }
 }
+
 
 # ALL THIS SHIT HAS TO BE MOVED EVENTUALLY
 func get_monster_data(monster_type: String) -> Dictionary:
@@ -41,7 +79,7 @@ func get_territory_frequency(monster_type: String) -> float:
 func get_territory_thresholds(monster_type: String) -> Array:
 	if monster_type in territory_definitions:
 		return territory_definitions[monster_type].territory_thresholds
-	return [0.4, 0.6]  
+	return [0.4, 0.6]
 	
 func get_monster_types() -> Array:
 	return territory_definitions.keys()

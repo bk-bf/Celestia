@@ -131,8 +131,8 @@ func generate_terrain(terrain_seed = null, detailed_seed = null):
 			# Set walkable property based on terrain and subterrain
 			tile.walkable = terrain_database.is_walkable(tile.terrain_type, tile.terrain_subtype)
 	
-	add_monster_territories(territory_seed)
-	map_data.post_process_territories()
+	map_data.register_monster_territories()
+	#map_data.post_process_territories()
 
 	# Add resource generation as a separate step
 	var resource_gen = ResourceGenerator.new(map_data, resource_db, noise_gen, base_seed)
@@ -144,26 +144,6 @@ func generate_terrain(terrain_seed = null, detailed_seed = null):
 # helper function to expose the grid
 func get_grid():
 	return map_data.terrain_grid
-
-# Updated monster territories function using Territory Database
-func add_monster_territories(seed_override = null):
-	# Set the seed for reproducible results
-	if seed_override != null:
-		seed(seed_override)
-	
-	# Get monster types from database
-	var available_monster_types = territory_database.get_monster_types()
-	
-	# Choose different base seeds for each monster type to ensure separation
-	for i in range(available_monster_types.size()):
-		var monster_type = available_monster_types[i]
-		# var monster_data = territory_database.get_monster_data(monster_type)
-		
-		# Create a unique seed for this monster territory
-		var monster_seed = territory_seed + (i * 1000)
-		
-		# Register the territory with values from database
-		map_data.register_monster_territory(monster_seed, monster_type, territory_database.get_territory_thresholds(monster_type))
 
 
 # toggle functions - might have to be redone into setters with backing variable? 

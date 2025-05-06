@@ -53,32 +53,3 @@ func _on_pawn_selected(pawn):
 	var pawn_ui = get_node("../PawnInfoUI")
 	if pawn_ui:
 		pawn_ui.set_selected_pawn(pawn)
-
-# Create a pawn with a specific role tendency
-func create_role_pawn(position: Vector2i, role: String) -> Pawn:
-	var pawn = create_pawn(position)
-	
-	# Adjust attributes based on role
-	match role.to_lower():
-		"warrior":
-			pawn.modify_attribute("strength", 3)
-			pawn.modify_attribute("dexterity", 1)
-			pawn.modify_attribute("intelligence", -1)
-			pawn.pawn_name = "Warrior " + str(pawn.pawn_id)
-		"scout":
-			pawn.modify_attribute("dexterity", 3)
-			pawn.modify_attribute("intelligence", 1)
-			pawn.modify_attribute("strength", -1)
-			pawn.pawn_name = "Scout " + str(pawn.pawn_id)
-		"mage":
-			pawn.modify_attribute("intelligence", 3)
-			pawn.modify_attribute("dexterity", 1)
-			pawn.modify_attribute("strength", -1)
-			pawn.pawn_name = "Mage " + str(pawn.pawn_id)
-		"balanced":
-			pawn.modify_attribute("strength", 1)
-			pawn.modify_attribute("dexterity", 1)
-			pawn.modify_attribute("intelligence", 1)
-			pawn.pawn_name = "Settler " + str(pawn.pawn_id)
-	
-	return pawn

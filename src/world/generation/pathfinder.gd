@@ -104,12 +104,12 @@ func calculate_distance(tile_a: Tile, tile_b: Tile) -> float:
 	var pos_b = tile_b.get_coordinates()
 	
 	# For diagonal movement, use Chebyshev or Octile distance instead of Manhattan
-	#var dx = abs(pos_a.x - pos_b.x)
-	#var dy = abs(pos_a.y - pos_b.y)
+	var dx = abs(pos_a.x - pos_b.x)
+	var dy = abs(pos_a.y - pos_b.y)
 	# Octile distance (recommended)
-	#return 1.0 * (dx + dy) + (1.414 - 2.0 * 1.0) * min(dx, dy)
+	return 1.0 * (dx + dy) + (1.414 - 2.0 * 1.0) * min(dx, dy)
 	# Alternative: Chebyshev distance (diagonals cost same as orthogonal)
-	return max(abs(pos_a.x - pos_b.x), abs(pos_a.y - pos_b.y))
+	#return max(abs(pos_a.x - pos_b.x), abs(pos_a.y - pos_b.y))
 
 func get_lowest_f_cost_tile() -> Tile:
 	var lowest_cost_tile = open_set[0]

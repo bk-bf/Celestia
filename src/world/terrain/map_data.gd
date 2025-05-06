@@ -12,6 +12,10 @@ var pathfinder = Pathfinder
 @export var map_seed: int = 0
 @export var map_name: String = "Celestia Map"
 @export var map_size: Vector2i = Vector2i(200, 200)
+@export var max_territoy_size: int = 500
+@export var max_territory_count: int = 400
+@export var min_territory_count: int = 200
+@export var territory_coverage_percentage: float = 0.8
 
 # terrain distribution
 var terrain_distribution: Dictionary = {}
@@ -152,54 +156,140 @@ func find_tiles_by_density_range(min_density: float, max_density: float) -> Arra
 	return matching_tiles
 
 # For monster territory system
-func register_monster_territory(seed_value: int, territory_type: String, territory_thresholds: Array = [0.4, 0.6]) -> void:
-	# Record territory in list with thresholds
-	monster_territories.append({
-		"seed": seed_value,
-		"monster_type": territory_type,
-		"thresholds": territory_thresholds
-	})
+func register_monster_territories() -> void:
+	var territory_database = TerritoryDatabase.new()
 	
-	# Get preferred terrain for this monster type
-	#var preferred_terrain = territory_database.get_monster_data(territory_type).preferred_terrain
+	# First, group territories by preferred terrain
+	var territories_by_terrain = {}
 	
-	 # Get preferred terrain for this monster type
-	# var preferred_terrain = territory_database.get_monster_data(territory_type).preferred_terrain
+	# Organize monsters by their preferred terrain
+	for territory_type in territory_database.territory_definitions.keys():
+		var preferred_terrains = territory_database.territory_definitions[territory_type]["preferred_terrain"]
+		for terrain in preferred_terrains:
+			if not territories_by_terrain.has(terrain):
+				territories_by_terrain[terrain] = []
+			territories_by_terrain[terrain].append(territory_type)
 	
-	# Assign territory based on terrain noise
-	for y in range(get_height()):
-		for x in range(get_width()):
-			# Use existing terrain noise but normalize it
-			var raw_noise_val = noise_generator.get_terrain_noise(x, y)
-			var territory_density = (raw_noise_val + 1.0)
-			#print(territory_density)
-			
-			# Territory is where density is within thresholds
-			if territory_density >= territory_thresholds[0] and territory_density < territory_thresholds[1]:
-				var tile = get_tile(Vector2i(x, y))
-				
-				# Simple territory assignment with more lenient conditions
-				# Only avoid water/river
-				if tile.terrain_type != "river" and tile.terrain_type != "water":
-					#print("Tile object ID: " + str(tile.get_instance_id()) + " Tile terrain: '" + tile.terrain_type + ", Grid Coords: (" + str(x) + ", " + str(y) + ")")
-					tile.territory_owner = territory_type
-
-var cleanup_count = 0 # outside of function to be accessible by statisctics.gd print
-
-func post_process_territories(): # Clean up each territory type
-	for territory_type in territory_database.get_monster_types():
-		var preferred_terrains = territory_database.get_monster_data(territory_type).preferred_terrain
+	# For each terrain type, find suitable tiles and assign territories
+	for terrain_type in territories_by_terrain.keys():
+		var suitable_tiles = []
 		
-		# Check all tiles
+		# Find all tiles of this terrain type
 		for y in range(get_height()):
 			for x in range(get_width()):
 				var tile = get_tile(Vector2i(x, y))
+				if tile.terrain_type == terrain_type:
+					suitable_tiles.append(Vector2i(x, y))
+		
+		# Skip if no suitable tiles
+		if suitable_tiles.size() == 0:
+			continue
+			
+		# Get monsters that prefer this terrain
+		var possible_monsters = territories_by_terrain[terrain_type]
+		
+		# Apply rarity filter - rare monsters have lower chance of being selected
+		var weighted_monsters = []
+		for monster_type in possible_monsters:
+			var rarity = territory_database.territory_definitions[monster_type]["rarity"]
+			# Add the monster to the selection pool 'rarity' number of times
+			for i in range(rarity):
+				weighted_monsters.append(monster_type)
+		
+		# Determine how many territories to create for this terrain
+		var territory_count = int(suitable_tiles.size() * territory_coverage_percentage)
+		territory_count = max(min_territory_count, min(territory_count, max_territory_count))
+		
+		# Assign territories
+		for i in range(territory_count):
+			# Pick a random monster type with rarity weighting
+			var monster_type = weighted_monsters[randi() % weighted_monsters.size()]
+			
+			# Create a territory seed point
+			var seed_point = suitable_tiles[randi() % suitable_tiles.size()]
+			
+			# Expand territory from seed point
+			expand_territory_from_seed(seed_point, monster_type, terrain_type)
+
+
+func expand_territory_from_seed(seed_point: Vector2i, monster_type: String, terrain_type: String, max_size: int = max_territoy_size) -> void:
+	# Create a queue for flood fill algorithm
+	var queue = []
+	queue.push_back(seed_point)
+	
+	# Keep track of tiles we've already processed
+	var processed_tiles = {}
+	processed_tiles[Vector2i(seed_point.x, seed_point.y)] = true
+	
+	# Keep track of how many tiles we've added to this territory
+	var territory_size = 0
+	
+	# Get territory color for visualization
+	var territory_color = TerritoryDatabaseManager.territory_database.territory_definitions[monster_type]["color"]
+	
+	# Process the queue until empty or we reach max size
+	while queue.size() > 0 and territory_size < max_size:
+		# Get the next tile to process
+		var current = queue.pop_front()
+		
+		# Get the current tile
+		var tile = get_tile(current)
+		
+		# Skip if this tile already has a territory owner
+		if "territory_owner" in tile and tile["territory_owner"] != "":
+			continue
+			
+		# Skip if this tile isn't the preferred terrain type
+		if tile["terrain_type"] != terrain_type:
+			continue
+			
+		# Skip if this tile isn't walkable (water/river)
+		if not tile["walkable"]:
+			continue
+			
+		# Assign territory to this tile
+		tile["territory_owner"] = monster_type
+		territory_size += 1
+		
+		# Add neighboring tiles to the queue (4-way connectivity)
+		var neighbors = [
+		Vector2i(current.x + 1, current.y),
+		Vector2i(current.x - 1, current.y),
+		Vector2i(current.x, current.y + 1),
+		Vector2i(current.x, current.y - 1),
+		Vector2i(current.x + 1, current.y + 1),
+		Vector2i(current.x - 1, current.y - 1),
+		Vector2i(current.x + 1, current.y - 1),
+		Vector2i(current.x - 1, current.y + 1)
+	]
+
+		
+		# Process each neighbor
+		for neighbor in neighbors:
+			# skip some tiles for organic look
+			if randf() < 0.3:
+				continue
+			# Skip if out of bounds
+			if neighbor.x < 0 or neighbor.y < 0 or neighbor.x >= get_width() or neighbor.y >= get_height():
+				continue
 				
-				# If this tile has this territory but wrong terrain, remove it
-				if tile.territory_owner == territory_type and not (tile.terrain_type in preferred_terrains):
-					#print("Tile terrain: '" + tile.terrain_type + "', Preferred: " + str(preferred_terrains) + ", Grid Coords: (" + str(x) + ", " + str(y) + ")")
-					tile.territory_owner = ""
-					cleanup_count += 1
+			# Skip if already processed
+			if Vector2i(neighbor.x, neighbor.y) in processed_tiles:
+				continue
+				
+			# Mark as processed and add to queue
+			processed_tiles[Vector2i(neighbor.x, neighbor.y)] = true
+			queue.push_back(neighbor)
+	
+	# Record territory in list
+	monster_territories.append({
+		"seed": seed_point,
+		"monster_type": monster_type,
+		"size": territory_size
+	})
+	
+	#print("Generated " + monster_type + " territory with " + str(territory_size) + " tiles on " + terrain_type + " terrain")
+
 
 func count_territories_by_type(monster_type: String) -> int:
 	var count = 0
@@ -218,7 +308,21 @@ func get_territory_coverage() -> float:
 				territory_count += 1
 	
 	return float(territory_count) / total if total > 0 else 0.0
+
+func get_territory_owners():
+	var owners = {}
 	
+	# Loop through all tiles to count territories
+	for y in range(get_height()):
+		for x in range(get_width()):
+			var tile = get_tile(Vector2i(x, y))
+			if "territory_owner" in tile and tile["territory_owner"] != "": # this works to access territories without a specific func in tile
+				if not owners.has(tile.territory_owner):
+					owners[tile.territory_owner] = 0
+				owners[tile.territory_owner] += 1
+	
+	return owners
+
 # Convert grid coordinates to map position
 func grid_to_map(grid_coords: Vector2i) -> Vector2:
 	return terrain_grid.grid_to_map(grid_coords)

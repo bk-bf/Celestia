@@ -9,7 +9,7 @@ var intelligence: int = 5
 # Basic identification
 var pawn_id: int = 0
 var pawn_name = ""
-var pawn_gender = NameDatabaseManager.pawn_gender
+var pawn_gender = "male"
 
 
 # List of traits this pawn has
@@ -85,8 +85,9 @@ func initialize_movement_multipliers():
 
 func _ready():
 	# Randomly assign gender during initialization
-	pawn_name = NameDatabaseManager.get_random_name()
-
+	var name_data = NameDatabaseManager.get_random_name()
+	pawn_name = name_data.name
+	pawn_gender = name_data.gender
 	# Initialize pathfinder
 	pathfinder = Pathfinder.new(map_data.terrain_grid)
 	
@@ -99,19 +100,6 @@ func _ready():
 	
 	# For testing, assign a random trait
 	assign_random_traits()
-	 
-	 # Create progress bar - doesnt work properly
-	progress_bar = ProgressBar.new()
-	progress_bar.z_index = 11 # Choose a value higher than your map's z-index
-	progress_bar.min_value = 0
-	progress_bar.max_value = 1
-	progress_bar.value = 0
-	progress_bar.size = Vector2(5, 1)
-	progress_bar.position = Vector2(-25, -40)
-	progress_bar.visible = false
-	add_child(progress_bar)
-	print("Progress bar added:", progress_bar != null)
-	print("Progress bar parent:", progress_bar.get_parent() if progress_bar else "None")
 	
 	# Set up state machine
 	state_machine = PawnStateMachine.new(self)
@@ -273,7 +261,6 @@ func modify_attribute(attribute_name: String, amount: int) -> bool:
 func calculate_attribute_bonus(attribute_value: int) -> int:
 	return (attribute_value - 5) / 2 # Simple D&D-like formula
 
-# Add these functions to your Pawn class
 
 # Start moving to a target position
 func move_to(target_position: Vector2i) -> bool:
@@ -306,7 +293,7 @@ func move_toward_target(delta):
 	# Get the next tile in the path
 	var next_tile_pos = movement_path[current_path_index]
 	
-	# Calculate world position of the next tile
+	# Calculate map position of the next tile
 	var next_position = map_data.grid_to_map(next_tile_pos)
 	
 	# Get terrain type for movement speed calculation

@@ -15,10 +15,10 @@ static func print_map_statistics(map_data, terrain_database, resource_db = null,
 	# Print seed information if provided
 	if base_seed != null:
 		print("Seed: ", base_seed)
-	if detail_seed != null:
-		print("Detail Seed: ", detail_seed)
-	if territory_seed != null:
-		print("Territory Seed: ", territory_seed)
+	#if detail_seed != null:
+		#print("Detail Seed: ", detail_seed)
+	#if territory_seed != null:
+		#print("Territory Seed: ", territory_seed)
 	
 	print("------------------------------")
 	print("TERRAIN DISTRIBUTION:")
@@ -88,8 +88,20 @@ static func print_map_statistics(map_data, terrain_database, resource_db = null,
 	print("MONSTER TERRITORIES:")
 	var territory_database = TerritoryDatabase.new() # Add monsters database
 	var available_monster_types = territory_database.get_monster_types()
-	print("Post-processing territories...")
-	print("Removed " + str(map_data.cleanup_count) + " territories from non-preferred terrain")
+	#print("Post-processing territories...")
+	#print("Removed " + str(map_data.cleanup_count) + " territories from non-preferred terrain")
 	print("- Generated " + str(available_monster_types.size()) + " monster territories")
 	print("- Total claimed territory: ", "%.1f" % (map_data.get_territory_coverage() * 100), "% of map")
+
+	# Add territory owner percentages
+	print("\nTerritory Owner Distribution:")
+	var territory_owners = map_data.get_territory_owners()
+	var total_tiles = map_data.get_width() * map_data.get_height()
+
+	for owner in territory_owners:
+		var coverage = (territory_owners[owner] / float(total_tiles)) * 100
+		# Format the owner name for display
+		var display_name = owner.replace("_", " ").capitalize()
+		print("- %s: %.1f%%" % [display_name, coverage])
+
 	print("===============================")
