@@ -4,7 +4,7 @@ extends Resource
 var terrain_definitions = {
 	"forest": {
 		"base_color": Color.DARK_GREEN,
-		"density_range": [0.5, 0.6],
+		"density_range": [0.5, 0.60],
 		"walkable": true,
 		"movement_cost": 1.5,
 		"subterrain": ["dirt", "grass", "deep_grass", "tree"],
@@ -28,7 +28,7 @@ var terrain_definitions = {
 	},
 	"mountain": {
 		"base_color": Color(0.6, 0.6, 0.6, 0.6),
-		"density_range": [0.6, 1.0],
+		"density_range": [0.60, 1.0],
 		"walkable": false,
 		"movement_cost": 3.0,
 		"subterrain": ["rocky", "peak"],
