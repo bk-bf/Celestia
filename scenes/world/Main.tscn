@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3 uid="uid://dej01ein88jm2"]
+
+[ext_resource type="Script" uid="uid://dsc4bw3ss6jel" path="res://src/core/main.gd" id="1_nciap"]
+[ext_resource type="Script" uid="uid://w0w71wu78hxp" path="res://src/pawn/pawn_manager.gd" id="2_10578"]
+[ext_resource type="Script" uid="uid://duynfs6n6kueb" path="res://src/core/utils/input_handler.gd" id="3_26o6m"]
+[ext_resource type="Script" uid="uid://dadowb7yknfjj" path="res://src/world/terrain/map_gen.gd" id="4_b3pok"]
+[ext_resource type="Script" uid="uid://cdfk4qi21bb6x" path="res://src/components/camera/camera_2d.gd" id="5_vanwo"]
+
+[node name="Game" type="Node2D"]
+
+[node name="Main" type="Node" parent="."]
+script = ExtResource("1_nciap")
+
+[node name="PawnManager" type="Node" parent="Main"]
+script = ExtResource("2_10578")
+
+[node name="InputHandler" type="Node2D" parent="Main"]
+script = ExtResource("3_26o6m")
+
+[node name="Map" type="Node2D" parent="Main"]
+script = ExtResource("4_b3pok")
+map_lengh = 100
+map_height = 100
+show_grid_lines = false
+show_coordinate_numbers = false
+show_terrain_letters = false
+show_territory_markers = false
+show_density_values = false
+show_movement_costs = false
+
+[node name="Camera2D" type="Camera2D" parent="Main/Map"]
+script = ExtResource("5_vanwo")
+
+[node name="Pathfinder" type="Node2D" parent="Main/Map"]
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="Main/Map"]
+debug_enabled = true
+debug_path_custom_color = Color(1, 0.376471, 0.498039, 1)

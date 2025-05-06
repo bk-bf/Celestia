@@ -22,6 +22,7 @@ var show_coordinate_numbers: bool = false
 var show_density_values: bool = false
 var show_movement_costs: bool = true
 var show_terrain_letters: bool = true
+var show_territory_markers: bool = true
 var show_resources: bool = true
 
 # Tracker
@@ -79,7 +80,8 @@ func render(canvas_item: CanvasItem):
 	if show_grid_lines:
 		draw_grid_lines(canvas_item)
 	
-	draw_territory_markers(canvas_item)
+	if show_territory_markers:
+		draw_territory_markers(canvas_item)
 
 	if draw_pathfinder:
 		draw_pathfinder(canvas_item)

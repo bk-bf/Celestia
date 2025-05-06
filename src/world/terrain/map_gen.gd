@@ -17,6 +17,7 @@ var resource_db = ResourceDB.new() # Add resource database
 @export var show_grid_lines: bool = true
 @export var show_coordinate_numbers: bool = true
 @export var show_terrain_letters: bool = true
+@export var show_territory_markers: bool = true
 @export var show_density_values: bool = true
 @export var show_movement_costs: bool = true
 @export var show_resources: bool = true
