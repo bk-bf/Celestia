@@ -15,15 +15,21 @@ var debug_path: Array = []
 var map: MapRenderer
 var drawing_node: CanvasItem
 
+# TileMapLayer
+var terrain_tilemap: TileMapLayer = null
+var subterrain_tilemap: TileMapLayer = null
+var entity_tilemap: TileMapLayer = null
+
 
 # Configuration flags
+var show_terrain_tiles: bool = false
 var show_grid_lines: bool = false
 var show_coordinate_numbers: bool = false
 var show_density_values: bool = false
-var show_movement_costs: bool = true
-var show_terrain_letters: bool = true
-var show_territory_markers: bool = true
-var show_resources: bool = true
+var show_movement_costs: bool = false
+var show_terrain_letters: bool = false
+var show_territory_markers: bool = false
+var show_resources: bool = false
 
 # Tracker
 var dirty_tiles = {}
@@ -49,10 +55,11 @@ func _init(
 	var dirty_tiles = {}
 
 
-func initialize(map_data_ref, drawing_node_ref):
+func initialize(map_data_ref, terrain_map, subterrain_map, entity_map = null):
 	map_data = map_data_ref
-	drawing_node = drawing_node_ref
-	print("Initializing MapRenderer with map_data:", map_data_ref, " and drawing_node:", drawing_node_ref)
+	terrain_tilemap = terrain_map
+	subterrain_tilemap = subterrain_map
+	entity_tilemap = entity_map
 	
 	# Connect to the signal
 	var connection_result = map_data.connect("tile_resource_changed", _on_tile_resource_changed)
@@ -61,21 +68,23 @@ func initialize(map_data_ref, drawing_node_ref):
 
 func _on_tile_resource_changed(position):
 	print("Received tile_resource_changed signal for position: ", position)
-	# Mark this tile as dirty
-	dirty_tiles[position] = true
-	# Request a redraw on the drawing node
-	if drawing_node:
-		print("Calling queue_redraw() on drawing node")
-		drawing_node.queue_redraw()
-	else:
-		print("ERROR: drawing_node is null!")
+	var tile = map_data.get_tile(position)
+	
+	# Update the subterrain tile based on resource state
+	if tile.terrain_subtype != "":
+		var subterrain_id = terrain_database.get_subterrain_tile_id(tile.terrain_subtype)
+		
+		# Make sure position is a Vector2i
+		var tile_coords = Vector2i(position.x, position.y)
+		
+		# Properly set the cell with correct parameter types
+		subterrain_tilemap.set_cell(tile_coords, 0, subterrain_id, 0)
+
 
 # Main render function that calls all the specific drawing functions
 func render(canvas_item: CanvasItem):
 	if !map_data:
 		return
-	
-	draw_terrain_tiles(canvas_item)
 	
 	if show_grid_lines:
 		draw_grid_lines(canvas_item)
@@ -85,9 +94,6 @@ func render(canvas_item: CanvasItem):
 
 	if draw_pathfinder:
 		draw_pathfinder(canvas_item)
-	
-	if show_resources:
-		draw_resources(canvas_item, )
 	
 	if show_coordinate_numbers:
 		draw_coordinate_numbers(canvas_item)
@@ -106,31 +112,6 @@ func cleanup():
 	if map_data:
 		map_data.disconnect("tile_resource_changed", _on_tile_resource_changed)
 
-
-# Draw the base terrain tiles with their colors
-func draw_terrain_tiles(canvas_item: CanvasItem):
-	for y in range(map_data.get_height()):
-		for x in range(map_data.get_width()):
-			var grid_coords = Vector2i(x, y)
-			var tile = map_data.get_tile(grid_coords)
-			var rect = Rect2(
-				x * cell_size.x,
-				y * cell_size.y,
-				cell_size.x,
-				cell_size.y
-			)
-			
-			# Get base color from terrain database
-			var base_color = Color.WHITE # Default color if terrain type isn't found
-			if tile.terrain_type in terrain_database.terrain_definitions:
-				base_color = terrain_database.terrain_definitions[tile.terrain_type].base_color
-			
-			# Apply subterrain modification if applicable
-			var color = base_color
-			if tile.terrain_subtype != "":
-				color = terrain_database.get_modified_color(base_color, tile.terrain_subtype)
-			
-			canvas_item.draw_rect(rect, color)
 
 # Draw the grid lines
 func draw_grid_lines(canvas_item: CanvasItem):
@@ -193,18 +174,6 @@ func draw_pathfinder(canvas_item: CanvasItem):
 			var start_pos = map_data.grid_to_map(debug_path[i])
 			var end_pos = map_data.grid_to_map(debug_path[i + 1])
 			canvas_item.draw_line(start_pos, end_pos, Color.RED, 1.0)
-
-# Draw resources on the map
-func draw_resources(canvas_item: CanvasItem):
-	# Always draw all tiles with resources
-	for y in range(map_data.get_height()):
-		for x in range(map_data.get_width()):
-			_draw_tile_resources(canvas_item, Vector2i(x, y))
-	
-	# Clear dirty tiles after handling them
-	if dirty_tiles and dirty_tiles.size() > 0:
-		dirty_tiles.clear()
-
 
 # Helper method to draw resources for a single tile
 func _draw_tile_resources(canvas_item: CanvasItem, grid_coords: Vector2i):

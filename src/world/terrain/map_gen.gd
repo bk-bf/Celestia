@@ -30,6 +30,14 @@ var territory_seed: int = 0 # Derived seed for territories
 @onready var camera = $Camera2D
 var zoom_threshold = 1.5
 
+# for TileMap
+@onready var terrain_tilemap = $TerrainTileMap
+@onready var subterrain_tilemap = $SubTerrainTileMap
+@onready var entity_tilemap = $EntityTileMap
+
+# signal from generate_terrain()
+signal terrain_generated
+
 
 func _ready():
 	# Initialize terrain database
@@ -46,6 +54,9 @@ func _ready():
 	# Generate terrain with stored seeds
 	generate_terrain(seed, detail_seed)
 	
+	# Then render to TileMaps
+	render_terrain_to_tilemaps(terrain_tilemap, subterrain_tilemap)
+
 	# Set the map data in the global manager
 	DatabaseManager.map_data = map_data
 	DatabaseManager.save_map()
@@ -75,7 +86,9 @@ func _ready():
 	)
 
 	# calling the MapRenderer intitializer
-	map_renderer.initialize(map_data, self)
+	# CAN AT MOST HANDLE 3 ARGUMENTS
+	map_renderer.initialize(map_data, terrain_tilemap, subterrain_tilemap)
+
 
 	# Configure renderer settings
 	map_renderer.show_grid_lines = show_grid_lines
@@ -138,9 +151,25 @@ func generate_terrain(terrain_seed = null, detailed_seed = null):
 	# Add resource generation as a separate step
 	var resource_gen = ResourceGenerator.new(map_data, resource_db, noise_gen, base_seed)
 	resource_gen.generate_resources()
+	
+	emit_signal("terrain_generated")
 
-	# queues the draw() question is if this is the best placement for performance?		
-	queue_redraw()
+func render_terrain_to_tilemaps(terrain_tilemap, subterrain_tilemap):
+	# Loop through your existing map_data and set tiles
+	for y in range(map_data.get_height()):
+		for x in range(map_data.get_width()):
+			var grid_coords = Vector2i(x, y)
+			var tile = map_data.get_tile(grid_coords)
+			
+						# Place terrain tile
+			var terrain_data = terrain_database.get_terrain_tile_id(tile.terrain_type)
+			terrain_tilemap.set_cell(Vector2i(x, y), terrain_data.source_id, Vector2i(terrain_data.coords, 0))
+
+			# Place subterrain tile if applicable
+			if tile.terrain_subtype != "":
+				var subterrain_data = terrain_database.get_subterrain_tile_id(tile.terrain_subtype)
+				subterrain_tilemap.set_cell(Vector2i(x, y), subterrain_data.source_id, Vector2i(subterrain_data.coords, 0))
+
 
 # helper function to expose the grid
 func get_grid():

@@ -4,7 +4,7 @@ extends Node
 var pawns = {} # Dictionary of all pawns, keyed by ID
 var next_pawn_id = 0
 var map_data = null
-#@onready var pawn_info_ui = get_node("/root/Game/Main/PawnInfoUI")
+var entity_tilemap: TileMapLayer = DatabaseManager.entity_tilemap
 
 func _init():
 	pass
@@ -13,20 +13,13 @@ func initialize(map_reference):
 	map_data = map_reference
 	
 # Create a new pawn at the specified position
-func create_pawn(position: Vector2i) -> Pawn:
-	# Check if the specified position is walkable
-	var tile = map_data.get_tile(position)
-	if not tile.walkable:
-		# Find a nearby walkable tile
-		position = find_nearest_walkable_tile(position)
-		
-	# Create the pawn on the walkable tile
-	var pawn = Pawn.new(next_pawn_id, position, map_data)
-	pawn.generate_random_attributes()
-	pawns[next_pawn_id] = pawn
-	add_child(pawn)
+func create_pawn(position: Vector2i):
+	var new_pawn = Pawn.new(next_pawn_id, position, map_data, entity_tilemap)
+	pawns[next_pawn_id] = new_pawn
+	add_child(new_pawn)
 	next_pawn_id += 1
-	return pawn
+	return new_pawn
+
 # Get a pawn by ID
 func get_pawn(pawn_id: int) -> Pawn:
 	if pawns.has(pawn_id):

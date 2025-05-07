@@ -9,6 +9,7 @@ var resource_database = ResourceDatabase.new()
 var map_data = null
 var pawn_manager = null
 var save_path = "user://map_data.tres"
+@onready var entity_tilemap = $Game/Main/Map/EntityTileMap
 
 signal map_data_loaded
 

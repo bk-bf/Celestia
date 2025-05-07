@@ -2,20 +2,31 @@ extends Node
 
 # References to major subsystems
 var pawn_manager = DatabaseManager.pawn_manager
-var selected_paw
+var terrain_database = DatabaseManager.terrain_database
+var map_data: MapData
+#var selected_paw
 var center_position = null
+
+# Get references to your TileMap nodes
+@onready var terrain_tilemap = $Map/TerrainTileMap
+@onready var subterrain_tilemap = $Map/SubTerrainTileMap
+@onready var entity_tilemap = $Map/EntityTileMap
 
 func _ready():
 	# Get reference to your existing map
 	var map = $Map
 	# Access the map_data through your map's getter
 	var map_data = map.map_data
-
+	
+	# initialize TileMapLayers 
+	#map.initialize_tilemaps(terrain_tilemap, subterrain_tilemap)
+	
 	# Get reference to existing PawnManager node
 	pawn_manager = $PawnManager
 	
-	# Initialize it with map_data
+	# Initialize it with map_data and entity_tilemap
 	pawn_manager.initialize(map_data)
+	
 	# Create some initial test pawns in the center area
 	for i in range(5): # Spawn x pawns
 		center_position = map_data.get_random_center_position()
@@ -24,6 +35,9 @@ func _ready():
 	
 	# Clear territories around the center position where pawns spawn
 	clear_territories_around_center(center_position)
+
+	# Set up signal connections for resource changes (now updates subterrain)
+	map_data.connect("tile_resource_changed", _on_tile_resource_changed)
 
 
 func clear_territories_around_center(center_position: Vector2i, radius: int = 30) -> void:
@@ -73,3 +87,23 @@ func clear_territories_around_center(center_position: Vector2i, radius: int = 30
 		map_data.monster_territories.remove_at(territories_to_remove[i])
 	
 	print("Removed " + str(territories_to_remove.size()) + " territories from tracking list")
+
+
+func _on_tile_resource_changed(position):
+	# Update the subterrain tile at this position when resources change
+	var tile = map_data.get_tile(position)
+	
+	# Get the appropriate subterrain based on resource state
+	var new_subterrain = ""
+	if "resources" in tile and tile.resources.size() > 0:
+		# Resource still exists, but might be partially harvested
+		# You could implement different visual states based on resource amount
+		new_subterrain = tile.terrain_subtype
+	else:
+		# Resource fully harvested, change to post-harvest state
+		new_subterrain = terrain_database.get_post_harvest_subterrain(tile.terrain_subtype)
+		tile.terrain_subtype = new_subterrain
+	
+	# Update the subterrain tilemap
+	var subterrain_id = terrain_database.get_subterrain_tile_id(new_subterrain)
+	subterrain_tilemap.set_cell(0, position, 0, Vector2i(subterrain_id, 0))

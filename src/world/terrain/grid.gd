@@ -6,7 +6,7 @@ extends Resource
 @export var height: int = 100
 
 # Define your cell size (in pixels)
-@export var cell_size: Vector2 = Vector2(16, 16)
+@export var cell_size: Vector2 = Vector2(32, 32)
 
 # Storage for tiles
 var _tiles: Array = [] # Will store Tile objects in a 1D array
@@ -14,7 +14,7 @@ var _half_cell_size: Vector2
 @export var chunk_size: int = 16 # For potential future optimization
 
 # Initialization
-func _init(w: int = 100, h: int = 100, cell_sz: Vector2 = Vector2(16, 16)):
+func _init(w: int = 100, h: int = 100, cell_sz: Vector2 = Vector2(32, 32)):
 	width = w
 	height = h
 	cell_size = cell_sz
