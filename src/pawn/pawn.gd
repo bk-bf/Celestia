@@ -2,9 +2,9 @@ class_name Pawn
 extends Node2D
 
 # Core attributes
-var strength: int = 5
-var dexterity: int = 5
-var intelligence: int = 5
+@export var strength: int = 5
+@export var dexterity: int = 5
+@export var intelligence: int = 5
 
 # Basic identification
 var pawn_id: int = 0
@@ -28,14 +28,21 @@ var pathfinder = null
 var path_blocked = false
 
 # References
-var map_data = null # Will be set when map_data_loaded signal is received
-var terrain_db = DatabaseManager.terrain_database # Reference to terrain database
+var map_data: MapData = null # Will be set when map_data_loaded signal is received
+var terrain_db: TerrainDatabase = DatabaseManager.terrain_database # Reference to terrain database
 var sprite_renderer: SpriteRenderer
 
 # pawn inventory
 var inventory = Inventory.new()
 var max_carry_weight = 50 # Default value
 var current_carry_weight = 0
+
+# constants
+const MIN_ATTRIBUTE_VALUE := 3
+const MAX_ATTRIBUTE_VALUE := 8
+const BASE_MOVEMENT_SPEED := 1.0
+const BASE_CARRY_WEIGHT := 50.0
+const TILE_REACH_THRESHOLD := 2.0
 
 # state machine
 var state_machine
@@ -46,6 +53,11 @@ var harvest_progress = 0.0
 var progress_bar = false
 var harvesting_target = null
 var has_reached_destination = false
+
+# signal declarations for state changes
+signal state_changed(old_state: String, new_state: String)
+signal attribute_changed(attribute: String, old_value: int, new_value: int)
+signal resource_harvested(resource_id: String, amount: int)
 
 # Visual representation
 var sprite: Sprite2D
@@ -112,7 +124,7 @@ func _ready():
 	state_machine.add_state("Harvesting", HarvestingState.new())
 	print("States registered:", state_machine.states.keys())
 	
-	# Set initial state
+	# Set initial stateas
 	state_machine.change_state("Idle")
 
 	# debug
@@ -192,6 +204,10 @@ func is_condition_met(conditions):
 	return true
 
 # Get modified stat value based on traits
+## Calculates the final stat value after applying all trait modifiers
+## [param stat_name] The name of the stat to modify
+## [param base_value] The starting value before modifications
+## Returns: The final modified value
 func get_modified_stat(stat_name, base_value):
 	var modified_value = base_value
 	
@@ -232,10 +248,10 @@ func update_visual():
 
 
 # Generate random attributes within a range
-func generate_random_attributes(min_value: int = 3, max_value: int = 8):
-	strength = randi() % (max_value - min_value + 1) + min_value
-	dexterity = randi() % (max_value - min_value + 1) + min_value
-	intelligence = randi() % (max_value - min_value + 1) + min_value
+func generate_random_attributes():
+	strength = randi() % (MAX_ATTRIBUTE_VALUE - MIN_ATTRIBUTE_VALUE + 1) + MIN_ATTRIBUTE_VALUE
+	dexterity = randi() % (MAX_ATTRIBUTE_VALUE - MIN_ATTRIBUTE_VALUE + 1) + MIN_ATTRIBUTE_VALUE
+	intelligence = randi() % (MAX_ATTRIBUTE_VALUE - MIN_ATTRIBUTE_VALUE + 1) + MIN_ATTRIBUTE_VALUE
 
 # Get an attribute value by name
 func get_attribute(attribute_name: String) -> int:
@@ -252,19 +268,26 @@ func get_attribute(attribute_name: String) -> int:
 
 # Modify an attribute (for level ups, injuries, etc.)
 func modify_attribute(attribute_name: String, amount: int) -> bool:
-	match attribute_name.to_lower():
-		"strength", "str":
-			strength += amount
-			return true
-		"dexterity", "dex":
-			dexterity += amount
-			return true
-		"intelligence", "int":
-			intelligence += amount
-			return true
-		_:
-			push_error("Unknown attribute: " + attribute_name)
+		if amount == 0:
+			return true # No change needed
+			
+		if attribute_name.is_empty():
+			push_error("Empty attribute name provided")
 			return false
+	
+		match attribute_name.to_lower():
+			"strength", "str":
+				strength += amount
+				return true
+			"dexterity", "dex":
+				dexterity += amount
+				return true
+			"intelligence", "int":
+				intelligence += amount
+				return true
+			_:
+				push_error("Unknown attribute: " + attribute_name)
+				return false
 			
 # Calculate attribute-based bonuses (returns a value from -2 to +3 typically)
 func calculate_attribute_bonus(attribute_value: int) -> int:
@@ -276,7 +299,16 @@ func move_to(target_position: Vector2i) -> bool:
 	# Stop any current movement
 	is_moving = false
 	movement_path.clear()
-	
+
+	# error checking	
+	if not pathfinder:
+		push_error("Pathfinder not initialized")
+		return false
+		
+	if not map_data:
+		push_error("Map data not initialized")
+		return false
+
 	# Use pathfinder to find a path
 	movement_path = pathfinder.find_path(current_tile_position, target_position)
 	
@@ -352,19 +384,15 @@ func move_toward_target(delta):
 			
 # Strength affects carrying capacity and melee damage
 func get_carrying_capacity() -> float:
-	# Base capacity plus strength bonus
-	return 50.0 + (strength * 10)
-
+	return BASE_CARRY_WEIGHT + (strength * 10)
+	
 func calculate_melee_damage() -> float:
 	# Base damage plus strength bonus
 	return 5.0 + calculate_attribute_bonus(strength) * 2.0
 
 # Dexterity affects movement speed and ranged accuracy
 func get_movement_speed() -> float:
-	# Calculate base speed using dexterity
-	var base_speed = movement_speed * (1.0 + calculate_attribute_bonus(dexterity) * 0.1)
-	
-	# Apply trait modifiers to the base speed
+	var base_speed = BASE_MOVEMENT_SPEED * (1.0 + calculate_attribute_bonus(dexterity) * 0.1)
 	return get_modified_stat("movement_speed", base_speed)
 
 # Example usage in vision range calculation
