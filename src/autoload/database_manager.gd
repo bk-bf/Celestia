@@ -9,7 +9,7 @@ var resource_database = ResourceDatabase.new()
 var map_data = null
 var pawn_manager = null
 var save_path = "user://map_data.tres"
-@onready var entity_tilemap = $Game/Main/Map/EntityTileMap
+
 
 signal map_data_loaded
 
@@ -119,12 +119,12 @@ func get_resources_by_category(category: String) -> Array:
             result.append(resource_type)
     return result
 
-# MAP DATA FUNCTIONS
+# MAP DATA FUNCTIONS (Needs testing)
 func save_map(custom_path = null):
     var path = custom_path if custom_path else save_path
     if map_data:
         var result = map_data.save_to_file(path)
-        print("Map saved with result: " + str(result))
+        #print("Map saved with result: " + str(result))
         return result
     return ERR_UNCONFIGURED
 

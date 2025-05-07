@@ -33,7 +33,6 @@ var zoom_threshold = 1.5
 # for TileMap
 @onready var terrain_tilemap = $TerrainTileMap
 @onready var subterrain_tilemap = $SubTerrainTileMap
-@onready var entity_tilemap = $EntityTileMap
 
 # signal from generate_terrain()
 signal terrain_generated

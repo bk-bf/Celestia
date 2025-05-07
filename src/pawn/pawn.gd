@@ -29,12 +29,13 @@ var path_blocked = false
 
 var appearance_id: int = 0 # For storing the pawn's visual appearance ID
 var previous_position: Vector2i = Vector2i(-1, -1) # For tracking previous position
-@onready var entity_tilemap: TileMapLayer = $Game/Main/Map/EntityTileMap # Reference to the entity tilemap layer
+
 
 # References
 var map_data: MapData = null # Will be set when map_data_loaded signal is received
 var terrain_db: TerrainDatabase = DatabaseManager.terrain_database # Reference to terrain database
-var sprite_renderer: SpriteRenderer
+var sprite_renderer = SpriteRenderer.new()
+
 
 # pawn inventory
 var inventory = Inventory.new()
@@ -68,34 +69,20 @@ var sprite: Sprite2D
 var appearance_color: Color
 
 
-func _init(id: int, start_position: Vector2i, map_reference, entity_tilemap = null):
+func _init(id: int, start_position: Vector2i, map_reference):
 	pawn_id = id
 	current_tile_position = start_position
 	
+	# SpriteRenderer has to be referenced like this, might be useful to look into migrating to DatabaseManager
+	sprite_renderer = SpriteRenderer.new(false)
+	sprite_renderer.set_texture("res://assets/tiles/pawns_32x32_sprite.png")
+	add_child(sprite_renderer)
+
+
 	# Initialize terrain movement multipliers from TerrainDatabase
 	initialize_movement_multipliers()
 	
-	# Store reference to the entity tilemap
-	self.entity_tilemap = entity_tilemap
 	
-	# Generate a random pawn appearance ID (0-14 as you reserved)
-	appearance_id = randi() % 15
-	
-	# We don't need the sprite renderer anymore when using tilemaps
-	# Instead, we'll update the entity tilemap directly
-	update_visual_position()
-
-func update_visual_position():
-	if entity_tilemap:
-		# Clear previous position if needed
-		if previous_position:
-			entity_tilemap.set_cell(Vector2i(previous_position.x, previous_position.y), 2, Vector2i(-1, -1))
-		
-		# Set new position with the pawn's appearance_id
-		entity_tilemap.set_cell(Vector2i(current_tile_position.x, current_tile_position.y), 2, Vector2i(appearance_id, 0))
-		previous_position = current_tile_position
-
-
 func initialize_movement_multipliers():
 	# Populate movement multipliers from terrain and subterrain definitions
 	for terrain_type in terrain_db.terrain_definitions:
@@ -126,7 +113,6 @@ func _ready():
 	max_carry_weight = 30 + (strength * 5) # Simple formula, adjust as needed
 	
 	# Calculate harvesting speed based on attributes
-	# For example, dexterity could affect harvesting speed
 	harvesting_speed = 1.0 + (dexterity * 0.1) # Simple formula, adjust as needed
 	
 	# For testing, assign a random trait
@@ -136,24 +122,23 @@ func _ready():
 	state_machine = PawnStateMachine.new(self)
 	add_child(state_machine)
 	print("Added the State Machine...")
-	
+	 
 	# Add states
 	state_machine.add_state("Idle", IdleState.new())
 	state_machine.add_state("MovingToResource", MovingToResourceState.new())
 	state_machine.add_state("Harvesting", HarvestingState.new())
 	print("States registered:", state_machine.states.keys())
 	
-	# Set initial stateas
+	# Set initial state
 	state_machine.change_state("Idle")
 
-	# debug
-	print("Pawn " + str(pawn_id) + " ready called")
-	#print("Sprite exists: " + str(sprite_renderer.sprite != null))
+	# Randomize pawn appearance using the tilesheet
+	#appearance_id = sprite_renderer.randomize_appearance_from_sprite()
+	appearance_id = sprite_renderer.randomize_appearance_from_tilesheet()
 	
-	#appearance_color = sprite_renderer.randomize_appearance() # adds a color overlay over the basic pawn placeholder to diffirentiate between them
-	#sprite.scale = Vector2(2, 2) # Adjust based on your art size
-	# Set up initial appearance
-	#update_visual()
+	# debug
+	print("Pawn " + str(pawn_id) + " ready called with appearance ID: " + str(appearance_id) + " sprite exits: " + str(sprite_renderer.sprite != null))
+	update_visual()
 
 func _on_map_data_loaded():
 	# Now we can safely access map_data
@@ -258,14 +243,14 @@ func _process(delta):
 
 func set_selected(selected: bool):
 	is_selected = selected
-	#update_visual()
+	update_visual()
 
 # Update the pawn's visual appearance
-#func update_visual():
-	#if is_selected:
-	#	sprite_renderer.modulate = Color(1.5, 1.5, 1.5)
-	#else:
-	#	#sprite_renderer.modulate = Color(1, 1, 1)
+func update_visual():
+	if is_selected:
+		sprite_renderer.modulate = Color(1.2, 1.2, 1.2)
+	else:
+		sprite_renderer.modulate = Color(1, 1, 1)
 
 
 # Generate random attributes within a range

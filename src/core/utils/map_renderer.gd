@@ -18,13 +18,12 @@ var drawing_node: CanvasItem
 # TileMapLayer
 var terrain_tilemap: TileMapLayer = null
 var subterrain_tilemap: TileMapLayer = null
-var entity_tilemap: TileMapLayer = null
 
 
 # Configuration flags
 var show_terrain_tiles: bool = false
 var show_grid_lines: bool = false
-var show_coordinate_numbers: bool = false
+var show_coordinate_numbers: bool = true
 var show_density_values: bool = false
 var show_movement_costs: bool = false
 var show_terrain_letters: bool = false
@@ -55,33 +54,32 @@ func _init(
 	var dirty_tiles = {}
 
 
-func initialize(map_data_ref, terrain_map, subterrain_map, entity_map = null):
+func initialize(map_data_ref, terrain_map, subterrain_map):
 	map_data = map_data_ref
 	terrain_tilemap = terrain_map
 	subterrain_tilemap = subterrain_map
-	entity_tilemap = entity_map
 	
 	# Connect to the signal
-	var connection_result = map_data.connect("tile_resource_changed", _on_tile_resource_changed)
-	print("Signal connection result:", connection_result)
+	#var connection_result = map_data.connect("tile_resource_changed", _on_tile_resource_changed)
+	#print("Signal connection result:", connection_result)
 
 
-func _on_tile_resource_changed(position):
-	print("Received tile_resource_changed signal for position: ", position)
-	var tile = map_data.get_tile(position)
-	
+#func _on_tile_resource_changed(position):
+#	print("Received tile_resource_changed signal for position: ", position)
+#	var tile = map_data.get_tile(position)
+#	
 	# Update the subterrain tile based on resource state
-	if tile.terrain_subtype != "":
-		var subterrain_id = terrain_database.get_subterrain_tile_id(tile.terrain_subtype)
+#	if tile.terrain_subtype != "":
+#		var subterrain_id = terrain_database.get_subterrain_tile_id(tile.terrain_subtype)
 		
 		# Make sure position is a Vector2i
-		var tile_coords = Vector2i(position.x, position.y)
+#		var tile_coords = Vector2i(position.x, position.y)
 		
 		# Properly set the cell with correct parameter types
-		subterrain_tilemap.set_cell(tile_coords, 0, subterrain_id, 0)
+#		subterrain_tilemap.set_cell(tile_coords, 0, subterrain_id, 0)
+#
 
-
-# Main render function that calls all the specific drawing functions
+# Main render function that calls all the specific drawing functionsddda
 func render(canvas_item: CanvasItem):
 	if !map_data:
 		return
@@ -108,9 +106,9 @@ func render(canvas_item: CanvasItem):
 		draw_terrain_letters(canvas_item)
 
 
-func cleanup():
-	if map_data:
-		map_data.disconnect("tile_resource_changed", _on_tile_resource_changed)
+#func cleanup():
+	#if map_data:
+		#map_data.disconnect("tile_resource_changed", _on_tile_resource_changed)
 
 
 # Draw the grid lines

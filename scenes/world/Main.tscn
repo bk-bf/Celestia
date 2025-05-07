@@ -1,70 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://dej01ein88jm2"]
+[gd_scene load_steps=11 format=3 uid="uid://dej01ein88jm2"]
 
 [ext_resource type="Script" uid="uid://dsc4bw3ss6jel" path="res://src/core/main.gd" id="1_nciap"]
 [ext_resource type="Script" uid="uid://w0w71wu78hxp" path="res://src/pawn/pawn_manager.gd" id="2_10578"]
 [ext_resource type="Script" uid="uid://duynfs6n6kueb" path="res://src/core/utils/input_handler.gd" id="3_26o6m"]
 [ext_resource type="Script" uid="uid://dadowb7yknfjj" path="res://src/world/terrain/map_gen.gd" id="4_b3pok"]
 [ext_resource type="Script" uid="uid://cdfk4qi21bb6x" path="res://src/components/camera/camera_2d.gd" id="5_vanwo"]
-[ext_resource type="Texture2D" uid="uid://bpofarv05htqy" path="res://assets/tiles/pawns_32x32_tilesheet.png" id="6_26o6m"]
 [ext_resource type="Texture2D" uid="uid://oshuojdjdfns" path="res://assets/tiles/terrain_32x32_tilesheet.png" id="6_10578"]
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_b3pok"]
-texture = ExtResource("6_26o6m")
-texture_region_size = Vector2i(32, 32)
-1:0/0 = 0
-1:0/0/terrain_set = 2
-1:0/0/terrain = 0
-2:0/0 = 0
-2:0/0/terrain_set = 2
-2:0/0/terrain = 0
-3:0/0 = 0
-3:0/0/terrain_set = 2
-3:0/0/terrain = 0
-4:0/0 = 0
-4:0/0/terrain_set = 2
-4:0/0/terrain = 0
-5:0/0 = 0
-5:0/0/terrain_set = 2
-5:0/0/terrain = 0
-6:0/0 = 0
-6:0/0/terrain_set = 2
-6:0/0/terrain = 0
-7:0/0 = 0
-7:0/0/terrain_set = 2
-7:0/0/terrain = 0
-8:0/0 = 0
-8:0/0/terrain_set = 2
-8:0/0/terrain = 0
-9:0/0 = 0
-9:0/0/terrain_set = 2
-9:0/0/terrain = 0
-10:0/0 = 0
-10:0/0/terrain_set = 2
-10:0/0/terrain = 0
-11:0/0 = 0
-11:0/0/terrain_set = 2
-11:0/0/terrain = 0
-12:0/0 = 0
-12:0/0/terrain_set = 2
-12:0/0/terrain = 0
-13:0/0 = 0
-13:0/0/terrain_set = 2
-13:0/0/terrain = 0
-14:0/0 = 0
-14:0/0/terrain_set = 2
-14:0/0/terrain = 0
-0:0/0 = 0
-0:0/0/terrain_set = 2
-0:0/0/terrain = 0
-
-[sub_resource type="TileSet" id="TileSet_26o6m"]
-tile_size = Vector2i(32, 32)
-terrain_set_0/mode = 0
-terrain_set_1/mode = 0
-terrain_set_2/mode = 0
-terrain_set_2/terrain_0/name = "pawns"
-terrain_set_2/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
-sources/0 = SubResource("TileSetAtlasSource_b3pok")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_10578"]
 texture = ExtResource("6_10578")
@@ -321,10 +262,9 @@ script = ExtResource("3_26o6m")
 
 [node name="Map" type="Node2D" parent="Main"]
 script = ExtResource("4_b3pok")
-map_lengh = 300
-map_height = 300
+map_lengh = 20
+map_height = 20
 show_grid_lines = false
-show_coordinate_numbers = false
 show_terrain_letters = false
 show_territory_markers = false
 show_density_values = false
@@ -339,11 +279,6 @@ script = ExtResource("5_vanwo")
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="Main/Map"]
 debug_enabled = true
 debug_path_custom_color = Color(1, 0.376471, 0.498039, 1)
-
-[node name="EntityTileMap" type="TileMapLayer" parent="Main/Map"]
-z_index = 2
-y_sort_enabled = true
-tile_set = SubResource("TileSet_26o6m")
 
 [node name="SubTerrainTileMap" type="TileMapLayer" parent="Main/Map"]
 z_index = 1

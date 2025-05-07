@@ -4,16 +4,21 @@ extends Node2D
 var sprite: Sprite2D
 var animated_sprite: AnimatedSprite2D
 
+const PAWN_TILESHEET = "res://assets/tiles/pawns_32x32_tilesheet.png"
+const SPRITE_SIZE = 32 # Size of each sprite in the tilesheet
+
 func _init(use_animated = false):
 	if use_animated:
 		animated_sprite = AnimatedSprite2D.new()
 		add_child(animated_sprite)
+		animated_sprite.z_index = 100 # High value to ensure it's on top
 	else:
 		sprite = Sprite2D.new()
 		add_child(sprite)
+		sprite.z_index = 100 # High value to ensure it's on top
 	
 	# Ensure it renders above terrain
-	z_index = 10
+	z_index = 100
 
 func _ready():
 	print("SpriteRenderer initialized!")
@@ -34,21 +39,48 @@ func stop_animation():
 	if animated_sprite:
 		animated_sprite.stop()
 
-# Add this to your SpriteRenderer class
-func randomize_appearance():
-	# Generate a random color with full opacity
-	var random_color = Color(
-		randf(), # Random red component (0-1)
-		randf(), # Random green component (0-1)
-		randf(), # Random blue component (0-1)
-		1.0 # Full opacity
-	)
+func randomize_appearance_from_tilesheet():
+	# Load the tilesheet
+	var tilesheet = load(PAWN_TILESHEET)
 	
-	# Apply the color to the appropriate sprite
-	if sprite:
-		sprite.modulate = random_color
-	elif animated_sprite:
-		animated_sprite.modulate = random_color
+	if sprite and tilesheet:
+		sprite.texture = tilesheet
+		sprite.visible = true
+		
+		# Enable region for selecting a specific sprite from the sheet
+		sprite.region_enabled = true
+		
+		# Generate random sprite index (0-14 as you reserved)
+		var random_index = randi() % 15
+		
+		# Calculate only the x position since all sprites are in the first row
+		var x_pos = random_index * SPRITE_SIZE
+		
+		# Set the region to display only that sprite
+		sprite.region_rect = Rect2(x_pos, 0, SPRITE_SIZE, SPRITE_SIZE)
+		print("sprite.region_rect: ", sprite.region_rect)
+		
+		return random_index
 	
-	# Return the color so the Pawn can store it if needed
-	return random_color
+	return 0
+
+
+#func randomize_appearance_from_sprite():
+	# Load a single sprite instead of a tilesheet
+#	var single_sprite = load("res://assets/tiles/pawns_32x32_sprite.png") # Path to your 32x32 PNG
+	
+#	if sprite and single_sprite:
+#		sprite.texture = single_sprite
+#		sprite.visible = true
+		
+		# No need for region since we're using a single sprite
+#		sprite.region_enabled = false
+		
+		# For debugging
+#		print("Sprite loaded with dimensions: ", single_sprite.get_size())
+#		print("Sprite position: ", sprite.global_position)
+#		print("Sprite scale: ", sprite.scale)
+		
+#		return 0 # Since we're not selecting from multiple sprites
+	
+#	return 0

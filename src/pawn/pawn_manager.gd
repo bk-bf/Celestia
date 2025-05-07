@@ -4,7 +4,6 @@ extends Node
 var pawns = {} # Dictionary of all pawns, keyed by ID
 var next_pawn_id = 0
 var map_data = null
-var entity_tilemap: TileMapLayer = DatabaseManager.entity_tilemap
 
 func _init():
 	pass
@@ -14,7 +13,7 @@ func initialize(map_reference):
 	
 # Create a new pawn at the specified position
 func create_pawn(position: Vector2i):
-	var new_pawn = Pawn.new(next_pawn_id, position, map_data, entity_tilemap)
+	var new_pawn = Pawn.new(next_pawn_id, position, map_data)
 	pawns[next_pawn_id] = new_pawn
 	add_child(new_pawn)
 	next_pawn_id += 1

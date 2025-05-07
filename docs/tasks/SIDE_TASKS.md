@@ -13,7 +13,7 @@
 - [ ] apply random coloring to pawn sprites (to differentiate between them)
 - [ ] implement quick progress bar for harvesting (maybe)
 - [ ] Initial Database Population (Phase 1) has to possibly be refactored again to ensure -> @onready var map_data = DatabaseManager.map_data
-
+- [ ] fix func _on_tile_resource_changed()
 
 
 

@@ -10,7 +10,6 @@ var center_position = null
 # Get references to your TileMap nodes
 @onready var terrain_tilemap = $Map/TerrainTileMap
 @onready var subterrain_tilemap = $Map/SubTerrainTileMap
-@onready var entity_tilemap = $Map/EntityTileMap
 
 func _ready():
 	# Get reference to your existing map
@@ -24,7 +23,7 @@ func _ready():
 	# Get reference to existing PawnManager node
 	pawn_manager = $PawnManager
 	
-	# Initialize it with map_data and entity_tilemap
+	# Initialize it with map_data 
 	pawn_manager.initialize(map_data)
 	
 	# Create some initial test pawns in the center area
