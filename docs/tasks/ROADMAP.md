@@ -35,8 +35,8 @@
     - [x] Add basic pawn color differentiation
     - [x] Implement basic randomised pawn naming system
 - **TileMap Integration (Technical Improvement)**
-    - [ ] Replace current `draw()` implementation with TileMap-based rendering
-    - [ ] Create basic placeholder sprites for terrain types
+    - [x] Replace current `draw()` implementation with TileMap-based rendering
+    - [x] Create basic placeholder sprites for terrain types
     - [ ] Implement proper z-indexing for entities and terrain
     - [ ] Add sprite-based visualization for resources
 - **Enhanced Monster Territory System**
