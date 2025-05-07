@@ -37,7 +37,7 @@ func _ready():
 	clear_territories_around_center(center_position)
 
 	# Set up signal connections for resource changes (now updates subterrain)
-	map_data.connect("tile_resource_changed", _on_tile_resource_changed)
+#	map_data.connect("tile_resource_changed", _on_tile_resource_changed)
 
 
 func clear_territories_around_center(center_position: Vector2i, radius: int = 30) -> void:
@@ -87,23 +87,3 @@ func clear_territories_around_center(center_position: Vector2i, radius: int = 30
 		map_data.monster_territories.remove_at(territories_to_remove[i])
 	
 	print("Removed " + str(territories_to_remove.size()) + " territories from tracking list")
-
-
-func _on_tile_resource_changed(position):
-	# Update the subterrain tile at this position when resources change
-	var tile = map_data.get_tile(position)
-	
-	# Get the appropriate subterrain based on resource state
-	var new_subterrain = ""
-	if "resources" in tile and tile.resources.size() > 0:
-		# Resource still exists, but might be partially harvested
-		# You could implement different visual states based on resource amount
-		new_subterrain = tile.terrain_subtype
-	else:
-		# Resource fully harvested, change to post-harvest state
-		new_subterrain = terrain_database.get_post_harvest_subterrain(tile.terrain_subtype)
-		tile.terrain_subtype = new_subterrain
-	
-	# Update the subterrain tilemap
-	var subterrain_id = terrain_database.get_subterrain_tile_id(new_subterrain)
-	subterrain_tilemap.set_cell(0, position, 0, Vector2i(subterrain_id, 0))
