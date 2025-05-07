@@ -28,11 +28,9 @@ var pathfinder = null
 var path_blocked = false
 
 # References
-var map_data = DatabaseManager.map_data # autoload/singleton for Resource
+var map_data = null # Will be set when map_data_loaded signal is received
 var terrain_db = DatabaseManager.terrain_database # Reference to terrain database
 var sprite_renderer: SpriteRenderer
-@onready var trait_db = get_node("/root/DatabaseManager")
-
 
 # pawn inventory
 var inventory = Inventory.new()
@@ -57,11 +55,6 @@ var appearance_color: Color
 func _init(id: int, start_position: Vector2i, map_reference):
 	pawn_id = id
 	current_tile_position = start_position
-	map_data = map_reference
-	
-	# Use the existing conversion function
-	position = map_data.grid_to_map(start_position)
-	#print(map_data.map_to_grid(position))
 	
 	# Initialize terrain movement multipliers from TerrainDatabase
 	initialize_movement_multipliers()
@@ -91,12 +84,12 @@ func initialize_movement_multipliers():
 			terrain_movement_multipliers[subterrain_type] = 1.0
 
 func _ready():
+	# Connect to the map_data_loaded signal
+	DatabaseManager.connect("map_data_loaded", _on_map_data_loaded)
 	# Randomly assign gender during initialization
 	var name_data = DatabaseManager.get_random_name()
 	pawn_name = name_data.name
 	pawn_gender = name_data.gender
-	# Initialize pathfinder
-	pathfinder = Pathfinder.new(map_data.terrain_grid)
 	
 	# Calculate max carrying capacity based on strength
 	max_carry_weight = 30 + (strength * 5) # Simple formula, adjust as needed
@@ -130,6 +123,15 @@ func _ready():
 	#sprite.scale = Vector2(2, 2) # Adjust based on your art size
 	# Set up initial appearance
 	update_visual()
+
+func _on_map_data_loaded():
+	# Now we can safely access map_data
+	map_data = DatabaseManager.map_data
+	position = map_data.grid_to_map(current_tile_position)
+	
+	# Initialize pathfinder now that we have map_data
+	pathfinder = Pathfinder.new(map_data.terrain_grid)
+
 
 func assign_random_traits():
 	# Get all available traits
@@ -194,7 +196,7 @@ func get_modified_stat(stat_name, base_value):
 	var modified_value = base_value
 	
 	for trait_name in traits:
-		var traits = trait_db.get_trait(trait_name)
+		var traits = DatabaseManager.get_trait(trait_name)
 		if traits == null:
 			continue
 			
