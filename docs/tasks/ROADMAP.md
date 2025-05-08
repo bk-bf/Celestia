@@ -38,7 +38,7 @@
     - [x] Replace current `draw()` implementation with TileMap-based rendering
     - [x] Create basic placeholder sprites for terrain types
     - [ ] Implement proper z-indexing for entities and terrain
-    - [ ] Add sprite-based visualization for resources
+    - [ ] Add sprite-based ItemEntity spawn for resources
 - **Enhanced Monster Territory System**
     - [x] Basic monster territory system using territory_owner property
     - [ ] Expand territory system with difficulty gradients from map-center to periphery
