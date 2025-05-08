@@ -14,6 +14,7 @@
 - [ ] implement quick progress bar for harvesting (maybe)
 - [ ] Initial Database Population (Phase 1) has to possibly be refactored again to ensure -> @onready var map_data = DatabaseManager.map_data
 - [ ] fix func _on_tile_resource_changed()
+- [ ] optimise the spawn rate of tiles such as trees, bushes, flowers, so they feel more realistic
 
 
 
