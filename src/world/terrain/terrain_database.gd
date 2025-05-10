@@ -10,7 +10,7 @@ var terrain_definitions = {
 		"movement_cost": 1.5,
 		"subterrain": ["dirt", "grass", "deep_grass", "bush", "tree", "tree_stump", "fallen_logs", "mushroom_patch"],
 		"subterrain_thresholds": [-0.8, -0.6, -0.4, -0.2, 0.4, 0.7, 0.9],
-		"tile_id": [34, 35] # Add tile_id for TileMap rendering
+		"tile_id": [34, 35]
 	},
 	"swamp": {
 		"base_color": Color.DARK_OLIVE_GREEN,
@@ -19,7 +19,7 @@ var terrain_definitions = {
 		"movement_cost": 2.0,
 		"subterrain": ["shallow_water", "mud", "bog", "clay", "moss", "quicksand", "dead_trees"],
 		"subterrain_thresholds": [-0.8, -0.6, -0.4, -0.2, 0.2, 0.6, 0.8],
-		"tile_id": [19] # Add tile_id for TileMap rendering
+		"tile_id": [19]
 	},
 	"plains": {
 		"base_color": Color.FOREST_GREEN,
@@ -28,7 +28,7 @@ var terrain_definitions = {
 		"movement_cost": 1.0,
 		"subterrain": ["dirt", "grass", "bush", "deep_grass", "tall_grass", "wildflowers", "scrubland", "savanna"],
 		"subterrain_thresholds": [-0.8, -0.6, -0.4, -0.2, 0.4, 0.6, 0.8],
-		"tile_id": [36] # Add tile_id for TileMap rendering
+		"tile_id": [36]
 	},
 	"mountain": {
 		"base_color": Color(0.6, 0.6, 0.6, 0.6),
@@ -37,7 +37,7 @@ var terrain_definitions = {
 		"movement_cost": 3.0,
 		"subterrain": ["rocky", "peak", "cave", "cliff", "mineral_deposit", "crystal_formation", "arcane_glade"],
 		"subterrain_thresholds": [-0.6, -0.3, 0.0, 0.3, 0.6, 0.85, 0.95],
-		"tile_id": [28] # Add tile_id for TileMap rendering
+		"tile_id": [28]
 	},
 	"river": {
 		"base_color": Color.DODGER_BLUE,
@@ -47,7 +47,7 @@ var terrain_definitions = {
 		"is_water": true,
 		"subterrain": ["shallow_water", "water", "rapids", "riverbank"],
 		"subterrain_thresholds": [-0.6, -0.3, 0.0, 0.3],
-		"tile_id": [7] # Add tile_id for TileMap rendering
+		"tile_id": [7]
 	}
 }
 
