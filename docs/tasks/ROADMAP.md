@@ -38,12 +38,7 @@
     - [x] Replace current `draw()` implementation with TileMap-based rendering
     - [x] Create basic placeholder sprites for terrain types
     - [x] Implement proper z-indexing for entities and terrain
-    - [ ] Add sprite-based visualization for resources
-- **Enhanced Monster Territory System**
-    - [x] Basic monster territory system using territory_owner property
-    - [ ] Expand territory system with difficulty gradients from map-center to periphery
-    - [ ] Add visual boundary indicators (claw marks, monster signs)
-    - [ ] Create territory-specific resource generation (rare materials)
+    - [x] Add basic, TileMap-based resource visualization 
 - **Database Foundation**
     - [x] Create comprehensive DatabaseManager to handle all database types
     - [x] Initial Database Population (Phase 1)
@@ -96,8 +91,14 @@
     - [ ] Add basic critical strikes and special attacks
 - **Multi-Stage Crafting System**
     - [ ] Create ItemDatabase with crafting requirements
+	- [ ] Add sprite-based visualization for ItemDatabase entries
     - [ ] Implement multi-step crafting for key resource chains
     - [ ] Design specialized workstations for different crafting types
+- **Enhanced Monster Territory System**
+    - [x] Basic monster territory system using territory_owner property
+    - [ ] Expand territory system with difficulty gradients from map-center to periphery
+    - [ ] Add visual boundary indicators (claw marks, monster signs)
+    - [ ] Create territory-specific resource generation (rare materials)
 
 
 ## Phase 6: Environmental Systems & Social Layer (2-3 weeks)
