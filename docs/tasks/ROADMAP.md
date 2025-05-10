@@ -35,9 +35,9 @@
     - [x] Add basic pawn color differentiation
     - [x] Implement basic randomised pawn naming system
 - **TileMap Integration (Technical Improvement)**
-    - [ ] Replace current `draw()` implementation with TileMap-based rendering
-    - [ ] Create basic placeholder sprites for terrain types
-    - [ ] Implement proper z-indexing for entities and terrain
+    - [x] Replace current `draw()` implementation with TileMap-based rendering
+    - [x] Create basic placeholder sprites for terrain types
+    - [x] Implement proper z-indexing for entities and terrain
     - [ ] Add sprite-based visualization for resources
 - **Enhanced Monster Territory System**
     - [x] Basic monster territory system using territory_owner property
@@ -50,6 +50,20 @@
         - [x] Populate TerrainDatabase with 5 main terrain types
         - [x] Expand TerrainDatabase with 15+ subtypes
         - [x] Populate TerritoryDatabase with 4 territory types
+
+
+## Phase 5: Survival \& Colony Management (2-3 weeks)
+
+- **Pawn Needs \& Work Systems**
+    - [ ] Implement hunger and rest needs
+    - [ ] Add mood/happiness tracking
+    - [ ] Create job assignment interface
+    - [ ] Implement work priorities system
+    - [ ] Add basic pawn AI for autonomously selecting tasks
+- **Resource Management \& Construction**
+    - [ ] Implement stockpile zones with territory safety ratings
+    - [ ] Create inventory system for pawns with magical item effects
+    - [ ] Design construction interface with magical reinforcement options
 
 
 ## Phase 3B: Exploration \& Vision Systems (2-3 weeks)
@@ -85,19 +99,6 @@
     - [ ] Implement multi-step crafting for key resource chains
     - [ ] Design specialized workstations for different crafting types
 
-
-## Phase 5: Survival \& Colony Management (2-3 weeks)
-
-- **Pawn Needs \& Work Systems**
-    - [ ] Implement hunger and rest needs
-    - [ ] Add mood/happiness tracking
-    - [ ] Create job assignment interface
-    - [ ] Implement work priorities system
-    - [ ] Add basic pawn AI for autonomously selecting tasks
-- **Resource Management \& Construction**
-    - [ ] Implement stockpile zones with territory safety ratings
-    - [ ] Create inventory system for pawns with magical item effects
-    - [ ] Design construction interface with magical reinforcement options
 
 ## Phase 6: Environmental Systems & Social Layer (2-3 weeks)
 

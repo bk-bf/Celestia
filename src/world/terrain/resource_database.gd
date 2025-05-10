@@ -1,7 +1,8 @@
 class_name ResourceDatabase
 extends Resource
 
-# yield_amount currently unused and will later be implemented based on pawn skills
+# yield_amount currently unused and will later be implemented based on pawn skills 
+# currently spawns depending on terrain_subtype, but terain_type is also tracked for possible future biome resource variety
 
 var resources = {
     "wood": {
@@ -33,7 +34,7 @@ var resources = {
     "herbs": {
         "display_name": "Herbs",
         "terrain_type": ["plains", "forest"],
-        "terrain_subtype": ["flower_field", "moss", "deep_grass"],
+        "terrain_subtype": ["wildflowers", "moss", "deep_grass"],
         "frequency": 1.0,
         "cluster_size": 2,
         "harvest_tool": ["none", "knife"],

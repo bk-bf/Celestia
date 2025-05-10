@@ -40,7 +40,7 @@ func generate_specific_resource(resource_id):
 				continue
 				
 			# Skip if terrain type doesn't match required types
-			if not tile.terrain_type in resource_data.terrain_type:
+			if not tile.terrain_subtype in resource_data.terrain_subtype:
 				continue
 			
 			# Only place resources on matching subterrains

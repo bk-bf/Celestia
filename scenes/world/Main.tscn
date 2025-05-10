@@ -262,8 +262,8 @@ script = ExtResource("3_26o6m")
 
 [node name="Map" type="Node2D" parent="Main"]
 script = ExtResource("4_b3pok")
-map_lengh = 20
-map_height = 20
+map_lengh = 50
+map_height = 50
 show_grid_lines = false
 show_terrain_letters = false
 show_territory_markers = false
