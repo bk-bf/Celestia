@@ -6,6 +6,8 @@ var territory_database = TerritoryDatabase.new()
 var trait_database = TraitDatabase.new()
 var name_database = NameDatabase.new()
 var resource_database = ResourceDatabase.new()
+var display_config: MapDisplayConfig
+
 var map_data = null
 var pawn_manager = null
 var save_path = "user://map_data.tres"
@@ -13,7 +15,7 @@ var save_path = "user://map_data.tres"
 
 signal map_data_loaded
 
-func _ready():
+func _ready() -> void: :
 	 # Try to load existing map data
     if FileAccess.file_exists(save_path):
         map_data = ResourceLoader.load(save_path)
@@ -31,6 +33,8 @@ func _ready():
     
     # Use call_deferred to ensure map_data is fully initialized
     call_deferred("emit_signal", "map_data_loaded")
+   
+    display_config = load_display_config()
 
 
 func generate_new_map(width, height, seed_value):
@@ -138,3 +142,17 @@ func create_pawn(position):
     if pawn_manager:
         return pawn_manager.create_pawn(position)
     return null
+
+
+func load_display_config() -> MapDisplayConfig:
+    var config = MapDisplayConfig.new()
+    if FileAccess.file_exists("user://display_config.save"):
+        var file = FileAccess.open("user://display_config.save", FileAccess.READ)
+        var data = JSON.parse_string(file.get_as_text())
+        config.from_dictionary(data)
+    return config
+
+
+func save_display_config() -> void:
+    var file = FileAccess.open("user://display_config.save", FileAccess.WRITE)
+    file.store_string(JSON.stringify(display_config.to_dictionary()))
