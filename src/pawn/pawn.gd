@@ -438,7 +438,7 @@ func harvest_resource(grid_position: Vector2i, resource_id: String, amount: int)
 		current_job = null
 		# Reset progress
 		#progress_bar.value = 0
-		progress_bar.visible = false
+		#progress_bar.visible = false
 		# Change to idle first
 		state_machine.change_state("Idle")
 	
