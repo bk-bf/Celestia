@@ -90,6 +90,9 @@ func handle_pawn_selection(grid_coords):
 			print("Selected pawn: " + pawn.pawn_name + " gender: " + pawn.pawn_gender)
 			print("Pawn traits: ", pawn.traits) #
 			print("Inventory: ", pawn.inventory.items)
+			print("Hunger: ", pawn.needs["hunger"].current_value)
+			print("Rest: ", pawn.needs["rest"].current_value)
+
 			# Visual feedback for selection (add highlight)
 			pawn.set_selected(true)
 

@@ -15,6 +15,10 @@ var pawn_gender = "male"
 # List of traits this pawn has
 var traits = []
 
+# Needs system
+var needs = {}
+signal need_changed(need_name, old_value, new_value, state)
+
 # Position and movement
 var current_tile_position: Vector2i = Vector2i(0, 0)
 var target_tile_position: Vector2i = Vector2i(0, 0)
@@ -118,6 +122,9 @@ func _ready():
 	# For testing, assign a random trait
 	assign_random_traits()
 	
+	# Initialize needs
+	initialize_needs()
+	
 	# Set up state machine
 	state_machine = PawnStateMachine.new(self)
 	add_child(state_machine)
@@ -127,6 +134,12 @@ func _ready():
 	state_machine.add_state("Idle", IdleState.new())
 	state_machine.add_state("MovingToResource", MovingToResourceState.new())
 	state_machine.add_state("Harvesting", HarvestingState.new())
+	state_machine.add_state("MovingToNeed", MovingToNeedState.new())
+	state_machine.add_state("Hungry", HungryState.new())
+	state_machine.add_state("Tired", TiredState.new())
+	state_machine.add_state("Eating", EatingState.new())
+	state_machine.add_state("Sleeping", SleepingState.new())
+	
 	print("States registered:", state_machine.states.keys())
 	
 	# Set initial state
@@ -239,6 +252,20 @@ func _process(delta):
 	# Handle movement and other per-frame updates
 	if is_moving:
 		move_toward_target(delta)
+	# Check needs if we're in an idle state
+	if state_machine.current_state == "Idle":
+		check_needs()
+	
+func check_needs():
+	# Check for needs that require attention
+	if needs["hunger"].is_critical():
+		state_machine.change_state("Hungry")
+	elif needs["rest"].is_critical():
+		state_machine.change_state("Tired")
+	elif needs["hunger"].needs_attention() and !needs["rest"].is_critical():
+		state_machine.change_state("Hungry")
+	elif needs["rest"].needs_attention() and !needs["hunger"].is_critical():
+		state_machine.change_state("Tired")
 
 
 func set_selected(selected: bool):
@@ -461,3 +488,52 @@ func harvest_resource(grid_position: Vector2i, resource_id: String, amount: int)
 	state_machine.change_state("MovingToResource")
 	
 	return true
+
+
+func initialize_needs():
+	# Create hunger need
+	var hunger = HungerNeed.new()
+	hunger.pawn = self
+	needs["hunger"] = hunger
+	add_child(hunger)
+	
+	# Create rest need
+	var rest = RestNeed.new()
+	rest.pawn = self
+	needs["rest"] = rest
+	add_child(rest)
+	
+	# Connect signals for need monitoring
+	for need_name in needs:
+		var need = needs[need_name]
+		need.connect("value_changed", _on_need_changed)
+
+func _on_need_changed(need_name, old_value, new_value, state):
+	emit_signal("need_changed", need_name, old_value, new_value, state)
+	
+	# Check if we need to change state based on critical needs
+	check_needs_state()
+
+func check_needs_state():
+	# If we're already in a need-related state, don't interrupt
+	if state_machine.current_state in ["Eating", "Sleeping"]:
+		return
+		
+	# Check for critical needs
+	if needs["hunger"].is_critical():
+		# Transition to hungry state if not already in it
+		if state_machine.current_state != "Hungry":
+			state_machine.change_state("Hungry")
+	elif needs["rest"].is_critical():
+		# Transition to tired state if not already in it
+		if state_machine.current_state != "Tired":
+			state_machine.change_state("Tired")
+	# Check for needs that require attention but aren't critical
+	elif needs["hunger"].needs_attention():
+		# Only change if we're idle
+		if state_machine.current_state == "Idle":
+			state_machine.change_state("Hungry")
+	elif needs["rest"].needs_attention():
+		# Only change if we're idle
+		if state_machine.current_state == "Idle":
+			state_machine.change_state("Tired")

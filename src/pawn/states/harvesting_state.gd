@@ -20,7 +20,7 @@ func update(delta):
 	var work_speed_modifier = pawn.get_work_speed()
 	
 	# Progress the harvesting with trait modifications
-	pawn.current_job.progress += delta * pawn.harvesting_speed * work_speed_modifier / pawn.current_job.time_to_harvest
+	pawn.current_job.progress += delta * pawn.harvesting_speed * work_speed_modifier / pawn.current_job.time_required
 	
 	# Log only at the beginning (0%)
 	if not has_logged_start:
@@ -41,23 +41,23 @@ func update(delta):
 		print("Resources at tile before harvest: ", tile_resources)
 		
 		var amount_on_tile = 0
-		if tile_resources and pawn.current_job.resource_type in tile_resources:
-			amount_on_tile = tile_resources[pawn.current_job.resource_type]
-			print("Amount of " + pawn.current_job.resource_type + " on tile: ", amount_on_tile)
+		if tile_resources and pawn.current_job.job_type in tile_resources:
+			amount_on_tile = tile_resources[pawn.current_job.job_type]
+			print("Amount of " + pawn.current_job.job_type + " on tile: ", amount_on_tile)
 		else:
-			print("No " + pawn.current_job.resource_type + " found on tile")
+			print("No " + pawn.current_job.job_type + " found on tile")
 		
 		# Log the harvesting event
 		if DebugLogger.instance:
 			DebugLogger.instance.log_resource_harvested(
 				pawn.name,
-				pawn.current_job.resource_type,
+				pawn.current_job.job_type,
 				harvest_amount,
 				pawn.current_job.target_position
 			)
 		
 		# Add resources to inventory
-		pawn.inventory.add_item(pawn.current_job.resource_type, harvest_amount)
+		pawn.inventory.add_item(pawn.current_job.job_type, harvest_amount)
 		
 		# Update the resource on the map
 		print("Attempting to reduce resource by: ", amount_on_tile)

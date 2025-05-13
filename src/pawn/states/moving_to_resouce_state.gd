@@ -36,29 +36,34 @@ func is_adjacent_to_resource(pawn_pos, resource_pos):
 	return dx <= 1 and dy <= 1 and (dx + dy > 0)
 
 func find_adjacent_walkable_tile(target_position):
-	# Check all 8 adjacent tiles
+	# Collect all walkable adjacent tiles
+	var valid_positions = []
 	var directions = [
-		Vector2i(1, 0), # Right
-		Vector2i(-1, 0), # Left
-		Vector2i(0, 1), # Down
-		Vector2i(0, -1), # Up
-		Vector2i(1, 1), # Down-Right
-		Vector2i(-1, 1), # Down-Left
-		Vector2i(1, -1), # Up-Right
-		Vector2i(-1, -1) # Up-Left
+		Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1),
+		Vector2i(1, 1), Vector2i(-1, 1), Vector2i(1, -1), Vector2i(-1, -1)
 	]
 	
-	# Try each direction
 	for dir in directions:
 		var adjacent_pos = target_position + dir
 		var tile = pawn.map_data.get_tile(adjacent_pos)
-		
-		# Check if the tile is walkable
 		if tile and tile.walkable:
-			return adjacent_pos
+			valid_positions.append(adjacent_pos)
 	
-	# If no walkable adjacent tile found, return the original position as fallback
-	return target_position
+	# If no valid positions, return original target
+	if valid_positions.size() == 0:
+		return target_position
+	
+	# Find position with shortest actual path
+	var best_position = valid_positions[0]
+	var shortest_path_length = INF
+	
+	for pos in valid_positions:
+		var path = pawn.pathfinder.find_path(pawn.current_tile_position, pos)
+		if path.size() > 0 and path.size() < shortest_path_length:
+			shortest_path_length = path.size()
+			best_position = pos
+	
+	return best_position
 
 
 func update(delta):
