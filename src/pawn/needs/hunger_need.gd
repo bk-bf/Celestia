@@ -2,15 +2,18 @@ class_name HungerNeed
 extends Need
 
 func _init():
-    super._init("Hunger", 80.0, 0.08) # Start at 80%, decay faster than rest
+    # Get the database instance
+    var needs_database = DatabaseManager.needs_database
     
-    # Customize thresholds if needed
-    thresholds = {
-        "critical": 10.0, # Starving
-        "low": 25.0, # Hungry
-        "satisfied": 75.0, # Well-fed
-        "full": 95.0 # Stuffed
-    }
+    # Initialize with values from database
+    super._init(
+        "Hunger",
+        needs_database.hunger_config.initial_value,
+        needs_database.get_decay_rate("Hunger")
+    )
+    
+    # Set thresholds from database
+    thresholds = needs_database.hunger_config.thresholds.duplicate()
     
 # Function to consume food and reduce hunger
 func eat_food(nutrition_value: float):

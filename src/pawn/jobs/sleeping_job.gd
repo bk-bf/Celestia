@@ -1,4 +1,3 @@
-# SleepingJob.gd
 class_name SleepingJob
 extends Job
 
@@ -14,9 +13,8 @@ func _init(position, bed_type, amount, time_required):
     elif bed_type == "simple_spot":
         rest_value = 20.0
 
-func complete():
-    # Give rest to the pawn
+func complete_without_rest():
+    # Complete the job without adding rest (since it's added incrementally)
     if assigned_pawn:
-        assigned_pawn.needs["rest"].increase(rest_value)
-        print("Pawn " + str(assigned_pawn.pawn_id) + " recovered rest by " + str(rest_value))
+        print("Pawn " + str(assigned_pawn.pawn_id) + " finished sleeping")
     return true

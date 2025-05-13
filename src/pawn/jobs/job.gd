@@ -19,6 +19,9 @@ func _init(position, job_type_value, amount_value, time = 2.0):
 func is_complete():
     return progress >= 1.0
 
+func job_to_string():
+    return "Job(type=%s, object=%s, target=%s, amount=%d, time=%.2f)" % [type, job_type, str(target_position), amount, time_required]
+
 # Base method to be overridden by specific job types
 func complete():
     return true

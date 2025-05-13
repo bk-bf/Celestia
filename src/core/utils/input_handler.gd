@@ -88,10 +88,16 @@ func handle_pawn_selection(grid_coords):
 			selected_pawn_id = pawn.pawn_id
 			clicked_on_pawn = true
 			print("Selected pawn: " + pawn.pawn_name + " gender: " + pawn.pawn_gender)
-			print("Pawn traits: ", pawn.traits) #
+			print("Pawn traits: ", pawn.traits)
 			print("Inventory: ", pawn.inventory.items)
 			print("Hunger: ", pawn.needs["hunger"].current_value)
 			print("Rest: ", pawn.needs["rest"].current_value)
+			
+			# Use job_to_string() for better job information
+			if pawn.current_job:
+				print("Current job: ", pawn.current_job.job_to_string())
+			else:
+				print("Current job: None")
 
 			# Visual feedback for selection (add highlight)
 			pawn.set_selected(true)
@@ -102,7 +108,6 @@ func handle_pawn_selection(grid_coords):
 					other_pawn.set_selected(false)
 
 			break
-
 	# If we didn't click on a pawn, deselect current pawn
 	if not clicked_on_pawn:
 		if selected_pawn_id != -1:

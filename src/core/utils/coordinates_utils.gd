@@ -21,7 +21,7 @@ static func get_line_coordinates(start: Vector2i, end: Vector2i) -> Array:
 	var y1 = end.y
 	
 	var dx = abs(x1 - x0)
-	var dy = -abs(y1 - y0)
+	var dy = - abs(y1 - y0)
 	var sx = 1 if x0 < x1 else -1
 	var sy = 1 if y0 < y1 else -1
 	var err = dx + dy
@@ -46,7 +46,7 @@ static func get_line_coordinates(start: Vector2i, end: Vector2i) -> Array:
 	
 # Convert grid coords to isometric display coords
 static func grid_to_isometric(grid_coords: Vector2i) -> Vector2:
-	var iso_x = (grid_coords.x - grid_coords.y) 
+	var iso_x = (grid_coords.x - grid_coords.y)
 	var iso_y = (grid_coords.x + grid_coords.y) / 2
 	return Vector2(iso_x, iso_y)
 

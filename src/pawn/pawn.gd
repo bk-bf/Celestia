@@ -17,6 +17,8 @@ var traits = []
 
 # Needs system
 var needs = {}
+var last_needs_check_time = 0.0
+var needs_check_cooldown = 1.0 # Check needs once per second
 signal need_changed(need_name, old_value, new_value, state)
 
 # Position and movement
@@ -244,6 +246,7 @@ func get_modified_stat(stat_name, base_value):
 
 
 # Assign a harvesting job to this pawn
+# move this to HarvestingJob?
 func assign_harvesting_job(positions, resource_type, amount, time):
 	current_job = HarvestingJob.new(positions, resource_type, amount, time)
 	# State machine will handle the transition to MovingToResource
@@ -252,21 +255,24 @@ func _process(delta):
 	# Handle movement and other per-frame updates
 	if is_moving:
 		move_toward_target(delta)
-	# Check needs if we're in an idle state
-	if state_machine.current_state == "Idle":
+	# Check needs if we're in an idle state, but not too frequently
+	var current_time = Time.get_ticks_msec() / 1000.0
+	if state_machine.current_state == "Idle" and current_time - last_needs_check_time > needs_check_cooldown:
+		last_needs_check_time = current_time
 		check_needs()
-	
+
 func check_needs():
 	# Check for needs that require attention
 	if needs["hunger"].is_critical():
 		state_machine.change_state("Hungry")
 	elif needs["rest"].is_critical():
 		state_machine.change_state("Tired")
-	elif needs["hunger"].needs_attention() and !needs["rest"].is_critical():
-		state_machine.change_state("Hungry")
-	elif needs["rest"].needs_attention() and !needs["hunger"].is_critical():
-		state_machine.change_state("Tired")
-
+	# Only check non-critical needs if we're idle
+	elif state_machine.current_state == "Idle":
+		if needs["hunger"].needs_attention() and !needs["rest"].is_critical():
+			state_machine.change_state("Hungry")
+		elif needs["rest"].needs_attention() and !needs["hunger"].is_critical():
+			state_machine.change_state("Tired")
 
 func set_selected(selected: bool):
 	is_selected = selected

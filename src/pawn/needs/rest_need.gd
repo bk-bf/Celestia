@@ -2,15 +2,18 @@ class_name RestNeed
 extends Need
 
 func _init():
-    super._init("Rest", 100.0, 0.05) # Start fully rested, decay slower
+    # Get the database instance
+    var needs_database = DatabaseManager.needs_database
     
-    # Customize thresholds if needed
-    thresholds = {
-        "critical": 15.0, # Exhausted
-        "low": 30.0, # Tired
-        "satisfied": 70.0, # Rested
-        "full": 90.0 # Energetic
-    }
+    # Initialize with values from database
+    super._init(
+        "Rest",
+        needs_database.rest_config.initial_value,
+        needs_database.get_decay_rate("Rest")
+    )
+    
+    # Set thresholds from database
+    thresholds = needs_database.rest_config.thresholds.duplicate()
     
 # Function to sleep and recover rest
 func sleep(recovery_rate: float):

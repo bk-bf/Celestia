@@ -1,12 +1,20 @@
 class_name MovingToNeedState
 extends PawnState
 
+var state_name: String
 var target_state = "" # The state to transition to once reached (Eating or Sleeping)
 
 func _init():
-	var state_name = "MovingToNeed"
+	state_name = "MovingToNeed"
+
 
 func enter():
+	# Safety check - make sure we have a job
+	if not pawn.current_job:
+		print("MovingToNeedState: No job assigned! Returning to Idle.")
+		state_machine.change_state("Idle")
+		return
+		
 	# Determine which need we're addressing and set the target state
 	if pawn.current_job.type == "eating":
 		target_state = "Eating"
@@ -38,10 +46,20 @@ func enter():
 		pawn.current_path_index = 1 # Skip the first point (current position)
 		pawn.is_moving = true
 		pawn.has_reached_destination = false
+		print("Pawn " + str(pawn.pawn_id) + " moving to " + target_state.to_lower() + " location")
 	else:
-		# If no path found, cancel the job
+		# If no path found, cancel the job and go back to need state
+		print("No path found to " + target_state.to_lower() + " location!")
 		pawn.current_job = null
-		state_machine.change_state("Idle")
+		
+		# Return to appropriate need state instead of Idle
+		if target_state == "Eating":
+			state_machine.change_state("Idle") # Don't go back to Hungry to prevent cycles
+		elif target_state == "Sleeping":
+			state_machine.change_state("Idle") # Don't go back to Tired to prevent cycles
+		else:
+			state_machine.change_state("Idle")
+
 
 # code duplication in MovingToResourceState, has to be extracted to a utils file eventually
 func find_adjacent_walkable_tile(target_position):
@@ -78,14 +96,20 @@ func is_adjacent_to_target(pawn_pos, target_pos):
 	return dx <= 1 and dy <= 1 and (dx + dy > 0)
 
 # Helper function to check if pawn is already adjacent to the resource
+# code duplication aahhhh!!
 func is_adjacent_to_resource(pawn_pos, resource_pos):
 	# Check if the positions are adjacent (including diagonals)
 	var dx = abs(pawn_pos.x - resource_pos.x)
 	var dy = abs(pawn_pos.y - resource_pos.y)
 	return dx <= 1 and dy <= 1 and (dx + dy > 0)
 
-	# ...
+
 func update(delta):
+	# Safety check
+	if not pawn.current_job:
+		state_machine.change_state("Idle")
+		return
+		
 	# Debug the distance to target
 	if pawn.current_job and pawn.current_job.target_position:
 		var current_pos = pawn.current_tile_position
