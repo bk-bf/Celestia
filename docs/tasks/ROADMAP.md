@@ -50,7 +50,7 @@
 ## Phase 5: Survival \& Colony Management (2-3 weeks)
 
 - **Pawn Needs \& Work Systems**
-    - [ ] Implement hunger and rest needs
+    - [x] Implement hunger and rest needs
     - [ ] Add mood/happiness tracking
     - [ ] Create job assignment interface
     - [ ] Implement work priorities system
