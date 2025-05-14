@@ -47,7 +47,7 @@
         - [x] Populate TerritoryDatabase with 4 territory types
 
 
-## Phase 5: Survival \& Colony Management (2-3 weeks)
+## Phase 3B: Survival \& Colony Management (2-3 weeks)
 
 - **Pawn Needs \& Work Systems**
     - [x] Implement hunger and rest needs
@@ -55,10 +55,16 @@
     - [ ] Create job assignment interface
     - [ ] Implement work priorities system
     - [ ] Add basic pawn AI for autonomously selecting tasks
+- **Item System Foundation**
+    - [ ] Implement ItemDatabase with categorized item definitions
+    - [ ] Create ItemManager for spawning and tracking items
+    - [ ] Develop item property system (weight, quality, magical effects)
+    - [ ] Implement basic item transformation framework
+    - [ ] Connect item system with existing inventory functionality
 - **Resource Management \& Construction**
     - [ ] Implement stockpile zones with territory safety ratings
-    - [ ] Create inventory system for pawns with magical item effects
-    - [ ] Design construction interface with magical reinforcement options
+    - [ ] Create inventory and equipment systems for pawns, implement all the different item effects
+    - [ ] Implement core building mechanics
 
 ## Phase 3C: Essential UI - Game Information Displays and Interaction Systems (2-3 weeks)
 
@@ -81,7 +87,7 @@
     - [ ] Add a context-sensitive cursor system for intuitive interaction
     - [ ] Create minimal visual/audio indicators for new log entries without disrupting immersion
 
-## Phase 3B: Exploration \& Vision Systems (2-3 weeks)
+## Phase 4: Exploration \& Vision Systems (2-3 weeks)
 
 - **Pawn Vision \& Exploration System**
     - [ ] Implement pawn vision range system
@@ -93,13 +99,13 @@
     - [ ] Develop animal and monster AI behaviors
     - [ ] Implement territory-based aggression for monsters
 - **Expanded Database Implementation**
-    - [ ] Implement ItemDatabase with basic structure
+    - [ ] Extend ItemDatabase with more item types
     - [ ] Create EntityDatabase structure for monsters and animals
     - [ ] Enhance TerritoryDatabase with unique behaviors and difficulty gradients
     - [ ] Expand ResourceDatabase with territory-specific resources
 
 
-## Phase 4: Core Differentiation Systems (3-4 weeks)
+## Phase 5: Core Differentiation Systems (3-4 weeks)
 
 - **Basic Magic Framework**
     - [ ] Implement environmental affinity mechanics for different magic types
