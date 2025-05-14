@@ -4,6 +4,7 @@
 
 (Important)
 - [x] fix the SleepingState.enter() and EatingState.enter() not being called properly, so rest counter is paused properly and incremented during sleep state
+- [] merge pawn-system and main
 - [] implement all effects and conditions from the TraitDatabase traits
 
 
@@ -13,6 +14,8 @@
 	- [ ] 	Create meaningful benefits for the "stuffed" status
 	- [ ] 	Implement the weight gain system as a consequence of frequent overeating
 	- [ ] 	Add traits that affect eating behavior (some pawns might naturally stop at "satisfied" while others might always eat to "stuffed")
+
+
 
 (Optional)
 - [x] what to do with current get_carrying_capacity()
