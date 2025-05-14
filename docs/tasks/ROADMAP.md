@@ -51,7 +51,7 @@
 
 - **Pawn Needs \& Work Systems**
     - [x] Implement hunger and rest needs
-    - [ ] Add mood/happiness tracking
+    - [x] Add mood tracking
     - [ ] Create job assignment interface
     - [ ] Implement work priorities system
     - [ ] Add basic pawn AI for autonomously selecting tasks

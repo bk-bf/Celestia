@@ -1,9 +1,18 @@
 # SIDE TASKS
 
 ## Polish, Bugfixes & Questions
+
 (Important)
 - [x] fix the SleepingState.enter() and EatingState.enter() not being called properly, so rest counter is paused properly and incremented during sleep state
-- [] implement all effects from the TraitDatabase traits
+- [] implement all effects and conditions from the TraitDatabase traits
+
+
+- [ ] add meal system improvemnts:
+	- [ ] 	Implement meal deterioration tracking (percentage consumed)
+	- [ ]  	Add quality levels to meals that affect the chance of eating past "well-fed"
+	- [ ] 	Create meaningful benefits for the "stuffed" status
+	- [ ] 	Implement the weight gain system as a consequence of frequent overeating
+	- [ ] 	Add traits that affect eating behavior (some pawns might naturally stop at "satisfied" while others might always eat to "stuffed")
 
 (Optional)
 - [x] what to do with current get_carrying_capacity()
@@ -17,13 +26,8 @@
 - [ ] Initial Database Population (Phase 1) has to possibly be refactored again to ensure -> @onready var map_data = DatabaseManager.map_data
 - [ ] fix func _on_tile_resource_changed()
 - [ ] implemenet some vegetation culling mechanism to reduce tree/bush density
+- [ ] ensure the camera doenst move if Shift + W,A,S,D is pressed
 
-- [ ] add meal system improvemnts:
-	- [ ] 	Implement meal deterioration tracking (percentage consumed)
-	- [ ]  	Add quality levels to meals that affect the chance of eating past "well-fed"
-	- [ ] 	Create meaningful benefits for the "stuffed" status
-	- [ ] 	Implement the weight gain system as a consequence of frequent overeating
-	- [ ] 	Add traits that affect eating behavior (some pawns might naturally stop at "satisfied" while others might always eat to "stuffed")
 
 
 
