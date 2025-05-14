@@ -23,7 +23,25 @@ var traits = {
         "conditions": {"is_alone": true},
         "description": "Increases research speed by 10% when alone, -5% mood in crowded areas."
     },
-	
+	"optimist": {
+		"category": "disposition",
+		"effects": {
+			"positive_mood_multiplier": 1.5,
+			"negative_mood_multiplier": 0.5
+		},
+		"conditions": {},
+		"description": "Sees the bright side of everything. Positive mood effects are 50% stronger, negative mood effects are 50% weaker."
+	},
+	"pessimist": {
+		"category": "disposition",
+		"effects": {
+			"positive_mood_multiplier": 0.5,
+			"negative_mood_multiplier": 1.5
+		},
+		"conditions": {},
+		"description": "Always expects the worst. Positive mood effects are 50% weaker, negative mood effects are 50% stronger."
+	},
+
 	# Learning Traits
 	"inquisitive": {
 		"category": "learning",

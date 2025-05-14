@@ -3,6 +3,7 @@
 ## Polish, Bugfixes & Questions
 (Important)
 - [x] fix the SleepingState.enter() and EatingState.enter() not being called properly, so rest counter is paused properly and incremented during sleep state
+- [] implement all effects from the TraitDatabase traits
 
 (Optional)
 - [x] what to do with current get_carrying_capacity()

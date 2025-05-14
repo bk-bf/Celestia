@@ -22,8 +22,10 @@ func _ready():
 	# Get reference to the PawnManager
 	pawn_manager = get_node("/root/Game/Main/PawnManager")
 
-func _unhandled_input(event):
+func _input(event):
 	var map_data = DatabaseManager.map_data
+
+	# if statement to handle all mouse inputs
 	if event is InputEventMouseButton and event.pressed:
 		var click_position = get_global_mouse_position()
 		var grid_coords = map_data.map_to_grid(click_position)
@@ -77,6 +79,24 @@ func _unhandled_input(event):
 							print("No pawn selected for harvesting")
 				else:
 					print("No resources found at this location")
+
+	# if statement to handle all keyboard inputs
+	# Add keyboard input handling for mood display
+	elif event is InputEventKey and event.pressed:
+		# Check for 'M' key press when a pawn is selected
+		if event.keycode == KEY_M and event.shift_pressed and selected_pawn_id != -1:
+			display_pawn_mood_info()
+			get_viewport().set_input_as_handled()
+		
+		# Check for 'A' key press when a pawn is selected
+		elif event.keycode == KEY_A and event.shift_pressed and selected_pawn_id != -1:
+			display_pawn_attributes()
+			get_viewport().set_input_as_handled()
+			
+		# Check for 'S' key press when a pawn is selected
+		elif event.keycode == KEY_S and event.shift_pressed and selected_pawn_id != -1:
+			display_pawn_stats()
+			get_viewport().set_input_as_handled()
 
 
 func handle_pawn_selection(grid_coords):
@@ -230,3 +250,121 @@ func handle_shift_right_click_terrain_info(grid_coords: Vector2i) -> void:
 		print("\nDensity Value: " + str(tile["density"]))
 	
 	print("===============================")
+
+
+# Display pawn attributes
+func display_pawn_attributes():
+	var pawn = pawn_manager.get_pawn(selected_pawn_id)
+	if pawn:
+		print("\n=== ATTRIBUTES FOR " + pawn.pawn_name + " ===")
+		print("Strength: " + str(pawn.strength) + " (Bonus: " + str(pawn.calculate_attribute_bonus(pawn.strength)) + ")")
+		print("Dexterity: " + str(pawn.dexterity) + " (Bonus: " + str(pawn.calculate_attribute_bonus(pawn.dexterity)) + ")")
+		print("Intelligence: " + str(pawn.intelligence) + " (Bonus: " + str(pawn.calculate_attribute_bonus(pawn.intelligence)) + ")")
+		print("===============================")
+	else:
+		print("No pawn selected or attributes not initialized")
+
+# Display pawn stats
+func display_pawn_stats():
+	var pawn = pawn_manager.get_pawn(selected_pawn_id)
+	if pawn:
+		print("\n=== STATS FOR " + pawn.pawn_name + " ===")
+		print("Movement Speed: " + str(pawn.get_movement_speed()))
+		print("Carrying Capacity: " + str(pawn.get_carrying_capacity()))
+		print("Vision Range: " + str(pawn.get_vision_range()))
+		print("Melee Damage: " + str(pawn.get_melee_damage()))
+		print("Work Speed: " + str(pawn.get_work_speed()))
+		print("Learning Rate: " + str(pawn.get_learning_rate()))
+		
+		# Show trait modifications
+		print("\nTrait Modifications:")
+		for stat_name in ["movement_speed", "vision_range", "melee_damage", "work_speed"]:
+			var base_value = 0
+			
+			# Get base value for the stat
+			match stat_name:
+				"movement_speed":
+					base_value = pawn.BASE_MOVEMENT_SPEED * (1.0 + pawn.calculate_attribute_bonus(pawn.dexterity) * 0.1)
+				"vision_range":
+					base_value = 5 + (pawn.dexterity * 0.2)
+				"melee_damage":
+					base_value = 10 + (pawn.strength * 2)
+				"work_speed":
+					base_value = 1.0 + (pawn.dexterity * 0.05)
+			
+			var modified_value = pawn.get_modified_stat(stat_name, base_value)
+			
+			if modified_value != base_value:
+				var percentage = ((modified_value / base_value) - 1.0) * 100
+				var sign = "+" if percentage >= 0 else ""
+				print("- " + stat_name.capitalize() + ": " + sign + str(percentage) + "%")
+		
+		print("===============================")
+	else:
+		print("No pawn selected or stats not initialized")
+
+
+# function to display mood information
+func display_pawn_mood_info():
+	var pawn = pawn_manager.get_pawn(selected_pawn_id)
+	if pawn and pawn.mood_manager:
+		print("\n=== MOOD INFO FOR " + pawn.pawn_name + " ===")
+		print("Current Mood: " + str(pawn.mood_manager.current_mood) + "/100 (" + pawn.mood_manager.get_mood_state() + ")")
+		
+		# Display active modifiers
+		if pawn.mood_manager.active_modifiers.size() > 0:
+			print("\nActive Mood Modifiers:")
+			for id in pawn.mood_manager.active_modifiers:
+				var modifier = pawn.mood_manager.active_modifiers[id]
+				var sign = "+" if modifier.value > 0 else ""
+				print("- " + modifier.description + ": " + sign + str(modifier.value))
+		else:
+			print("\nNo active mood modifiers")
+		
+		# Display temporary modifiers with remaining duration
+		if pawn.mood_manager.temporary_modifiers.size() > 0:
+			print("\nTemporary Mood Modifiers:")
+			for id in pawn.mood_manager.temporary_modifiers:
+				var modifier = pawn.mood_manager.temporary_modifiers[id]
+				var sign = "+" if modifier.value > 0 else ""
+				print("- " + modifier.description + ": " + sign + str(modifier.value) +
+					  " (Remaining: " + str(int(modifier.duration)) + "s)")
+		else:
+			print("\nNo temporary mood modifiers")
+		
+		# Display trait effects on mood if applicable
+		print("\nTrait Effects on Mood:")
+		var has_mood_traits = false
+		for trait_name in pawn.traits:
+			var trait_data = DatabaseManager.trait_database.get_trait(trait_name)
+			if trait_data:
+				var has_mood_effect = false
+				var effect_text = ""
+				
+				# Check for mood-related effects
+				if trait_data.effects.has("positive_mood_multiplier"):
+					effect_text += "Positive mood x" + str(trait_data.effects.positive_mood_multiplier) + " "
+					has_mood_effect = true
+					
+				if trait_data.effects.has("negative_mood_multiplier"):
+					effect_text += "Negative mood x" + str(trait_data.effects.negative_mood_multiplier) + " "
+					has_mood_effect = true
+				
+				if trait_data.effects.has("positive_mood_impact"):
+					effect_text += "Positive impact x" + str(trait_data.effects.positive_mood_impact) + " "
+					has_mood_effect = true
+					
+				if trait_data.effects.has("negative_mood_impact"):
+					effect_text += "Negative impact x" + str(trait_data.effects.negative_mood_impact)
+					has_mood_effect = true
+				
+				if has_mood_effect:
+					print("- " + trait_name.capitalize() + ": " + effect_text)
+					has_mood_traits = true
+		
+		if not has_mood_traits:
+			print("- No traits affecting mood")
+			
+		print("===============================")
+	else:
+		print("No pawn selected or mood system not initialized")

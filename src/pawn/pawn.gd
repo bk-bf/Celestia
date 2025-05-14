@@ -65,6 +65,10 @@ var progress_bar = false
 var harvesting_target = null
 var has_reached_destination = false
 
+# Add a mood system
+var mood_manager = null
+
+
 # signal declarations for state changes
 signal state_changed(old_state: String, new_state: String)
 signal attribute_changed(attribute: String, old_value: int, new_value: int)
@@ -153,6 +157,10 @@ func _ready():
 	
 	# debug
 	print("Pawn " + str(pawn_id) + " ready called with appearance ID: " + str(appearance_id) + " sprite exits: " + str(sprite_renderer.sprite != null))
+	# mood manager
+	mood_manager = MoodManager.new(self)
+	add_child(mood_manager)
+	mood_manager.connect("mood_changed", _on_mood_changed)
 	update_visual()
 
 func _on_map_data_loaded():
@@ -233,14 +241,23 @@ func get_modified_stat(stat_name, base_value):
 	
 	for trait_name in traits:
 		var trait_data = trait_database.get_trait(trait_name)
-		if trait_data == null: # Check the returned data, not a property on trait_database
+		# Early return if no trait data
+		if trait_data == null:
+			print("Warning: Trait data is null for trait: " + trait_name)
 			continue
 			
-		# Check if trait affects this stat
-		if trait_data.has("effects") and trait_data["effects"].has(stat_name):
-			# Check if conditions are met
-			if trait_data.has("conditions") and is_condition_met(trait_data["conditions"]):
-				modified_value *= trait_data["effects"][stat_name]
+		# Combine checks to ensure effects exists before accessing it
+		if not trait_data.has("effects") or not trait_data["effects"].has(stat_name):
+			continue
+			
+		var effects = trait_data["effects"] # Now safe to access
+		
+		# Now check conditions
+		if trait_data.has("conditions"):
+			if is_condition_met(trait_data["conditions"]):
+				modified_value *= effects[stat_name]
+		else:
+			modified_value *= effects[stat_name]
 	
 	return modified_value
 
@@ -260,6 +277,10 @@ func _process(delta):
 	if state_machine.current_state == "Idle" and current_time - last_needs_check_time > needs_check_cooldown:
 		last_needs_check_time = current_time
 		check_needs()
+	
+	# Update mood based on needs every few seconds
+	if Engine.get_process_frames() % 60 == 0: # Every ~1 second at 60 FPS
+		mood_manager.update_from_needs()
 
 func check_needs():
 	# Check for needs that require attention
@@ -273,6 +294,14 @@ func check_needs():
 			state_machine.change_state("Hungry")
 		elif needs["rest"].needs_attention() and !needs["hunger"].is_critical():
 			state_machine.change_state("Tired")
+
+func _on_mood_changed(old_value, new_value, mood_state):
+	# Handle mood changes (visual effects, state changes, etc.)
+   # print("Pawn " + str(pawn_id) + " mood changed: " + str(old_value) + " -> " + str(new_value) + " (" + mood_state + ")")
+	# You could trigger different behaviors based on mood state
+	if mood_state == "depressed":
+		# Maybe trigger special behaviors for depressed pawns
+		pass
 
 func set_selected(selected: bool):
 	is_selected = selected

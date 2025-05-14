@@ -7,6 +7,7 @@ var trait_database = TraitDatabase.new()
 var name_database = NameDatabase.new()
 var resource_database = ResourceDatabase.new()
 var needs_database = NeedsDatabase.new()
+var mood_database = MoodDatabase.new()
 var map_data = null
 var pawn_manager = null
 var save_path = "user://map_data.tres"
@@ -154,3 +155,10 @@ func get_rest_config():
 
 func get_need_decay_rate(need_type: String) -> float:
 	return needs_database.get_decay_rate(need_type)
+
+# mood accessor methods
+func get_mood_trigger(trigger_name):
+	return mood_database.get_trigger(trigger_name)
+
+func get_mood_trigger_for_pawn(trigger_name, pawn):
+	return mood_database.get_trigger_for_pawn(trigger_name, pawn.traits)
