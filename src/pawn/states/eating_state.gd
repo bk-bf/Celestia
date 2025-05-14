@@ -2,13 +2,9 @@ class_name EatingState
 extends PawnState
 
 
-var state_name: String
 var eating_progress: float = 0.0
 var eating_duration: float = 2.0 # Base time to eat
 var message_printed = false
-
-func _init():
-    state_name = "Eating" # Fixed: This should be a property assignment, not a local variable
 
 func enter():
     if !message_printed:
@@ -16,6 +12,10 @@ func enter():
         message_printed = true
         
     eating_progress = 0.0
+    
+    # Pause the hunger need decay while eating
+    if pawn.needs.has("hunger"):
+        pawn.needs["hunger"].pause()
     
     # Safety check - make sure we have a job
     if not pawn.current_job:
@@ -44,18 +44,28 @@ func update(delta):
         if pawn.needs.has("hunger"):
             pawn.needs["hunger"].increase(nutrition_per_second * delta)
     
-    # Finished eating
-    if eating_progress >= eating_duration:
+    # Check if we should finish eating
+    if eating_progress >= eating_duration or (pawn.needs.has("hunger") and pawn.needs["hunger"].current_value >= 95):
         if !message_printed: # Only print if we haven't already
             print("Pawn " + str(pawn.pawn_id) + " finished eating")
         
         # Complete the job
         if pawn.current_job:
-            pawn.current_job.complete()
+            pawn.current_job.complete_without_nutrition()
             pawn.current_job = null
             
-        state_machine.change_state("Idle")
-
+        # Check if pawn is still hungry after this meal
+        if pawn.needs.has("hunger") and pawn.needs["hunger"].current_value < needs_database.hunger_config.thresholds.satisfied:
+            # Still hungry, look for more food
+            state_machine.change_state("Hungry")
+        else:
+            # Satisfied, return to idle
+            state_machine.change_state("Idle")
+			
 func exit():
+    # Resume the hunger need decay when finished eating
+    if pawn.needs.has("hunger"):
+        pawn.needs["hunger"].resume()
+        
     eating_progress = 0.0
     message_printed = false # Reset message flag when exiting

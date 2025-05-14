@@ -2,6 +2,7 @@ class_name SleepingJob
 extends Job
 
 var rest_value: float = 30.0 # Base rest provided by this sleeping spot
+var sleep_until_rested = true # Flag to indicate continuous sleeping until rested
 
 func _init(position, bed_type, amount, time_required):
     super._init(position, bed_type, amount, time_required)

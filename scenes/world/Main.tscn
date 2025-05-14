@@ -1,8 +1,8 @@
 [gd_scene load_steps=11 format=3 uid="uid://dej01ein88jm2"]
 
-[ext_resource type="Script" path="res://src/core/main.gd" id="1_nciap"]
+[ext_resource type="Script" uid="uid://dsc4bw3ss6jel" path="res://src/core/main.gd" id="1_nciap"]
 [ext_resource type="Script" path="res://src/pawn/pawn_manager.gd" id="2_10578"]
-[ext_resource type="Script" path="res://src/core/utils/input_handler.gd" id="3_26o6m"]
+[ext_resource type="Script" uid="uid://duynfs6n6kueb" path="res://src/core/utils/input_handler.gd" id="3_26o6m"]
 [ext_resource type="Script" uid="uid://dadowb7yknfjj" path="res://src/world/terrain/map_gen.gd" id="4_b3pok"]
 [ext_resource type="Script" uid="uid://cdfk4qi21bb6x" path="res://src/components/camera/camera_2d.gd" id="5_vanwo"]
 [ext_resource type="Texture2D" uid="uid://oshuojdjdfns" path="res://assets/tiles/terrain_32x32_tilesheet.png" id="6_10578"]

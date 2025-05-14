@@ -20,7 +20,7 @@ var hunger_config = {
 
 # Rest need configuration
 var rest_config = {
-    "initial_value": 10.0,
+    "initial_value": 100.0,
     "decay_rate": 0.05,
     "thresholds": {
         "critical": 15.0, # Exhausted

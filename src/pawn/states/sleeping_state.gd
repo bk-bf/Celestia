@@ -1,14 +1,8 @@
 class_name SleepingState
 extends PawnState
 
-var state_name: String
-
 var sleeping_progress: float = 0.0
-var sleeping_duration: float = 5.0 # Base time to sleep
-
-func _init():
-    state_name = "Sleeping"
-
+var sleeping_duration: float = 5.0 # Base time to sleep, now used as minimum time
 
 func enter():
     print("Pawn " + str(pawn.pawn_id) + " is sleeping")
@@ -22,7 +16,6 @@ func enter():
     if pawn.current_job and pawn.current_job.type == "sleeping":
         sleeping_duration = pawn.current_job.time_required
 
-
 func update(delta):
     sleeping_progress += delta
     
@@ -34,13 +27,27 @@ func update(delta):
     if pawn.needs.has("rest"):
         pawn.needs["rest"].increase(rest_per_second * delta)
     
-    # Check if we should wake up
-    if sleeping_progress >= sleeping_duration or (pawn.needs.has("rest") and pawn.needs["rest"].current_value >= 95):
+    # Check if we should wake up - now prioritizing rest level over time
+    var should_wake_up = false
+    
+    # Always wake up if rest is full (95+)
+    if pawn.needs.has("rest") and pawn.needs["rest"].current_value >= 95:
+        should_wake_up = true
+    # Only wake up after minimum time if not fully rested
+    elif sleeping_progress >= sleeping_duration:
+        # If job has sleep_until_rested flag, only wake if rest is above 90
+        if pawn.current_job and pawn.current_job.sleep_until_rested:
+            if pawn.needs["rest"].current_value >= 95:
+                should_wake_up = true
+        else:
+            # For jobs without the flag, wake up after time expires
+            should_wake_up = true
+    
+    if should_wake_up:
         print("Pawn " + str(pawn.pawn_id) + " woke up")
         
-        # Complete the job but don't add rest (it's already been added incrementally)
+        # Complete the job
         if pawn.current_job:
-            # Just mark the job as complete without additional rest
             pawn.current_job.complete_without_rest()
             pawn.current_job = null
             
