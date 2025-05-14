@@ -38,7 +38,7 @@
     - [x] Replace current `draw()` implementation with TileMap-based rendering
     - [x] Create basic placeholder sprites for terrain types
     - [x] Implement proper z-indexing for entities and terrain
-    - [x] Add basic, TileMap-based resource visualization 
+    - [x] Add basic, TileMap-based resource visualization
 - **Database Foundation**
     - [x] Create comprehensive DatabaseManager to handle all database types
     - [x] Initial Database Population (Phase 1)
@@ -60,6 +60,26 @@
     - [ ] Create inventory system for pawns with magical item effects
     - [ ] Design construction interface with magical reinforcement options
 
+## Phase 3C: Essential UI - Game Information Displays and Interaction Systems (2-3 weeks)
+
+- **Navigation and Menu Framework**
+    - [ ] Implement bottom menu bar with toggleable UI sections (build, pawns, work, etc.)
+    - [ ] Create menu toggling system for opening/closing different interface panels
+    - [ ] Design submenu structure for nested options (e.g., build → structure/furniture)
+- **Game Information Displays**
+    - [ ] Implement transparent log window on right side of screen for immersive event narration and feedback
+    - [ ] Create pawn information panels displaying needs, mood, traits, and stats
+    - [ ] Design inventory visualization system
+    - [ ] Add job status and progress indicators for active tasks
+- **Basic Interaction Systems**
+    - [ ] Design work priorities interface for task management
+    - [ ] Implement job assignment panel for manual task allocation
+    - [ ] Create resource designation controls for gathering and usage
+- **Status and Feedback Elements**
+    - [ ] Develop subtle event communication through environmental changes, pawn reactions, and log entries
+    - [ ] Implement a tooltip system for game objects with contextual information
+    - [ ] Add a context-sensitive cursor system for intuitive interaction
+    - [ ] Create minimal visual/audio indicators for new log entries without disrupting immersion
 
 ## Phase 3B: Exploration \& Vision Systems (2-3 weeks)
 
