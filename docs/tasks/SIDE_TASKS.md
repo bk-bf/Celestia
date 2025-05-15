@@ -4,8 +4,9 @@
 
 (Important)
 - [x] fix the SleepingState.enter() and EatingState.enter() not being called properly, so rest counter is paused properly and incremented during sleep state
-- [] merge pawn-system and main
+- [x] merge pawn-system and main
 - [] implement all effects and conditions from the TraitDatabase traits
+- [] add default, progressive mood buffs and debuffs (new home buff)
 
 
 - [ ] add meal system improvemnts:
