@@ -374,6 +374,9 @@ func grid_to_map(grid_coords: Vector2i) -> Vector2:
 func map_to_grid(map_pos: Vector2) -> Vector2i:
 	return terrain_grid.map_to_grid(map_pos)
 
+func get_tile_size() -> Vector2:
+	return terrain_grid.cell_size
+
 # Check if map coordinates are within map bounds
 func is_within_bounds_map(map_pos: Vector2) -> bool:
 	var grid_coords = map_to_grid(map_pos)

@@ -7,6 +7,8 @@ extends Node2D
 var pawn_manager = DatabaseManager.pawn_manager
 var territory_database = DatabaseManager.territory_database
 var terrain_database = DatabaseManager.terrain_database
+var current_designation_mode = "none"
+var designation_manager = null
 @export var draw_pathfinder: bool = false
 
 # Pawn selection tracking
@@ -20,7 +22,12 @@ func _ready():
 	#var map_data = map_data # autoload/singleton for Resource
 	print("InputHandler initialized")
 	# Get reference to the PawnManager
-	pawn_manager = get_node("/root/Game/Main/PawnManager")
+	pawn_manager = DatabaseManager.pawn_manager
+	# Get reference to the DesignationManager
+	await get_tree().create_timer(0.5).timeout
+	designation_manager = DatabaseManager.designation_manager # needs to be routed over the DatabaseManager if possible
+	if not designation_manager:
+		push_error("DesignationManager not found!")
 
 func _input(event):
 	var map_data = DatabaseManager.map_data
@@ -30,6 +37,7 @@ func _input(event):
 		var click_position = get_global_mouse_position()
 		var grid_coords = map_data.map_to_grid(click_position)
 
+		
 		# Left click with shift held
 		if event.button_index == MOUSE_BUTTON_LEFT and Input.is_key_pressed(KEY_SHIFT):
 			handle_shift_click_territory_info(grid_coords)
@@ -42,11 +50,10 @@ func _input(event):
 
 		# Handle left-click for pawn selection
 		elif event.button_index == MOUSE_BUTTON_LEFT:
-			handle_pawn_selection(grid_coords)
-
-		# Handle right-click for movement
-		elif event.button_index == MOUSE_BUTTON_RIGHT:
-			handle_pawn_movement(grid_coords, click_position)
+			if current_designation_mode != "none":
+				handle_designation(grid_coords)
+			else:
+				handle_pawn_selection(grid_coords)
 
 		# Handle middle-click for resource harvesting
 		elif event.button_index == MOUSE_BUTTON_MIDDLE:
@@ -98,6 +105,27 @@ func _input(event):
 			display_pawn_stats()
 			get_viewport().set_input_as_handled()
 
+		 # Designation mode shortcuts
+		elif event.keycode == KEY_H and event.shift_pressed:
+			toggle_designation_mode("harvest")
+			get_viewport().set_input_as_handled()
+		elif event.keycode == KEY_C and event.shift_pressed:
+			toggle_designation_mode("construct")
+			get_viewport().set_input_as_handled()
+		elif event.keycode == KEY_N and event.shift_pressed:
+			toggle_designation_mode("mine")
+			get_viewport().set_input_as_handled()
+		elif event.keycode == KEY_X and event.shift_pressed:
+			toggle_designation_mode("clear")
+			get_viewport().set_input_as_handled()
+		elif event.keycode == KEY_O and event.shift_pressed:
+			toggle_designation_mode("haul")
+			get_viewport().set_input_as_handled()
+		elif event.keycode == KEY_ESCAPE:
+			# Exit designation mode
+			current_designation_mode = "none"
+			print("Exited designation mode")
+			get_viewport().set_input_as_handled()
 
 func handle_pawn_selection(grid_coords):
 	# Check if we clicked on a pawn
@@ -368,3 +396,39 @@ func display_pawn_mood_info():
 		print("===============================")
 	else:
 		print("No pawn selected or mood system not initialized")
+
+func toggle_designation_mode(mode: String):
+	if current_designation_mode == mode:
+		# Turn off if already in this mode
+		current_designation_mode = "none"
+		print("Exited " + mode + " designation mode")
+	else:
+		# Switch to new mode
+		current_designation_mode = mode
+		print("Entered " + mode + " designation mode")
+
+func handle_designation(grid_coords: Vector2i):
+	var map_data = DatabaseManager.map_data
+	if not map_data.is_within_bounds_map(grid_coords):
+		return
+		
+	var tile = map_data.get_tile(grid_coords)
+	if not tile:
+		return
+		
+	# Different behavior based on designation type
+	match current_designation_mode:
+		"harvest":
+			if tile.has_resource():
+				designation_manager.add_designation("harvest", grid_coords)
+		"construct":
+			if tile.walkable:
+				designation_manager.add_designation("construct", grid_coords)
+		"mine":
+			if "terrain_type" in tile and tile["terrain_type"] == "mountain":
+				designation_manager.add_designation("mine", grid_coords)
+		"clear":
+			designation_manager.add_designation("clear", grid_coords)
+		"haul":
+			if tile.has_resource():
+				designation_manager.add_designation("haul", grid_coords)

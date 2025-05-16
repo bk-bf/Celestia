@@ -7,6 +7,8 @@
 - [x] merge pawn-system and main
 - [] implement all effects and conditions from the TraitDatabase traits
 - [] add default, progressive mood buffs and debuffs (new home buff)
+- [] fix pawns standing on top of each other
+- [] add a multi-marker to the designation manager
 
 
 - [ ] add meal system improvemnts:

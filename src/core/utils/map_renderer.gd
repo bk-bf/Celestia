@@ -29,6 +29,7 @@ var show_movement_costs: bool = false
 var show_terrain_letters: bool = false
 var show_territory_markers: bool = false
 var show_resources: bool = false
+var show_draw_designations: bool = true
 
 # Tracker
 var dirty_tiles = {}
@@ -104,11 +105,9 @@ func render(canvas_item: CanvasItem):
 	
 	if show_terrain_letters:
 		draw_terrain_letters(canvas_item)
-
-
-#func cleanup():
-	#if map_data:
-		#map_data.disconnect("tile_resource_changed", _on_tile_resource_changed)
+	
+	if show_draw_designations:
+		draw_designations(canvas_item)
 
 
 # Draw the grid lines
@@ -373,3 +372,15 @@ func draw_terrain_letters(canvas_item: CanvasItem):
 				label_color = Color.WHITE
 			
 			canvas_item.draw_string(custom_font, label_pos, type_label, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size_terrain, label_color)
+
+# Draw designation overlays
+func draw_designations(canvas_item: CanvasItem):
+	var designation_manager = DatabaseManager.designation_manager
+	
+	for designation_type in designation_manager.designations.keys():
+		for position in designation_manager.designations[designation_type].keys():
+			var color = designation_manager.designation_indicators[designation_type].color
+			var world_pos = map_data.grid_to_map(position)
+			var tile_size = map_data.get_tile_size()
+			var rect = Rect2(world_pos, tile_size)
+			canvas_item.draw_rect(rect, color)

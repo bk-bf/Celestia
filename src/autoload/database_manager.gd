@@ -10,6 +10,7 @@ var needs_database = NeedsDatabase.new()
 var mood_database = MoodDatabase.new()
 var map_data = null
 var pawn_manager = null
+var designation_manager = null
 var save_path = "user://map_data.tres"
 
 
@@ -39,6 +40,10 @@ func _ready():
 	# Use call_deferred to ensure map_data is fully initialized
 	call_deferred("emit_signal", "map_data_loaded")
 
+	# Initialize DesignationManager
+	const DesignationManagerFile = preload("res://src/ui/designation_manager.gd")
+	designation_manager = DesignationManagerFile.new()
+	add_child(designation_manager)
 
 func generate_new_map(width, height, seed_value):
 	# Create new map data
@@ -162,3 +167,34 @@ func get_mood_trigger(trigger_name):
 
 func get_mood_trigger_for_pawn(trigger_name, pawn):
 	return mood_database.get_trigger_for_pawn(trigger_name, pawn.traits)
+
+# DESIGNATION MANAGER FUNCTIONS
+func add_designation(type: String, position: Vector2i, data: Dictionary = {}):
+	if designation_manager:
+		return designation_manager.add_designation(type, position, data)
+	return false
+
+func remove_designation(type: String, position: Vector2i):
+	if designation_manager:
+		return designation_manager.remove_designation(type, position)
+	return false
+
+func complete_designation(type: String, position: Vector2i):
+	if designation_manager:
+		return designation_manager.complete_designation(type, position)
+	return false
+
+func has_designation(type: String, position: Vector2i) -> bool:
+	if designation_manager:
+		return designation_manager.has_designation(type, position)
+	return false
+
+func get_designations_by_type(type: String) -> Dictionary:
+	if designation_manager:
+		return designation_manager.get_designations_by_type(type)
+	return {}
+
+func find_nearest_designation(type: String, from_position: Vector2i) -> Vector2i:
+	if designation_manager:
+		return designation_manager.find_nearest_designation(type, from_position)
+	return Vector2i(-1, -1)
