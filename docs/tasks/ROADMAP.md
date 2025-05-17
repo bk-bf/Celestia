@@ -66,26 +66,34 @@
     - [ ] Create inventory and equipment systems for pawns, implement all the different item effects
     - [ ] Implement core building mechanics
 
-## Phase 3C: Essential UI - Game Information Displays and Interaction Systems (2-3 weeks)
+# Revised UI Development Roadmap for Celestia
 
-- **Navigation and Menu Framework**
-    - [ ] Implement bottom menu bar with toggleable UI sections (build, pawns, work, etc.)
-    - [ ] Create menu toggling system for opening/closing different interface panels
-    - [ ] Design submenu structure for nested options (e.g., build → structure/furniture)
-- **Game Information Displays**
-    - [ ] Implement transparent log window on right side of screen for immersive event narration and feedback
-    - [ ] Create pawn information panels displaying needs, mood, traits, and stats
-    - [ ] Design inventory visualization system
-    - [ ] Add job status and progress indicators for active tasks
-- **Basic Interaction Systems**
-    - [ ] Design work priorities interface for task management
-    - [ ] Implement job assignment panel for manual task allocation
-    - [ ] Create resource designation controls for gathering and usage
-- **Status and Feedback Elements**
-    - [ ] Develop subtle event communication through environmental changes, pawn reactions, and log entries
-    - [ ] Implement a tooltip system for game objects with contextual information
-    - [ ] Add a context-sensitive cursor system for intuitive interaction
-    - [ ] Create minimal visual/audio indicators for new log entries without disrupting immersion
+## Phase 3C: Essential UI - Dynamic Contextual Interface Foundation (2-3 weeks)
+
+**Navigation and Menu Framework**
+- [ ] Implement dynamic bottom bar system that adapts based on selection state
+- [ ] Create expandable menu system with minimalist default state
+- [ ] Implement pawn selection UI transformation (expand interface when pawn selected)
+- [ ] Design consistent UI hierarchy for collapsed/expanded states
+
+**Game Information Displays**
+- [ ] Implement transparent log window on right side of screen for immersive event narration
+- [ ] Create collapsible pawn information panels for selected pawns (needs, mood, traits, stats)
+- [ ] Design inventory visualization system with contextual actions
+- [ ] Add job status indicators that appear during active tasks
+
+**Basic Interaction Systems**
+- [ ] Design work priorities interface that appears when relevant
+- [ ] Implement context-sensitive action buttons based on selection state
+- [ ] Create resource designation controls with visual feedback
+- [ ] Develop skill hotbar system for combat abilities
+
+**Status and Feedback Elements**
+- [ ] Develop subtle event communication through environmental changes and log entries
+- [ ] Implement tooltip system for game objects with contextual information
+- [ ] Add context-sensitive cursor system that changes based on action type
+- [ ] Create unobtrusive visual/audio indicators for new log entries
+
 
 ## Phase 4: Exploration \& Vision Systems (2-3 weeks)
 
@@ -158,25 +166,33 @@
     - [ ] Generate monster sounds based on territory type
     - [ ] Implement magical effect audio
     - [ ] Design environmental audio cues for territory dangers
+          
 
+## Phase 8: UI/UX Polish - Fantasy Theme Integration (2-3 weeks)
 
-## Phase 8: UI/UX Development (2-3 weeks)
+**Visual Theme Enhancement**
+- [ ] Implement gothic-inspired visual styling for all UI components
+- [ ] Create fantasy-themed border elements and panel designs
+- [ ] Develop consistent color palette for different interaction categories
+- [ ] Add subtle animations for UI transitions between selection states
 
-- **Core Interface Framework**
-    - [ ] Implement Gothic-inspired UI design system
-    - [ ] Create modular UI component library
-    - [ ] Design territory information overlays and danger indicators
-    - [ ] Develop magic and crafting interfaces
-- **Game Information Displays**
-    - [ ] Create territory map with discovered/undiscovered regions
-    - [ ] Design monster encyclopedia with territory information
-    - [ ] Implement magical crafting recipe browser
-    - [ ] Add resource and territory management visualizations
-- **Player Interaction \& Feedback**
-    - [ ] Create context-sensitive cursor system for territory interaction
-    - [ ] Implement visual feedback for magical effects and territory changes
-    - [ ] Design notification system for territory events and monster activities
-    - [ ] Add save/load interface with territory discovery tracking
+**Advanced Information Displays**
+- [ ] Enhance territory map with visual cues for danger levels
+- [ ] Design monster encyclopedia that integrates with territory information
+- [ ] Implement skill tree visualization for pawn development
+- [ ] Create magical effect visualization system for spells and environmental interactions
+
+**Immersive Feedback Systems**
+- [ ] Design environmental visual effects that communicate territory dangers
+- [ ] Implement skill-specific visual feedback during combat
+- [ ] Create dynamic sound design system for UI interactions
+- [ ] Develop subtle notification animations for the log window
+
+**Player Experience Refinement**
+- [ ] Implement custom UI scaling options for accessibility
+- [ ] Create configuration panel for UI element visibility
+- [ ] Design comprehensive help system with context-sensitive tooltips
+- [ ] Add save/load interface with territory discovery visualization
 
 
 # Post-ERP ROADMAP
