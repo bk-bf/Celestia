@@ -8,6 +8,8 @@ var name_database = NameDatabase.new()
 var resource_database = ResourceDatabase.new()
 var needs_database = NeedsDatabase.new()
 var mood_database = MoodDatabase.new()
+var work_type_database = WorkTypeDatabase.new()
+var work_priority_manager = null
 var map_data = null
 var pawn_manager = null
 var designation_manager = null
@@ -45,6 +47,12 @@ func _ready():
 	designation_manager = DesignationManagerFile.new()
 	add_child(designation_manager)
 
+	# Initialize WorkPriorityManager
+	const WorkPriorityManagerFile = preload("res://src/pawn/work/workpriority_manager.gd")
+	work_priority_manager = WorkPriorityManagerFile.new()
+	add_child(work_priority_manager)
+
+	
 func generate_new_map(width, height, seed_value):
 	# Create new map data
 	const MapDataFile = preload("res://src/world/terrain/map_data.gd")
@@ -198,3 +206,23 @@ func find_nearest_designation(type: String, from_position: Vector2i) -> Vector2i
 	if designation_manager:
 		return designation_manager.find_nearest_designation(type, from_position)
 	return Vector2i(-1, -1)
+
+
+# WORK SYSTEM FUNCTIONS
+func get_work_type(work_type_id):
+	return work_type_database.get_work_type(work_type_id)
+
+func get_all_work_types():
+	return work_type_database.get_all_work_types()
+
+func get_sorted_work_types():
+	return work_type_database.get_sorted_work_types()
+
+func set_work_priority(pawn_id, work_type_id, priority):
+	if work_priority_manager:
+		work_priority_manager.set_priority(pawn_id, work_type_id, priority)
+
+func get_work_priority(pawn_id, work_type_id):
+	if work_priority_manager:
+		return work_priority_manager.get_priority(pawn_id, work_type_id)
+	return 0
