@@ -254,6 +254,22 @@ sources/0 = SubResource("TileSetAtlasSource_26o6m")
 [node name="Main" type="Node" parent="."]
 script = ExtResource("1_nciap")
 
+[node name="HUD" type="CanvasLayer" parent="Main"]
+
+[node name="Panel" type="Panel" parent="Main/HUD"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -890.0
+offset_top = -41.9999
+offset_right = -797.0
+offset_bottom = -20.9999
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(19.0031, 2.01599)
+
 [node name="PawnManager" type="Node" parent="Main"]
 script = ExtResource("2_10578")
 
