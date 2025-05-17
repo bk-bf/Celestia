@@ -8,8 +8,8 @@
 - [] implement all effects and conditions from the TraitDatabase traits
 - [] add default, progressive mood buffs and debuffs (new home buff)
 - [] fix pawns standing on top of each other
-- [] add a multi-marker to the designation manager
-
+- [] add a multi-m_arker to the designation manager
+- [] fix the hunger and sleep need check frequency 
 
 - [ ] add meal system improvemnts:
 	- [ ] 	Implement meal deterioration tracking (percentage consumed)

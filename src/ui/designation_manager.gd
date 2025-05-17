@@ -14,14 +14,6 @@ var designations = {
     "haul": {}
 }
 
-# Colors for designation visualization
-var designation_colors = {
-    "harvest": Color(0.2, 0.8, 0.2, 0.5),
-    "construct": Color(0.2, 0.2, 0.8, 0.5),
-    "mine": Color(0.8, 0.6, 0.2, 0.5),
-    "clear": Color(0.8, 0.2, 0.2, 0.5),
-    "haul": Color(0.8, 0.8, 0.2, 0.5)
-}
 
 # Reference to required managers
 var map_data = null
@@ -154,12 +146,6 @@ func find_nearest_designation(type: String, from_position: Vector2i) -> Vector2i
             nearest_pos = pos
     
     return nearest_pos
-
-# Get the color for a designation type
-func get_designation_color(type: String) -> Color:
-    if designation_colors.has(type):
-        return designation_colors[type]
-    return Color(0.5, 0.5, 0.5, 0.5) # Default gray
 
 # Clear all designations
 func clear_all_designations():
