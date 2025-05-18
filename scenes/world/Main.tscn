@@ -1,7 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://dej01ein88jm2"]
+[gd_scene load_steps=13 format=3 uid="uid://dej01ein88jm2"]
 
 [ext_resource type="Script" path="res://src/core/main.gd" id="1_nciap"]
+[ext_resource type="FontFile" uid="uid://bksyp6roatbdh" path="res://assets/fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf" id="2_26o6m"]
 [ext_resource type="Script" path="res://src/pawn/pawn_manager.gd" id="2_10578"]
+[ext_resource type="Script" uid="uid://7etynkcvokkt" path="res://src/ui/hud.gd" id="2_b3pok"]
 [ext_resource type="Script" uid="uid://duynfs6n6kueb" path="res://src/core/utils/input_handler.gd" id="3_26o6m"]
 [ext_resource type="Script" uid="uid://dadowb7yknfjj" path="res://src/world/terrain/map_gen.gd" id="4_b3pok"]
 [ext_resource type="Script" uid="uid://cdfk4qi21bb6x" path="res://src/components/camera/camera_2d.gd" id="5_vanwo"]
@@ -254,27 +256,210 @@ sources/0 = SubResource("TileSetAtlasSource_26o6m")
 [node name="Main" type="Node" parent="."]
 script = ExtResource("1_nciap")
 
-[node name="HUD" type="CanvasLayer" parent="Main"]
-
-[node name="Panel" type="Panel" parent="Main/HUD"]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -890.0
-offset_top = -41.9999
-offset_right = -797.0
-offset_bottom = -20.9999
-grow_horizontal = 2
-grow_vertical = 0
-scale = Vector2(19.0031, 2.01599)
-
 [node name="PawnManager" type="Node" parent="Main"]
 script = ExtResource("2_10578")
 
 [node name="InputHandler" type="Node2D" parent="Main"]
 script = ExtResource("3_26o6m")
+
+[node name="HUD" type="CanvasLayer" parent="Main"]
+layer = 10
+script = ExtResource("2_b3pok")
+
+[node name="Control" type="Control" parent="Main/HUD"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BottomMenuBar" type="MarginContainer" parent="Main/HUD/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -39.0
+offset_right = -1409.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="MenuContainer" type="HBoxContainer" parent="Main/HUD/Control/BottomMenuBar"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ColonyButton" type="Button" parent="Main/HUD/Control/BottomMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_26o6m")
+theme_override_font_sizes/font_size = 12
+text = "Colony"
+
+[node name="ProductionButton" type="Button" parent="Main/HUD/Control/BottomMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_26o6m")
+theme_override_font_sizes/font_size = 12
+text = "Produc.."
+
+[node name="PlanningButton" type="Button" parent="Main/HUD/Control/BottomMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_26o6m")
+theme_override_font_sizes/font_size = 12
+text = "Planning"
+
+[node name="ReasearchButton" type="Button" parent="Main/HUD/Control/BottomMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_26o6m")
+theme_override_font_sizes/font_size = 12
+text = "Research"
+
+[node name="WorldButton" type="Button" parent="Main/HUD/Control/BottomMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_26o6m")
+theme_override_font_sizes/font_size = 12
+text = "World"
+
+[node name="TabContainer" type="HBoxContainer" parent="Main/HUD/Control/BottomMenuBar"]
+layout_mode = 2
+
+[node name="PawnMenuBar" type="MarginContainer" parent="Main/HUD/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = -106.0
+offset_right = -1092.0
+offset_bottom = -43.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="MenuContainer" type="HBoxContainer" parent="Main/HUD/Control/PawnMenuBar"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="InfoButton" type="Button" parent="Main/HUD/Control/PawnMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_26o6m")
+theme_override_font_sizes/font_size = 12
+action_mode = 0
+text = "Info"
+
+[node name="EquipmentButton" type="Button" parent="Main/HUD/Control/PawnMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_26o6m")
+theme_override_font_sizes/font_size = 12
+text = "Equip.."
+
+[node name="NeedsButton" type="Button" parent="Main/HUD/Control/PawnMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_26o6m")
+theme_override_font_sizes/font_size = 12
+text = "Needs"
+
+[node name="HealthButton" type="Button" parent="Main/HUD/Control/PawnMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_26o6m")
+theme_override_font_sizes/font_size = 12
+text = "Health"
+
+[node name="SocialButton" type="Button" parent="Main/HUD/Control/PawnMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_26o6m")
+theme_override_font_sizes/font_size = 12
+text = "Social
+"
+
+[node name="LogButton" type="Button" parent="Main/HUD/Control/PawnMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_26o6m")
+theme_override_font_sizes/font_size = 12
+text = "Log"
+
+[node name="TabContainer" type="HBoxContainer" parent="Main/HUD/Control/PawnMenuBar"]
+layout_mode = 2
+
+[node name="ContentPanels" type="Control" parent="Main/HUD/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 0.000133784
+mouse_filter = 2
+
+[node name="PawnInfoPanel" type="Panel" parent="Main/HUD/Control/ContentPanels"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 2.09137
+offset_top = -397.0
+offset_right = 381.091
+offset_bottom = -112.0
+grow_vertical = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Main/HUD/Control/ContentPanels/PawnInfoPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LogWindow" type="Panel" parent="Main/HUD/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -266.0
+offset_right = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="LogHeader" type="HBoxContainer" parent="Main/HUD/Control/LogWindow"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -255.0
+offset_right = 2.0
+offset_bottom = 40.0
+grow_horizontal = 0
+
+[node name="LogScrollContainer" type="ScrollContainer" parent="Main/HUD/Control/LogWindow"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -253.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="LogEntries" type="VBoxContainer" parent="Main/HUD/Control/LogWindow/LogScrollContainer"]
+layout_mode = 2
 
 [node name="Map" type="Node2D" parent="Main"]
 script = ExtResource("4_b3pok")
@@ -286,8 +471,11 @@ show_territory_markers = false
 show_density_values = false
 show_movement_costs = false
 show_resources = false
+base_seed = 3760515829
 
 [node name="Camera2D" type="Camera2D" parent="Main/Map"]
+visible = false
+position = Vector2(676, 431)
 script = ExtResource("5_vanwo")
 
 [node name="Pathfinder" type="Node2D" parent="Main/Map"]

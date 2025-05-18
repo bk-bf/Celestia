@@ -12,6 +12,7 @@ var work_type_database = WorkTypeDatabase.new()
 var work_priority_manager = null
 var map_data = null
 var pawn_manager = null
+var input_handler = null
 var designation_manager = null
 var save_path = "user://map_data.tres"
 
@@ -38,6 +39,10 @@ func _ready():
 	# Try to find PawnManager reference
 	if get_node_or_null("/root/Game/Main/PawnManager"):
 		pawn_manager = get_node("/root/Game/Main/PawnManager")
+
+	# Try to find InputHandler reference
+	if get_node_or_null("/root/Game/Main/InputHandler"):
+		input_handler = get_node("/root/Game/Main/InputHandler")
 	
 	# Use call_deferred to ensure map_data is fully initialized
 	call_deferred("emit_signal", "map_data_loaded")
