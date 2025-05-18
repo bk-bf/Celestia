@@ -10,6 +10,7 @@
 - [] fix pawns standing on top of each other
 - [] add a multi-marker to the designation manager
 - [] fix the hunger and sleep need check frequency 
+- [] update EatingState, SleepingState, etc. to emit update signal for HUD 
 
 - [ ] add meal system improvemnts:
 	- [ ] 	Implement meal deterioration tracking (percentage consumed)
