@@ -19,4 +19,5 @@ func complete_without_nutrition():
     # Just mark the job as complete without additional nutrition
     if assigned_pawn:
         print("Pawn " + str(assigned_pawn.pawn_id) + " finished eating")
+        emit_signal("job_completed", assigned_pawn.pawn_id, "Eating", {})
     return true

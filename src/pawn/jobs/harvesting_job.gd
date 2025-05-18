@@ -13,17 +13,24 @@ func complete():
     if DebugLogger.instance:
         DebugLogger.instance.log_resource_harvested(
             assigned_pawn.name,
-            job_type, # Changed from resource_type
+            job_type,
             harvested_amount,
             target_position
         )
     
+    # Emit signal before returning
+    if assigned_pawn:
+        emit_signal("job_completed", assigned_pawn.pawn_id, job_type, {
+            "amount": harvested_amount,
+            "position": target_position
+        })
+    
     # Return the harvested resources
     return {
-        "type": job_type, # Changed from resource_type
+        "type": job_type,
         "amount": harvested_amount
     }
-
+	
 func calculate_harvest_amount():
     # Get the resource definition from the database
     var resource_db = ResourceDatabase.new()

@@ -22,6 +22,15 @@ func update(delta):
 	# Progress the harvesting with trait modifications
 	pawn.current_job.progress += delta * pawn.harvesting_speed * work_speed_modifier / pawn.current_job.time_required
 	
+	# Emit signal about job progress (DURING the job)
+	if pawn.current_job:
+		# Make sure the job has the signal before emitting
+		if pawn.current_job.has_signal("job_updated"):
+			pawn.current_job.emit_signal("job_updated", pawn.pawn_id, pawn.current_job.job_type, {
+				"progress": pawn.current_job.progress,
+				"target": 1.0 # Assuming 1.0 is complete
+			})
+	
 	# Log only at the beginning (0%)
 	if not has_logged_start:
 		print('Harvesting progress: 0%')
@@ -47,6 +56,13 @@ func update(delta):
 		else:
 			print("No " + pawn.current_job.job_type + " found on tile")
 		
+		# Emit job completion signal BEFORE nullifying the job
+		if pawn.current_job.has_signal("job_completed"):
+			pawn.current_job.emit_signal("job_completed", pawn.pawn_id, pawn.current_job.job_type, {
+				"amount": harvest_amount,
+				"position": pawn.current_job.target_position
+			})
+		
 		# Log the harvesting event
 		if DebugLogger.instance:
 			DebugLogger.instance.log_resource_harvested(
@@ -70,6 +86,6 @@ func update(delta):
 		# Reset for next job
 		has_logged_start = false
 		
-		# Job is done
+		# Job is done - AFTER emitting signals
 		pawn.current_job = null
 		state_machine.change_state("Idle")

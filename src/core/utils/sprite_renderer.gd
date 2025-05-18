@@ -11,14 +11,14 @@ func _init(use_animated = false):
 	if use_animated:
 		animated_sprite = AnimatedSprite2D.new()
 		add_child(animated_sprite)
-		animated_sprite.z_index = 100 # High value to ensure it's on top
+		animated_sprite.z_index = 10 # High value to ensure it's on top
 	else:
 		sprite = Sprite2D.new()
 		add_child(sprite)
-		sprite.z_index = 100 # High value to ensure it's on top
+		sprite.z_index = 10 # High value to ensure it's on top
 	
 	# Ensure it renders above terrain
-	z_index = 100
+	z_index = 10
 
 func _ready():
 	print("SpriteRenderer initialized!")

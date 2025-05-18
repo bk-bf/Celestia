@@ -18,4 +18,5 @@ func complete_without_rest():
     # Complete the job without adding rest (since it's added incrementally)
     if assigned_pawn:
         print("Pawn " + str(assigned_pawn.pawn_id) + " finished sleeping")
+        emit_signal("job_completed", assigned_pawn.pawn_id, "Sleeping", {})
     return true

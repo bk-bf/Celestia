@@ -3,11 +3,8 @@ extends CanvasLayer
 
 # References to UI elements (already created in the scene)
 @onready var bottom_menu_bar = $Control/BottomMenuBar
-@onready var content_panels = $Control/ContentPanels
-@onready var log_window = $Control/LogWindow
-@onready var log_entries = $Control/LogWindow/LogScrollContainer/LogEntries
 @onready var pawn_menu_bar = $Control/PawnMenuBar
-@onready var pawn_info_panel = $Control/ContentPanels/PawnInfoPanel
+@onready var pawn_info_panel = $Control/PawnInfoPanel
 
 # Button references for bottom menu (already created in the scene)
 @onready var colony_button = $Control/BottomMenuBar/MenuContainer/ColonyButton
@@ -31,9 +28,21 @@ var database_manager = null
 
 # Current selected pawn
 var selected_pawn_id = -1
+var current_pawn_panel = ""
+
+var update_timer = 0
+var update_interval = 1.0 # Update every second
 
 # Signal for log updates
 signal log_entry_added(message, type)
+
+func _process(delta):
+	# Periodic update for the pawn info panel
+	if pawn_info_panel.visible and selected_pawn_id != -1:
+		update_timer += delta
+		if update_timer >= update_interval:
+			update_timer = 0
+			update_pawn_info(selected_pawn_id)
 
 func _ready():
 	# Get references to game systems
@@ -60,7 +69,7 @@ func _ready():
 	world_button.connect("pressed", _on_world_button_pressed)
 	
 	# Connect pawn menu button signals
-	#info_button.pressed.connect(_on_info_button_pressed)
+	info_button.pressed.connect(_on_info_button_pressed)
 	equip_button.connect("pressed", _on_equip_button_pressed)
 	needs_button.connect("pressed", _on_needs_button_pressed)
 	health_button.connect("pressed", _on_health_button_pressed)
@@ -73,37 +82,17 @@ func _ready():
 	# Initially hide panels
 	pawn_menu_bar.visible = false
 	pawn_info_panel.visible = false
-	#call_deferred("connect_button_signals")
-	call_deferred("setup_direct_input")
 
-func setup_direct_input():
-	if info_button:
-		# Create a simple script for the button
-		var script = GDScript.new()
-		script.source_code = """
-extends Button
+	if pawn_manager:
+		for pawn in pawn_manager.get_all_pawns():
+			if pawn.current_job:
+				_connect_job_signals(pawn.current_job)
 
-func _ready():
-	print("Direct button script loaded")
-
-func _pressed():
-	print("Button pressed directly")
-	get_parent().get_parent().get_parent()._on_info_button_pressed()
-"""
-		script.reload()
-		info_button.set_script(script)
-
-func connect_button_signals():
-	if info_button:
-		print("Info Button disabled state:", info_button.disabled)
-		info_button.disabled = false
-		print("Info Button mouse filter:", info_button.mouse_filter)
-		info_button.mouse_filter = Control.MOUSE_FILTER_STOP
-		print("Info Button focus mode:", info_button.focus_mode)
-		info_button.focus_mode = Control.FOCUS_ALL
-		info_button.pressed.connect(_on_info_button_pressed)
-		print("Info button connected")
-		print("Is signal connected:", info_button.is_connected("pressed", _on_info_button_pressed))
+# Function to connect job signals
+func _connect_job_signals(job):
+	if job and !job.is_connected("job_completed", _on_job_completed):
+		job.connect("job_completed", _on_job_completed)
+		job.connect("job_updated", _on_job_updated)
 
 func _add_log_entry(message, type = "info"):
 	var entry = Label.new()
@@ -120,15 +109,6 @@ func _add_log_entry(message, type = "info"):
 		_:
 			entry.modulate = Color(0.9, 0.9, 0.9)
 	
-	# Add to log entries
-	log_entries.add_child(entry)
-	
-	# Limit the number of entries
-	if log_entries.get_child_count() > 100:
-		var oldest = log_entries.get_child(0)
-		log_entries.remove_child(oldest)
-		oldest.queue_free()
-
 # Bottom menu button handlers
 func _on_colony_button_pressed():
 	print("Colony button pressed")
@@ -147,12 +127,11 @@ func _on_world_button_pressed():
 
 # Pawn menu button handlers
 func _on_info_button_pressed():
-	# Simply show the existing PawnInfoPanel
+	# Set the info panel as explicitly activated
+	info_panel_active = true
 	pawn_info_panel.visible = true
-	print("Info button pressed")
-	# Update the panel with pawn info
 	update_pawn_info(selected_pawn_id)
-
+	
 func _on_equip_button_pressed():
 	# Hide the info panel when other buttons are pressed
 	pawn_info_panel.visible = false
@@ -178,6 +157,8 @@ func _on_social_button_pressed():
 	pawn_info_panel.visible = false
 	print("Social button pressed")
 
+var info_panel_active = false
+
 # Pawn selection handling
 func _on_pawn_selected(pawn_id):
 	selected_pawn_id = pawn_id
@@ -186,10 +167,19 @@ func _on_pawn_selected(pawn_id):
 		# No pawn selected, hide the pawn menu bar and info panel
 		pawn_menu_bar.visible = false
 		pawn_info_panel.visible = false
+		# Reset the info panel state when deselecting a pawn
+		info_panel_active = false
 	else:
-		# Pawn selected, show ONLY the pawn menu bar, not the info panel
+		# Pawn selected, show the pawn menu bar
 		pawn_menu_bar.visible = true
-		pawn_info_panel.visible = false
+		
+		# Only show the info panel if it was explicitly activated
+		if info_panel_active:
+			pawn_info_panel.visible = true
+			update_pawn_info(pawn_id)
+		else:
+			# Make sure the panel is hidden if not explicitly shown
+			pawn_info_panel.visible = false
 		
 		# Add log entry about selection
 		var pawn = pawn_manager.get_pawn(pawn_id)
@@ -197,38 +187,108 @@ func _on_pawn_selected(pawn_id):
 			emit_signal("log_entry_added", "Selected " + pawn.pawn_name, "info")
 
 func update_pawn_info(pawn_id):
-	# Clear any existing children first
-	for child in pawn_info_panel.get_children():
-		if child.name == "InfoLabel":
-			child.queue_free()
+	# Get the content container
+	var content_container = pawn_info_panel.get_node("ContentContainer")
+	
+	# Clear only the content container
+	for child in content_container.get_children():
+		child.queue_free()
 	
 	var pawn = pawn_manager.get_pawn(pawn_id)
 	if not pawn:
 		return
 	
-	# Create a label with basic pawn info
-	var label = Label.new()
-	label.name = "InfoLabel"
+	# Create a VBoxContainer to organize content vertically
+	var container = VBoxContainer.new()
+	container.name = "InfoContainer"
+	container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	container.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	
-	# Build the pawn info text
-	var pawn_info = "Name: " + pawn.pawn_name + "\n"
-	pawn_info += "Gender: " + pawn.pawn_gender + "\n"
-	pawn_info += "Strength: " + str(pawn.strength) + "\n"
-	pawn_info += "Dexterity: " + str(pawn.dexterity) + "\n"
-	pawn_info += "Intelligence: " + str(pawn.intelligence) + "\n"
+	# Add a styled header
+	var header = Label.new()
+	header.text = pawn.pawn_name
+	header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	header.add_theme_font_size_override("font_size", 18)
+	container.add_child(header)
 	
-	# Add job info if available
+	# Add a separator
+	var separator = HSeparator.new()
+	container.add_child(separator)
+	
+	# Add basic info in a grid
+	var grid = GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 10)
+	grid.add_theme_constant_override("v_separation", 5)
+	
+	# Add attributes with proper styling
+	add_attribute_row(grid, "Gender:", pawn.pawn_gender)
+	add_attribute_row(grid, "Strength:", str(pawn.strength))
+	add_attribute_row(grid, "Dexterity:", str(pawn.dexterity))
+	add_attribute_row(grid, "Intelligence:", str(pawn.intelligence))
+	
+	container.add_child(grid)
+	
+	# Add job info with proper styling
+	var job_header = Label.new()
+	job_header.text = "Current Activity"
+	job_header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	job_header.add_theme_font_size_override("font_size", 14)
+	container.add_child(job_header)
+	
+	var job_info = Label.new()
+	job_info.name = "JobInfoLabel" # Give it a name so we can find it later
 	if pawn.current_job:
-		pawn_info += "\nCurrent job: " + pawn.current_job.job_to_string()
+		# Connect to job signals if not already connected
+		if !pawn.current_job.is_connected("job_updated", _on_job_updated):
+			pawn.current_job.connect("job_updated", _on_job_updated)
+		if !pawn.current_job.is_connected("job_completed", _on_job_completed):
+			pawn.current_job.connect("job_completed", _on_job_completed)
+			
+		# Just show the job type instead of full string
+		job_info.text = pawn.current_job.job_type.capitalize()
 	else:
-		pawn_info += "\nCurrent job: None"
+		job_info.text = "Idle"
 	
-	label.text = pawn_info
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	job_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	job_info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	container.add_child(job_info)
 	
-	# Add the label to the panel
-	pawn_info_panel.add_child(label)
+	# Add the container to the ContentContainer
+	content_container.add_child(container)
+
+
+# Signal handlers
+func _on_job_completed(pawn_id, job_type, job_details):
+	# Only update if this is the currently selected pawn and info panel is visible
+	if pawn_id == selected_pawn_id and pawn_info_panel.visible:
+		# Update the entire panel since the pawn might have a new job
+		update_pawn_info(pawn_id)
+
+func _on_job_updated(pawn_id, job_type, job_details):
+	# Only update if this is the currently selected pawn and info panel is visible
+	if pawn_id == selected_pawn_id and pawn_info_panel.visible:
+		# Just update the job info label instead of rebuilding the entire panel
+		var content_container = pawn_info_panel.get_node("ContentContainer")
+		var info_container = content_container.get_node("InfoContainer")
+		if info_container:
+			var job_info = info_container.get_node("JobInfoLabel")
+			if job_info:
+				job_info.text = job_type.capitalize()
+
+# Helper function to add attribute rows
+func add_attribute_row(grid, label_text, value_text):
+	var label = Label.new()
+	label.text = label_text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	
+	var value = Label.new()
+	value.text = value_text
+	value.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	
+	grid.add_child(label)
+	grid.add_child(value)
+
 
 # Public methods for other scripts to use
 func add_log_message(message, type = "info"):
@@ -251,4 +311,12 @@ func is_point_in_pawn_info_panel(point):
 	if pawn_info_panel and pawn_info_panel.visible:
 		var rect = pawn_info_panel.get_global_rect()
 		return rect.has_point(point)
+	return false
+
+
+func is_point_in_ui(point):
+	if pawn_menu_bar and pawn_menu_bar.visible and pawn_menu_bar.get_global_rect().has_point(point):
+		return true
+	if pawn_info_panel and pawn_info_panel.visible and pawn_info_panel.get_global_rect().has_point(point):
+		return true
 	return false

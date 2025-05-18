@@ -39,21 +39,18 @@ func _input(event):
 		# Get mouse position
 		var mouse_pos = get_viewport().get_mouse_position()
 		
-		# Check if click is on UI elements
-		var ui_element = get_viewport().gui_get_focus_owner()
-		
 		# Get reference to HUD
-		var hud = get_node_or_null("/root/Game/Main/HUD") # later over DatabaseManger?
+		var hud = get_node_or_null("/root/Game/Main/HUD") # later over DatabaseManger
 		
-		# If we clicked on a UI element or HUD components, don't process as game input
-		if ui_element != null or (hud and (
-			(hud.pawn_menu_bar and hud.pawn_menu_bar.visible and hud.pawn_menu_bar.get_global_rect().has_point(mouse_pos)) or
-			(hud.pawn_info_panel and hud.pawn_info_panel.visible and hud.pawn_info_panel.get_global_rect().has_point(mouse_pos))
-		)):
-			# This is a UI click, mark it as handled so other systems don't process it
-			# But DON'T return yet - let the event propagate to UI elements
-			return
-		
+		 # Check if mouse is over any UI element
+		if event is InputEventMouse:
+			mouse_pos = event.position
+			
+			# Check if mouse is over UI
+			if hud and hud.is_point_in_ui(mouse_pos):
+				# Don't handle this input at all - let it pass to UI
+				return
+
 		# Process game input (non-UI clicks)
 		var click_position = get_global_mouse_position()
 		var grid_coords = map_data.map_to_grid(click_position)
@@ -85,9 +82,34 @@ func _input(event):
 		# Handle middle-click for resource harvesting
 		elif event.button_index == MOUSE_BUTTON_MIDDLE:
 			if map_data.is_within_bounds_map(grid_coords):
-				# Rest of your middle-click handling code...
-				get_viewport().set_input_as_handled() # Mark as handled
+				print("middle mouse button clicked on map")
+				# Check if there's a resource at this position
+				var tile = map_data.get_tile(grid_coords)
+				print(tile)
+				
+				if tile and tile.has_resource():
+					# Get the first resource type in the dictionary
+					var resource_id = tile.resources.keys()[0] if tile.resources.size() > 0 else ""
+					var amount = tile.resources[resource_id] if resource_id else 0
+					
+					print("Resource found:", resource_id, "Amount:", amount)
+					
+					if resource_id != "" and amount > 0:
+						# Use the selected_pawn_id you're already tracking
+						if selected_pawn_id != -1:
+							var selected_pawn = pawn_manager.get_pawn(selected_pawn_id)
+							print("Selected pawn for harvesting:", selected_pawn)
 
+							if selected_pawn:
+								# Assign harvesting job to the pawn
+								var success = selected_pawn.harvest_resource(grid_coords, resource_id, amount)
+								print("Harvest job assignment result:", success)
+								# map.map_renderer.highlight_tile(grid_coords, Color(0, 1, 0, 0.3), 0.5)
+								get_viewport().set_input_as_handled()
+						else:
+							print("No pawn selected for harvesting")
+				else:
+					print("No resources found at this location")
 
 	# if statement to handle all keyboard inputs
 	# Add keyboard input handling for mood display

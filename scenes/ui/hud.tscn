@@ -1,0 +1,158 @@
+[gd_scene load_steps=4 format=3 uid="uid://cptc1kvmsmwle"]
+
+[ext_resource type="Script" uid="uid://7etynkcvokkt" path="res://src/ui/hud.gd" id="1_8qguk"]
+[ext_resource type="FontFile" uid="uid://bksyp6roatbdh" path="res://assets/fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf" id="2_136eg"]
+[ext_resource type="Theme" uid="uid://b88g4x27p4yxv" path="res://scenes/ui/PlaceholderMenuBarTheme.tres" id="4_8qguk"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_8qguk")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PawnMenuBar" type="MarginContainer" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = 934.0
+offset_right = 342.0
+offset_bottom = 997.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="MenuContainer" type="HBoxContainer" parent="Control/PawnMenuBar"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="InfoButton" type="Button" parent="Control/PawnMenuBar/MenuContainer"]
+z_index = 100
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_136eg")
+theme_override_font_sizes/font_size = 12
+action_mode = 0
+text = "Info"
+
+[node name="EquipmentButton" type="Button" parent="Control/PawnMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_136eg")
+theme_override_font_sizes/font_size = 12
+text = "Equip.."
+
+[node name="NeedsButton" type="Button" parent="Control/PawnMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_136eg")
+theme_override_font_sizes/font_size = 12
+text = "Needs"
+
+[node name="HealthButton" type="Button" parent="Control/PawnMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_136eg")
+theme_override_font_sizes/font_size = 12
+text = "Health"
+
+[node name="SocialButton" type="Button" parent="Control/PawnMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_136eg")
+theme_override_font_sizes/font_size = 12
+text = "Social
+"
+
+[node name="LogButton" type="Button" parent="Control/PawnMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_136eg")
+theme_override_font_sizes/font_size = 12
+text = "Log"
+
+[node name="BottomMenuBar" type="MarginContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 1001.0
+offset_right = 279.0
+offset_bottom = 1040.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="MenuContainer" type="HBoxContainer" parent="Control/BottomMenuBar"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ColonyButton" type="Button" parent="Control/BottomMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_136eg")
+theme_override_font_sizes/font_size = 12
+text = "Colony"
+
+[node name="ProductionButton" type="Button" parent="Control/BottomMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_136eg")
+theme_override_font_sizes/font_size = 12
+text = "Produc.."
+
+[node name="PlanningButton" type="Button" parent="Control/BottomMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_136eg")
+theme_override_font_sizes/font_size = 12
+text = "Planning"
+
+[node name="ReasearchButton" type="Button" parent="Control/BottomMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_136eg")
+theme_override_font_sizes/font_size = 12
+text = "Research"
+
+[node name="WorldButton" type="Button" parent="Control/BottomMenuBar/MenuContainer"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_136eg")
+theme_override_font_sizes/font_size = 12
+text = "World"
+
+[node name="TabContainer" type="HBoxContainer" parent="Control/BottomMenuBar"]
+layout_mode = 2
+
+[node name="PawnInfoPanel" type="MarginContainer" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 427.0
+offset_right = 386.0
+offset_bottom = 927.0
+grow_vertical = 0
+theme = ExtResource("4_8qguk")
+
+[node name="BackgoundColor" type="ColorRect" parent="Control/PawnInfoPanel"]
+layout_mode = 2
+color = Color(0.147672, 0.147672, 0.147672, 1)
+
+[node name="ContentContainer" type="VBoxContainer" parent="Control/PawnInfoPanel"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/PawnInfoPanel/ContentContainer"]
+layout_mode = 2
