@@ -19,6 +19,7 @@
   - [ ] Create meaningful benefits for the "stuffed" status
   - [ ] Implement the weight gain system as a consequence of frequent overeating
   - [ ] Add traits that affect eating behavior
+  - [ ] Consolidate all node refrences in one one central file (maybe DatabaseManger)
 
 ## Not Important & Urgent
 
