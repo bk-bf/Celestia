@@ -32,8 +32,12 @@
 - [ ] Implement some vegetation culling mechanism to reduce tree/bush density
 - [ ] Change pawns standing frozen during Idle to wandering around
 
+## Backlog
 
-Notes:
+- [ ] Safe all sensible Nodes as seperate scenes
+
+
+**Notes:**
 
 HUD (CanvasLayer)
 │

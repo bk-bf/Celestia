@@ -37,12 +37,12 @@ func _ready():
 	print("DatabaseManager initialized")
 	
 	# Try to find PawnManager reference
-	if get_node_or_null("/root/Game/Main/PawnManager"):
-		pawn_manager = get_node("/root/Game/Main/PawnManager")
+	if get_node_or_null("/root/Game/Main/GameWorld/PawnManager"):
+		pawn_manager = get_node("/root/Game/Main/GameWorld//PawnManager")
 
 	# Try to find InputHandler reference
-	if get_node_or_null("/root/Game/Main/InputHandler"):
-		input_handler = get_node("/root/Game/Main/InputHandler")
+	if get_node_or_null("/root/Game/Main/GameWorld/InputHandler"):
+		input_handler = get_node("/root/Game/Main/GameWorld/InputHandler")
 	
 	# Use call_deferred to ensure map_data is fully initialized
 	call_deferred("emit_signal", "map_data_loaded")

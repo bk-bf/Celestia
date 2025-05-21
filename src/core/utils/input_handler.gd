@@ -2,7 +2,7 @@ class_name InputHandler
 extends Node2D
 
 # References to other nodes
-@onready var map = get_node("../Map")
+@onready var map = get_node("/root/Game/Main/GameWorld/Map")
 @onready var main = get_parent()
 var pawn_manager = DatabaseManager.pawn_manager
 var territory_database = DatabaseManager.territory_database
@@ -12,6 +12,8 @@ var designation_manager = null
 @export var draw_pathfinder: bool = false
 
 signal pawn_selected(pawn_id)
+
+@onready var work_button = get_node("/root/Game/Main/UI/HUD/Control/BottomMenuBar/MenuContainer/WorkButton")
 
 # Pawn selection tracking
 var selected_pawn_id = -1
@@ -40,8 +42,9 @@ func _input(event):
 		var mouse_pos = get_viewport().get_mouse_position()
 		
 		# Get reference to HUD
-		var hud = get_node_or_null("/root/Game/Main/HUD") # later over DatabaseManger
-		
+		var hud = get_node_or_null("/root/Game/Main/UI/HUD") # later over DatabaseManger
+		#print("HUD received input at: ", event.position)
+
 		 # Check if mouse is over any UI element
 		if event is InputEventMouse:
 			mouse_pos = event.position

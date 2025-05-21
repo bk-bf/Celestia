@@ -8,12 +8,12 @@ var map_data: MapData
 var center_position = null
 
 # Get references to your TileMap nodes
-@onready var terrain_tilemap = $Map/TerrainTileMap
-@onready var subterrain_tilemap = $Map/SubTerrainTileMap
+@onready var terrain_tilemap = $GameWorld/Map/TerrainTileMap
+@onready var subterrain_tilemap = $GameWorld/Map/SubTerrainTileMap
 
 func _ready():
 	# Get reference to your existing map
-	var map = $Map
+	var map = $GameWorld/Map
 	# Access the map_data through your map's getter
 	var map_data = map.map_data
 	
@@ -21,7 +21,7 @@ func _ready():
 	#map.initialize_tilemaps(terrain_tilemap, subterrain_tilemap)
 	
 	# Get reference to existing PawnManager node
-	pawn_manager = $PawnManager
+	pawn_manager = $GameWorld/PawnManager
 	
 	# Initialize it with map_data 
 	pawn_manager.initialize(map_data)

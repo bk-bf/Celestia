@@ -69,12 +69,12 @@
 ## Phase 3C: Essential UI - Game Information Displays and Interaction Systems (2-3 weeks)
 
 - **Navigation and Menu Framework**
-    - [ ] Implement bottom menu bar with toggleable UI sections (build, pawns, work, etc.)
-    - [ ] Create menu toggling system for opening/closing different interface panels
+    - [x] Implement bottom menu bar with toggleable UI sections (build, pawns, work, etc.)
+    - [x] Create menu toggling system for opening/closing different interface panels
     - [ ] Design submenu structure for nested options (e.g., build → structure/furniture)
 - **Game Information Displays**
     - [ ] Implement transparent log window on right side of screen for immersive event narration and feedback
-    - [ ] Create pawn information panels displaying needs, mood, traits, and stats
+    - [-] Create pawn information panels displaying needs, mood, traits, and stats
     - [ ] Design inventory visualization system
     - [ ] Add job status and progress indicators for active tasks
 - **Basic Interaction Systems**

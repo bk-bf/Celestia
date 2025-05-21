@@ -5,11 +5,12 @@ extends CanvasLayer
 @onready var bottom_menu_bar = $Control/BottomMenuBar
 @onready var pawn_menu_bar = $Control/PawnMenuBar
 @onready var pawn_info_panel = $Control/PawnInfoPanel
+@onready var work_priority_panel = $Control/WorkPriorityPanel
 
 # Button references for bottom menu (already created in the scene)
-@onready var colony_button = $Control/BottomMenuBar/MenuContainer/ColonyButton
-@onready var production_button = $Control/BottomMenuBar/MenuContainer/ProductionButton
-@onready var planning_button = $Control/BottomMenuBar/MenuContainer/PlanningButton
+@onready var build_button = $Control/BottomMenuBar/MenuContainer/BuildButton
+@onready var work_button = $Control/BottomMenuBar/MenuContainer/WorkButton
+@onready var analyse_button = $Control/BottomMenuBar/MenuContainer/AnalyseButton
 @onready var research_button = $Control/BottomMenuBar/MenuContainer/ReasearchButton
 @onready var world_button = $Control/BottomMenuBar/MenuContainer/WorldButton
 
@@ -49,36 +50,46 @@ func _ready():
 	await get_tree().create_timer(0.5).timeout
 	database_manager = get_node("/root/DatabaseManager")
 	
-	if get_node_or_null("/root/Game/Main/PawnManager"):
-		pawn_manager = get_node("/root/Game/Main/PawnManager")
+	if get_node_or_null("/root/Game/Main/GameWorld/PawnManager"):
+		pawn_manager = get_node("/root/Game/Main/GameWorld/PawnManager")
 	
-	if get_node_or_null("/root/Game/Main/InputHandler"):
-		input_handler = get_node("/root/Game/Main/InputHandler")
+	if get_node_or_null("/root/Game/Main/GameWorld/InputHandler"):
+		input_handler = get_node("/root/Game/Main/GameWorld/InputHandler")
 		if !input_handler.is_connected("pawn_selected", _on_pawn_selected):
 			input_handler.connect("pawn_selected", _on_pawn_selected)
-
-	# button click debug
+	
+	# Wait until next frame to ensure all nodes are ready
+	await get_tree().process_frame
+	# DEBUG HUD
 	print("HUD script loaded successfully")
 	print("Info button reference:", info_button)
-
+	print("Work button reference:", work_button)
+	print("work_priority_panel reference: ", work_priority_panel)
+	
 	# Connect bottom menu button signals
-	colony_button.connect("pressed", _on_colony_button_pressed)
-	production_button.connect("pressed", _on_production_button_pressed)
-	planning_button.connect("pressed", _on_planning_button_pressed)
-	research_button.connect("pressed", _on_research_button_pressed)
-	world_button.connect("pressed", _on_world_button_pressed)
+	build_button.pressed.connect(_on_build_button_pressed)
+	print("Connecting work button signal")
+	work_button.pressed.connect(_on_work_button_pressed)
+	print("Work button signal connected")
+	analyse_button.pressed.connect(_on_analyse_button_pressed)
+	research_button.pressed.connect(_on_research_button_pressed)
+	world_button.pressed.connect(_on_world_button_pressed)
 	
 	# Connect pawn menu button signals
 	info_button.pressed.connect(_on_info_button_pressed)
-	equip_button.connect("pressed", _on_equip_button_pressed)
-	needs_button.connect("pressed", _on_needs_button_pressed)
-	health_button.connect("pressed", _on_health_button_pressed)
-	log_button.connect("pressed", _on_log_button_pressed)
-	social_button.connect("pressed", _on_social_button_pressed)
+	equip_button.pressed.connect(_on_equip_button_pressed)
+	needs_button.pressed.connect(_on_needs_button_pressed)
+	health_button.pressed.connect(_on_health_button_pressed)
+	log_button.pressed.connect(_on_log_button_pressed)
+	social_button.pressed.connect(_on_social_button_pressed)
 	
 	# Connect to our own signal for adding log entries
 	self.connect("log_entry_added", _add_log_entry)
-	
+		 
+	# Initially hide work panel
+	work_priority_panel.visible = false
+
+
 	# Initially hide panels
 	pawn_menu_bar.visible = false
 	pawn_info_panel.visible = false
@@ -110,14 +121,21 @@ func _add_log_entry(message, type = "info"):
 			entry.modulate = Color(0.9, 0.9, 0.9)
 	
 # Bottom menu button handlers
-func _on_colony_button_pressed():
-	print("Colony button pressed")
+func _on_build_button_pressed():
+	print("build button pressed")
 
-func _on_production_button_pressed():
-	print("Production button pressed")
+func _on_work_button_pressed():
+	print("work button pressed")
+	# Toggle work priority panel
+	work_priority_panel.visible = !work_priority_panel.visible
+	
+	# Hide other panels if needed
+	if work_priority_panel.visible:
+		pawn_info_panel.visible = false
+		# Hide other panels as needed
 
-func _on_planning_button_pressed():
-	print("Planning button pressed")
+func _on_analyse_button_pressed():
+	print("analyse button pressed")
 
 func _on_research_button_pressed():
 	print("Research button pressed")
@@ -127,6 +145,7 @@ func _on_world_button_pressed():
 
 # Pawn menu button handlers
 func _on_info_button_pressed():
+	print("Info button pressed")
 	# Set the info panel as explicitly activated
 	info_panel_active = true
 	pawn_info_panel.visible = true
@@ -313,10 +332,21 @@ func is_point_in_pawn_info_panel(point):
 		return rect.has_point(point)
 	return false
 
-
 func is_point_in_ui(point):
+	# Check bottom menu bar
+	if bottom_menu_bar and bottom_menu_bar.visible and bottom_menu_bar.get_global_rect().has_point(point):
+		return true
+		
+	# Check pawn menu bar
 	if pawn_menu_bar and pawn_menu_bar.visible and pawn_menu_bar.get_global_rect().has_point(point):
 		return true
+		
+	# Check pawn info panel
 	if pawn_info_panel and pawn_info_panel.visible and pawn_info_panel.get_global_rect().has_point(point):
 		return true
+		
+	# Check work priority panel
+	if work_priority_panel and work_priority_panel.visible and work_priority_panel.get_global_rect().has_point(point):
+		return true
+		
 	return false

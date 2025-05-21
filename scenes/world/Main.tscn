@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://dej01ein88jm2"]
 
-[ext_resource type="Script" path="res://src/core/main.gd" id="1_nciap"]
-[ext_resource type="Script" path="res://src/pawn/pawn_manager.gd" id="2_10578"]
+[ext_resource type="Script" uid="uid://dsc4bw3ss6jel" path="res://src/core/main.gd" id="1_nciap"]
+[ext_resource type="Script" uid="uid://w0w71wu78hxp" path="res://src/pawn/pawn_manager.gd" id="2_10578"]
 [ext_resource type="Script" uid="uid://duynfs6n6kueb" path="res://src/core/utils/input_handler.gd" id="3_26o6m"]
 [ext_resource type="PackedScene" uid="uid://cptc1kvmsmwle" path="res://scenes/ui/hud.tscn" id="3_b3pok"]
 [ext_resource type="Script" uid="uid://dadowb7yknfjj" path="res://src/world/terrain/map_gen.gd" id="4_b3pok"]
@@ -255,15 +255,15 @@ sources/0 = SubResource("TileSetAtlasSource_26o6m")
 [node name="Main" type="Node" parent="."]
 script = ExtResource("1_nciap")
 
-[node name="PawnManager" type="Node" parent="Main"]
-script = ExtResource("2_10578")
+[node name="GameWorld" type="Node2D" parent="Main"]
 
-[node name="InputHandler" type="Node2D" parent="Main"]
+[node name="InputHandler" type="Node2D" parent="Main/GameWorld"]
 script = ExtResource("3_26o6m")
 
-[node name="HUD" parent="Main" instance=ExtResource("3_b3pok")]
+[node name="PawnManager" type="Node" parent="Main/GameWorld"]
+script = ExtResource("2_10578")
 
-[node name="Map" type="Node2D" parent="Main"]
+[node name="Map" type="Node2D" parent="Main/GameWorld"]
 script = ExtResource("4_b3pok")
 map_lengh = 50
 map_height = 50
@@ -275,20 +275,25 @@ show_movement_costs = false
 show_resources = false
 base_seed = 3760515829
 
-[node name="Camera2D" type="Camera2D" parent="Main/Map"]
+[node name="Camera2D" type="Camera2D" parent="Main/GameWorld/Map"]
 visible = false
 position = Vector2(676, 431)
 script = ExtResource("5_vanwo")
 
-[node name="Pathfinder" type="Node2D" parent="Main/Map"]
+[node name="Pathfinder" type="Node2D" parent="Main/GameWorld/Map"]
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="Main/Map"]
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="Main/GameWorld/Map"]
 debug_enabled = true
 debug_path_custom_color = Color(1, 0.376471, 0.498039, 1)
 
-[node name="SubTerrainTileMap" type="TileMapLayer" parent="Main/Map"]
+[node name="SubTerrainTileMap" type="TileMapLayer" parent="Main/GameWorld/Map"]
 z_index = 1
 tile_set = SubResource("TileSet_b3pok")
 
-[node name="TerrainTileMap" type="TileMapLayer" parent="Main/Map"]
+[node name="TerrainTileMap" type="TileMapLayer" parent="Main/GameWorld/Map"]
 tile_set = SubResource("TileSet_nciap")
+
+[node name="UI" type="Node2D" parent="Main"]
+z_index = 10
+
+[node name="HUD" parent="Main/UI" instance=ExtResource("3_b3pok")]
